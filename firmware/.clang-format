@@ -1,0 +1,6 @@
+---
+BasedOnStyle: Google
+ColumnLimit: 110
+IncludeBlocks: Preserve
+SortIncludes: false
+...

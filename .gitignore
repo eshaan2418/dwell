@@ -1,0 +1,27 @@
+# PRIVATE — never commit
+data/private/
+**/private/
+*.mp4
+*.mov
+*.MOV
+*.heic
+*.HEIC
+# raw sensor logs
+data/raw/
+# caches
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.pio/
+node_modules/
+app/dist/
+firmware/build/
+data/synthetic/cache/
+data/geo/cache/
+results/**/tmp/
+.DS_Store
+.env
+data/weather/cache/

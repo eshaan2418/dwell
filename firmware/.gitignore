@@ -1,0 +1,8 @@
+# Real per-kit config (Wi-Fi credentials, kit ID) - never commit; copy from include/config.example.h
+include/config.h
+# PlatformIO / host build outputs
+.pio/
+build/
+.vscode/
+__pycache__/
+.pytest_cache/
