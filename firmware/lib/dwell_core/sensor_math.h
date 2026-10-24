@@ -18,9 +18,9 @@ enum class Bh1750Range : uint8_t {
 };
 
 struct Bh1750Mode {
-  uint8_t command;     // one-time measurement opcode (0x20 H-res, 0x21 H-res2)
-  uint8_t mtreg;       // measurement-time register
-  uint16_t conv_ms;    // worst-case conversion time (datasheet max 180 ms @ MTreg 69, scaled) + margin
+  uint8_t command;   // one-time measurement opcode (0x20 H-res, 0x21 H-res2)
+  uint8_t mtreg;     // measurement-time register
+  uint16_t conv_ms;  // worst-case conversion time (datasheet max 180 ms @ MTreg 69, scaled) + margin
 };
 
 constexpr float kBh1750DefaultFullScaleLux = 65535.0f / 1.2f;  // 54612.5 lx
@@ -30,10 +30,10 @@ float bh1750_full_scale_lux(Bh1750Range r);
 float bh1750_lux(Bh1750Range r, uint16_t raw);
 
 struct Bh1750Step {
-  bool accept;            // reading is usable (not saturated, or saturated in the top range)
-  float lux;              // value when accepted
-  bool saturated_flag;    // contributes to log flag 0x02 (above default-mode range / hard saturation)
-  Bh1750Range next;       // range to use for the next measurement
+  bool accept;          // reading is usable (not saturated, or saturated in the top range)
+  float lux;            // value when accepted
+  bool saturated_flag;  // contributes to log flag 0x02 (above default-mode range / hard saturation)
+  Bh1750Range next;     // range to use for the next measurement
 };
 // Decide what to do with a raw reading: switch up at >= 92 % of full scale (and discard
 // saturated readings), switch down when the value would use < 40 % of the next-lower range.

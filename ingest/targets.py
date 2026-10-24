@@ -17,8 +17,8 @@ from physics.acoustics.levels import db_mean
 from physics.sun.solar import clear_sky, solar_position
 
 TZ = "America/Toronto"
-THETA = 0.35  # fraction of clear-sky beam illuminance behind glass (calibrated on synthetic data; D-014)
-LUX_MIN = 2500.0
+THETA = 0.55  # fraction of clear-sky beam illuminance behind glass (calibrated on synthetic: results/m1; D-014)
+LUX_MIN = 4000.0
 K_BEAM = 100.0
 TAU_REF = 0.75
 MIN_COVERAGE = 0.9
@@ -79,28 +79,38 @@ def nightly_noise(d: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def window_open_nights(d: pd.DataFrame, outdoor: pd.Series, noise: pd.DataFrame) -> pd.Series:
-    """Heuristic open-window flag per night (True = likely open).
+OPEN_SLOPE = -0.25  # C/h indoor cooling rate 23:00-05:00 (calibrated on synthetic, results/m1)
+OPEN_DT = 0.0  # indoor - outdoor C
+OPEN_LOUD_DB = 3.0  # nightly L_A90 above the room's median nightly L_A90
 
-    Open if (a) indoor temperature falls > 0.25 C/h between 23:00 and 05:00 while it is > 3 C warmer
-    outside-in, or (b) nightly L_A90 exceeds the room's median nightly L_A90 by > 6 dB."""
-    flags = {}
+
+def night_features(d: pd.DataFrame, outdoor: pd.Series, noise: pd.DataFrame) -> pd.DataFrame:
+    """Per-night features for the open-window heuristic."""
     loc = d.index.tz_convert(TZ)
-    keys = _night_key(d.index)
+    keys = np.asarray(_night_key(d.index))
     out_m = outdoor.reindex(d.index, method="nearest", tolerance=pd.Timedelta("1h"))
     med90 = float(noise["la90"].median()) if len(noise) else np.nan
+    rows = {}
     for k in noise.index:
-        sel = (np.asarray(keys) == k) & ((loc.hour >= 23) | (loc.hour < 5))
+        sel = (keys == k) & ((loc.hour >= 23) | (loc.hour < 5))
         g = d.loc[sel, "temp_c"].dropna()
-        cooling = False
+        slope, dt_io = np.nan, np.nan
         if len(g) > 120:
             hrs = (g.index - g.index[0]).total_seconds() / 3600
             slope = float(np.polyfit(hrs, g.to_numpy(), 1)[0])
             dt_io = float(np.nanmean(g.to_numpy() - out_m[sel].reindex(g.index).to_numpy()))
-            cooling = slope < -0.25 and dt_io > 3
-        loud = noise.loc[k, "la90"] > med90 + 6 if np.isfinite(med90) else False
-        flags[k] = bool(cooling or loud)
-    return pd.Series(flags, dtype=bool)
+        rows[k] = {"slope": slope, "dt_io": dt_io, "loud": float(noise.loc[k, "la90"] - med90)}
+    return pd.DataFrame.from_dict(rows, orient="index")
+
+
+def window_open_nights(d: pd.DataFrame, outdoor: pd.Series, noise: pd.DataFrame, slope_thr: float = OPEN_SLOPE,
+                       dt_thr: float = OPEN_DT, loud_thr: float = OPEN_LOUD_DB) -> pd.Series:
+    """Heuristic open-window flag per night (True = likely open): fast night cooling while warmer than
+    outside, or a large jump of the nightly background level."""
+    f = night_features(d, outdoor, noise)
+    if f.empty:
+        return pd.Series(dtype=bool)
+    return ((f["slope"] < slope_thr) & (f["dt_io"] > dt_thr)) | (f["loud"] > loud_thr)
 
 
 def daily_heat(d: pd.DataFrame) -> pd.DataFrame:

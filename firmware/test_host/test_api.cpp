@@ -47,7 +47,7 @@ static_assert(!can_log<std::vector<float>>::value);
 static_assert(!can_log<std::array<int32_t, 512>>::value);
 static_assert(!can_log<std::array<float, 512>>::value);
 static_assert(!can_log<std::pair<const int32_t*, std::size_t>>::value);
-static_assert(!can_log<float>::value);  // no implicit conversions from bare numbers
+static_assert(!can_log<float>::value);                // no implicit conversions from bare numbers
 static_assert(!can_log<const SecondLevels&>::value);  // DSP output must be mapped to a record first
 
 // Records and DSP outputs are small value types.
@@ -65,7 +65,8 @@ static_assert(std::is_same_v<decltype(std::declval<AudioDsp&>().process_i2s_fram
 static_assert(std::is_same_v<decltype(std::declval<AudioDsp&>().process_samples(nullptr, 0)), bool>);
 static_assert(std::is_same_v<decltype(std::declval<const MinuteAudioStats&>().summarize()), MinuteAudio>);
 // Sample input is read-only: the DSP cannot be used as a place to stash/forward buffers.
-static_assert(!std::is_invocable_v<decltype(&AudioDsp::process_i2s_frames), AudioDsp&, int32_t**, std::size_t>);
+static_assert(
+    !std::is_invocable_v<decltype(&AudioDsp::process_i2s_frames), AudioDsp&, int32_t**, std::size_t>);
 
 // The SecondLevels fields are all scalar levels/counters.
 static_assert(std::is_same_v<decltype(SecondLevels::laeq_1s), float>);

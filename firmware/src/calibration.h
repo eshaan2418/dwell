@@ -4,7 +4,7 @@
 namespace dwell_cal {
 
 constexpr float kMaxAbsOffsetDb = 20.0f;
-float load_mic_offset_db();             // DWELL_DEFAULT_MIC_OFFSET_DB if never set
+float load_mic_offset_db();                 // DWELL_DEFAULT_MIC_OFFSET_DB if never set
 bool store_mic_offset_db(float offset_db);  // rejects |offset| > kMaxAbsOffsetDb
 
 }  // namespace dwell_cal

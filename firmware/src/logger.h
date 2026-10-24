@@ -36,8 +36,8 @@ class SdLogger : public dwell::LogSink {
 
   dwell::HeaderInfo header_{};
   char buf_[kHeaderRoom + kBufSize];
-  size_t len_ = 0;           // bytes of log lines at buf_ + kHeaderRoom
-  uint32_t buf_ts_ = 0;      // timestamp of the first buffered line (selects the daily file)
+  size_t len_ = 0;       // bytes of log lines at buf_ + kHeaderRoom
+  uint32_t buf_ts_ = 0;  // timestamp of the first buffered line (selects the daily file)
   uint32_t last_flush_ms_ = 0, last_mount_ms_ = 0;
   uint32_t dropped_lines_ = 0, reported_dropped_ = 0;
   bool sd_ok_ = false;

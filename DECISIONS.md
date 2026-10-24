@@ -41,3 +41,10 @@ Dated decisions with rationale. IDs are referenced from code/docs.
   of each modelling component under these assumptions only; they are never blended with real results.
 - **D-013 (2026-10-24) Contribution wording** adopted from docs/PRIOR_WORK.md "What is and isn't new":
   no "first" claims; scoped "to our knowledge, within the literature we searched" statements.
+- **D-014 (2026-10-24) Lux→direct-sun rule** THETA = 0.55 × clear-sky beam-on-horizontal behind glass,
+  LUX_MIN = 4000 lx, chosen by grid search on 30 synthetic calibration units and reported on 30 separate
+  validation units (`results/m1/target_derivation.json`). Bright-overcast diffuse light on the sill can
+  reach ~10 klx, so lower thresholds give false sun. Real-data sanity check: clear-day inspection.
+- **D-015 (2026-10-24) Window-open nights.** The sensor-only heuristic (cooling slope / background jump)
+  is weak on synthetic data (see results/m1), so the protocol adds a one-tap window diary (HUMAN_TODO);
+  evaluation uses the diary when present, the heuristic otherwise, and reports both.

@@ -11,7 +11,7 @@ namespace dwell_time {
 void begin(bool keep_wifi);
 // Drives the connect -> sync -> (radio off) -> periodic re-sync state machine; logs WIFI_UP/NTP_SYNC.
 void loop(uint32_t now_ms, dwell::LogSink& log);
-bool synced();   // at least one successful NTP sync since boot
+bool synced();  // at least one successful NTP sync since boot
 bool wifi_up();
 uint32_t now();  // Unix seconds UTC (seconds since boot + 0 before the first sync)
 // Unix time of boot (valid after sync), for the log header.

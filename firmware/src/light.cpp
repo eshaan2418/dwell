@@ -18,7 +18,8 @@ bool LightSensor::command(uint8_t c) {
 bool LightSensor::start_measurement(uint32_t now_ms) {
   const dwell::Bh1750Mode m = dwell::bh1750_mode(range_);
   // MTreg is written as two opcodes: 01000_hhh (high 3 bits) and 011_lllll (low 5 bits).
-  ok_ = command(0x01) && command(0x40 | (m.mtreg >> 5)) && command(0x60 | (m.mtreg & 0x1F)) && command(m.command);
+  ok_ = command(0x01) && command(0x40 | (m.mtreg >> 5)) && command(0x60 | (m.mtreg & 0x1F)) &&
+        command(m.command);
   pending_ = ok_;
   started_ms_ = now_ms;
   return ok_;

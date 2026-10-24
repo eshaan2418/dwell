@@ -69,7 +69,8 @@ bool begin(float mic_offset_db, bool octave_bands) {
   if (i2s_set_pin(kPort, &pins) != ESP_OK) return false;
   i2s_zero_dma_buffer(kPort);
 
-  return xTaskCreatePinnedToCore(audio_task, "audio", 4096, nullptr, configMAX_PRIORITIES - 2, nullptr, 1) == pdPASS;
+  return xTaskCreatePinnedToCore(audio_task, "audio", 4096, nullptr, configMAX_PRIORITIES - 2, nullptr, 1) ==
+         pdPASS;
 }
 
 bool receive(dwell::SecondLevels* out) { return g_queue && xQueueReceive(g_queue, out, 0) == pdTRUE; }

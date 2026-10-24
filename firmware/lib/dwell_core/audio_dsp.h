@@ -30,7 +30,8 @@ struct BiquadCoeffs {
   double b0, b1, b2, a1, a2;
 };
 
-// Bilinear transform of an analog biquad (b0 s^2 + b1 s + b2) / (a0 s^2 + a1 s + a2), s = 2 fs (1-z^-1)/(1+z^-1).
+// Bilinear transform of an analog biquad (b0 s^2 + b1 s + b2) / (a0 s^2 + a1 s + a2), s = 2 fs
+// (1-z^-1)/(1+z^-1).
 BiquadCoeffs bilinear(double b0, double b1, double b2, double a0, double a1, double a2, double fs);
 // Pre-warped analog angular frequency for a digital frequency f: 2 fs tan(pi f / fs).
 double prewarp(double f_hz, double fs);
@@ -74,12 +75,12 @@ struct DspConfig {
 
 // The only thing the DSP ever outputs: one second of levels. Plain values, no pointers.
 struct SecondLevels {
-  float laeq_1s;                          // A-weighted L_Aeq,1s [dB], calibrated
-  float band_leq_1s[kNumOctaveBands];     // unweighted octave L_eq,1s [dB]; NAN when disabled
-  float peak_dbfs;                        // max |raw sample| in the second [dBFS], for diagnostics
-  uint32_t clipped_samples;               // number of clipped raw samples in the second
-  uint32_t seq;                           // running second counter since start
-  bool valid;                             // false for placeholder seconds (no audio received)
+  float laeq_1s;                       // A-weighted L_Aeq,1s [dB], calibrated
+  float band_leq_1s[kNumOctaveBands];  // unweighted octave L_eq,1s [dB]; NAN when disabled
+  float peak_dbfs;                     // max |raw sample| in the second [dBFS], for diagnostics
+  uint32_t clipped_samples;            // number of clipped raw samples in the second
+  uint32_t seq;                        // running second counter since start
+  bool valid;                          // false for placeholder seconds (no audio received)
 };
 
 class AudioDsp {

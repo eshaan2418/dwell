@@ -25,21 +25,25 @@ dwell::MinuteAudioStats g_minute;
 
 float g_mic_offset_db = 0;
 bool g_audio_ok = false, g_brownout_boot = false, g_mic_error_logged = false;
-uint32_t g_last_ts = 0;                       // timestamp of the previous 1-s interval
+uint32_t g_last_ts = 0;  // timestamp of the previous 1-s interval
 uint32_t g_last_audio_ms = 0, g_last_fake_ms = 0, g_light_start_ms = 0;
 double g_lux_sum = 0;
 uint32_t g_lux_n = 0;
 bool g_lux_saturated = false;
 float g_last_laeq = NAN;
 
-void event(const char* code, const char* text) { g_log.log(dwell::make_event(dwell_time::now(), code, text)); }
+void event(const char* code, const char* text) {
+  g_log.log(dwell::make_event(dwell_time::now(), code, text));
+}
 
 // 1-s blocks come from the I2S clock, not the RTC: keep consecutive timestamps unless the clock
 // moved by more than 1 s (NTP step, drift), then re-align.
 uint32_t next_second_ts() {
   const uint32_t now = dwell_time::now();
   const uint32_t expected = g_last_ts + 1;
-  g_last_ts = (g_last_ts != 0 && std::labs(static_cast<long>(now) - static_cast<long>(expected)) <= 1) ? expected : now;
+  g_last_ts = (g_last_ts != 0 && std::labs(static_cast<long>(now) - static_cast<long>(expected)) <= 1)
+                  ? expected
+                  : now;
   return g_last_ts;
 }
 
@@ -66,7 +70,8 @@ void close_minute(uint32_t end_ts) {
   if (g_lux_saturated) f |= dwell::kFlagLightSaturated;
   if (a.clipped) f |= dwell::kFlagMicClipping;
   if (!climate_ok) f |= dwell::kFlagClimateError;
-  if (g_brownout_boot || (!std::isnan(r.batt_v) && r.batt_v < DWELL_LOW_BATT_V)) f |= dwell::kFlagBrownoutLowBattery;
+  if (g_brownout_boot || (!std::isnan(r.batt_v) && r.batt_v < DWELL_LOW_BATT_V))
+    f |= dwell::kFlagBrownoutLowBattery;
   r.flags = f;
   g_log.log(r);
   if (DWELL_LOG_OCTAVES) {
@@ -117,12 +122,13 @@ void poll_console() {
         Serial.println("error: offset must be within +-20 dB");
       }
     } else if (std::strcmp(line, "status") == 0) {
-      Serial.printf("kit=%s fw=%s t=%lu ntp=%d sd=%d audio=%d mic_offset_db=%.2f last_laeq_1s=%.1f lux=%.1f "
-                    "dropped_s=%lu dropped_lines=%lu\n",
-                    DWELL_KIT_ID, DWELL_FW_VERSION, static_cast<unsigned long>(dwell_time::now()),
-                    dwell_time::synced(), g_log.sd_ok(), g_audio_ok, g_mic_offset_db, g_last_laeq, g_light.lux(),
-                    static_cast<unsigned long>(dwell_audio::dropped_seconds()),
-                    static_cast<unsigned long>(g_log.dropped_lines()));
+      Serial.printf(
+          "kit=%s fw=%s t=%lu ntp=%d sd=%d audio=%d mic_offset_db=%.2f last_laeq_1s=%.1f lux=%.1f "
+          "dropped_s=%lu dropped_lines=%lu\n",
+          DWELL_KIT_ID, DWELL_FW_VERSION, static_cast<unsigned long>(dwell_time::now()), dwell_time::synced(),
+          g_log.sd_ok(), g_audio_ok, g_mic_offset_db, g_last_laeq, g_light.lux(),
+          static_cast<unsigned long>(dwell_audio::dropped_seconds()),
+          static_cast<unsigned long>(g_log.dropped_lines()));
     } else if (line[0]) {
       Serial.println("commands: cal <offset_db> | status");
     }

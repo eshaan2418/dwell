@@ -16,12 +16,12 @@ double energetic_mean_db(const float* levels_db, std::size_t n);
 float exceedance_level_db(const float* levels_db, std::size_t n, double percent_exceeded);
 
 struct MinuteAudio {
-  float laeq_60s;                     // energetic mean of the valid 1-s L_Aeq values
-  float lamax_60s;                    // max of the 1-s L_Aeq values (L_AFmax approximated at 1-s resolution)
-  float la90_60s;                     // level exceeded by 90 % of the 1-s values
+  float laeq_60s;   // energetic mean of the valid 1-s L_Aeq values
+  float lamax_60s;  // max of the 1-s L_Aeq values (L_AFmax approximated at 1-s resolution)
+  float la90_60s;   // level exceeded by 90 % of the 1-s values
   float band_leq_60s[kNumOctaveBands];  // energetic mean of 1-s octave levels
-  uint32_t seconds;                   // number of valid seconds that contributed
-  bool clipped;                       // any clipped sample during the minute
+  uint32_t seconds;                     // number of valid seconds that contributed
+  bool clipped;                         // any clipped sample during the minute
 };
 
 // Collects up to 60 SecondLevels belonging to the UTC minute (end_ts - 60, end_ts].

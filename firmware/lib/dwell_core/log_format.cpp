@@ -77,8 +77,9 @@ std::size_t format_header(const HeaderInfo& h, char* out, std::size_t cap) {
   std::snprintf(b, sizeof b, "# dwell-fw %s kit=", h.fw_version);
   l.raw(b);
   l.text(h.kit_id);
-  std::snprintf(b, sizeof b, " mic_offset_db=%.2f sample_rate=%lu boot=%lu", static_cast<double>(h.mic_offset_db),
-                static_cast<unsigned long>(h.sample_rate), static_cast<unsigned long>(h.boot_ts));
+  std::snprintf(b, sizeof b, " mic_offset_db=%.2f sample_rate=%lu boot=%lu",
+                static_cast<double>(h.mic_offset_db), static_cast<unsigned long>(h.sample_rate),
+                static_cast<unsigned long>(h.boot_ts));
   l.raw(b);
   return l.finish();
 }

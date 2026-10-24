@@ -1,8 +1,10 @@
 // Selects include/config.h if present (git-ignored, per kit), else the committed example config.
+// DWELL_HAVE_CONFIG_H is set by tools/pio_config.py when include/config.h exists (__has_include
+// cannot be used: the Xtensa toolchain has an unrelated config.h on its system include path).
 #pragma once
 
-#if __has_include("config.h")
-#include "config.h"
+#ifdef DWELL_HAVE_CONFIG_H
+#include "config.h"  // found next to this file first
 #else
 #include "config.example.h"
 #endif

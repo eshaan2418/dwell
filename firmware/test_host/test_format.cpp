@@ -59,7 +59,8 @@ TEST_CASE("M/S/O/E lines parse with the documented field counts and values") {
   f = split(buf);
   CHECK(f.size() == 11 && f[0] == "O" && f[4] == "48.3" && f[10].empty());
 
-  format_event("KIT07", make_event(1792886400u, "NTP_SYNC", "server=pool.ntp.org, offset\nok"), buf, sizeof buf);
+  format_event("KIT07", make_event(1792886400u, "NTP_SYNC", "server=pool.ntp.org, offset\nok"), buf,
+               sizeof buf);
   f = split(buf);
   CHECK(f.size() == 5 && f[0] == "E" && f[3] == "NTP_SYNC" && f[4] == "server=pool.ntp.org; offset ok");
 }
@@ -73,7 +74,8 @@ TEST_CASE("Header line format") {
   h.boot_ts = 1792886000u;
   char buf[kMaxLineLen];
   format_header(h, buf, sizeof buf);
-  CHECK(std::string(buf) == "# dwell-fw 0.1.0 kit=KIT07 mic_offset_db=-1.25 sample_rate=48000 boot=1792886000\n");
+  CHECK(std::string(buf) ==
+        "# dwell-fw 0.1.0 kit=KIT07 mic_offset_db=-1.25 sample_rate=48000 boot=1792886000\n");
 }
 
 TEST_CASE("Too-small buffers fail cleanly; UTC date and file name") {

@@ -55,7 +55,8 @@ MinuteAudio MinuteAudioStats::summarize() const {
     if (std::isnan(m.lamax_60s) || la_[i] > m.lamax_60s) m.lamax_60s = la_[i];
   }
   m.la90_60s = exceedance_level_db(la_, n, 90.0);
-  for (int b = 0; b < kNumOctaveBands; ++b) m.band_leq_60s[b] = static_cast<float>(energetic_mean_db(band_[b], n));
+  for (int b = 0; b < kNumOctaveBands; ++b)
+    m.band_leq_60s[b] = static_cast<float>(energetic_mean_db(band_[b], n));
   m.clipped = clipped_;
   return m;
 }

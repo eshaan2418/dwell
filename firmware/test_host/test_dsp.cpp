@@ -20,10 +20,10 @@ struct IecRow {
   double nominal, exact, a_db, tol_plus, tol_minus;
 };
 const IecRow kIec[] = {
-    {31.5, 31.623, -39.4, 2.0, 2.0},   {63, 63.096, -26.2, 1.5, 1.5},    {125, 125.89, -16.1, 1.5, 1.5},
-    {250, 251.19, -8.6, 1.4, 1.4},     {500, 501.19, -3.2, 1.4, 1.4},    {1000, 1000.0, 0.0, 1.1, 1.1},
-    {2000, 1995.3, 1.2, 1.6, 1.6},     {4000, 3981.1, 1.0, 1.6, 1.6},    {8000, 7943.3, -1.1, 2.1, 3.1},
-    {10000, 10000.0, -2.5, 2.6, 3.6},  {12500, 12589.0, -4.3, 3.0, 6.0}, {16000, 15849.0, -6.6, 3.5, 17.0},
+    {31.5, 31.623, -39.4, 2.0, 2.0},  {63, 63.096, -26.2, 1.5, 1.5},    {125, 125.89, -16.1, 1.5, 1.5},
+    {250, 251.19, -8.6, 1.4, 1.4},    {500, 501.19, -3.2, 1.4, 1.4},    {1000, 1000.0, 0.0, 1.1, 1.1},
+    {2000, 1995.3, 1.2, 1.6, 1.6},    {4000, 3981.1, 1.0, 1.6, 1.6},    {8000, 7943.3, -1.1, 2.1, 3.1},
+    {10000, 10000.0, -2.5, 2.6, 3.6}, {12500, 12589.0, -4.3, 3.0, 6.0}, {16000, 15849.0, -6.6, 3.5, 17.0},
 };
 
 // Feed `seconds` of a sine through the DSP; return the levels of the last complete second.
@@ -190,8 +190,8 @@ TEST_CASE("Energetic averaging, LAmax and LA90 over a minute") {
 
   float ramp[60];
   for (int i = 0; i < 60; ++i) ramp[i] = static_cast<float>(60 - i);  // 1..60 in reverse order
-  CHECK_NEAR(exceedance_level_db(ramp, 60, 90.0), 7.0, 1e-6);   // exceeded/equalled by 54 of 60
-  CHECK_NEAR(exceedance_level_db(ramp, 60, 10.0), 55.0, 1e-6);  // LA10
+  CHECK_NEAR(exceedance_level_db(ramp, 60, 90.0), 7.0, 1e-6);         // exceeded/equalled by 54 of 60
+  CHECK_NEAR(exceedance_level_db(ramp, 60, 10.0), 55.0, 1e-6);        // LA10
   const float with_gap[] = {NAN, 40, NAN, 50};
   CHECK_NEAR(energetic_mean_db(with_gap, 4), 10 * std::log10((1e4 + 1e5) / 2), 1e-6);
   CHECK(std::isnan(energetic_mean_db(with_gap, 1)));

@@ -61,7 +61,8 @@ void loop(uint32_t now_ms, dwell::LogSink& log) {
     case State::kConnecting:
       if (WiFi.status() == WL_CONNECTED) {
         char t[64];
-        snprintf(t, sizeof t, "ip=%s rssi=%d", WiFi.localIP().toString().c_str(), static_cast<int>(WiFi.RSSI()));
+        snprintf(t, sizeof t, "ip=%s rssi=%d", WiFi.localIP().toString().c_str(),
+                 static_cast<int>(WiFi.RSSI()));
         log.log(dwell::make_event(now(), "WIFI_UP", t));
         enter(State::kWaitSync, now_ms);
       } else if (now_ms - g_state_ms > kStepTimeoutMs) {
