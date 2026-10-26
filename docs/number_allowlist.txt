@@ -45,3 +45,5 @@ ENU|x = east
 results/m\d+  # result file paths
 CV\+ with 16$|CV\+ with 16 building  # CV fold count (hybrid/evaluate.py CV_FOLDS)
 < 15 min\b  # report-time spec from the brief
+\b1-s L_Aeq\b  # firmware logging interval (definition)
+class-2 meter\b  # IEC 61672 meter class

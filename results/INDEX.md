@@ -14,7 +14,7 @@
 | `m8/comparison.json` | `make m5-m8` | synthetic | 7fba73a2* |  |
 | `m8/hidden_properties.json` | `make priors` | synthetic | 7fba73a2* | glazing acc 0.66 vs default 0.47; wall acc 0.96 |
 | `m8/sobol.json` | `make sobol` | synthetic | 7fba73a2* | hidden-property share of variance: noise 0.20, heat 0.43 |
-| `privacy/scan.json` | `make privacy-scan` | none | 7fba73a2 | OK |
+| `privacy/scan.json` | `make privacy-scan` | none | 7fba73a2* | OK |
 | `real/validation.json` | `make validate` | none | f4b21527* | awaiting-human |
 
 `*` = produced from a working tree with uncommitted changes (re-run from a clean checkout for archival).

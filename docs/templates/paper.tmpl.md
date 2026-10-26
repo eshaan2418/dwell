@@ -3,7 +3,7 @@
 *Draft. Every number in this document is generated from `results/` by `make paper`; the source file of
 each value is listed in `paper/paper.md.numbers.json`. All quantitative results in this draft are on
 **synthetic data** (procedurally generated apartments with simulated sensors); real in-home validation
-is prepared but not yet run (Section 7).*
+is prepared but not yet run (Section 8).*
 
 ## Abstract
 
@@ -145,24 +145,102 @@ floor; for them the hybrid MAE is {{ m6/noise.json#above_floor.hybrid.mae | .2f 
 mostly measures how well we predict a noise floor plus occupant events, and the intrusive-noise estimate
 shown to users is a physics ensemble whose interval is not empirically calibrated.
 
-**Ablations.** Removing physics features (pure ML) changes sun MAE to
-{{ m5/sun.json#methods.pure_ml.marginal.mae | .2f }} h/day; removing the obstruction model from the physics
-input gives {{ m8/comparison.json#variant_ablations.sun_no_obstruction.hybrid.mae | .2f }} h/day for the hybrid;
-removing transit sources gives a noise MAE of {{ m8/comparison.json#variant_ablations.noise_no_transit.hybrid.mae | .2f }} dB.
-Feature-family ablations are in `results/m5`–`m7` (`ablations`).
+**Ablations (Table 2).** Each row refits the hybrid residual model without one input family, or replaces
+a physics component, and reports held-out MAE.
 
-## 7 Real-world validation and decision study (prepared, not yet run)
+| Hybrid variant | Sun (h/day) | Night L_Aeq (dB) | Peak temp (°C) |
+|---|---|---|---|
+| Full hybrid | {{ m5/sun.json#methods.hybrid.marginal.mae | .2f }} | {{ m6/noise.json#methods.hybrid.marginal.mae | .2f }} | {{ m7/heat.json#methods.hybrid.marginal.mae | .2f }} |
+| − geometry features | {{ m5/sun.json#ablations.hybrid_minus_geometry.mae | .2f }} | {{ m6/noise.json#ablations.hybrid_minus_geometry.mae | .2f }} | {{ m7/heat.json#ablations.hybrid_minus_geometry.mae | .2f }} |
+| − building metadata | {{ m5/sun.json#ablations.hybrid_minus_meta.mae | .2f }} | {{ m6/noise.json#ablations.hybrid_minus_meta.mae | .2f }} | {{ m7/heat.json#ablations.hybrid_minus_meta.mae | .2f }} |
+| − geodata features | {{ m5/sun.json#ablations.hybrid_minus_geo.mae | .2f }} | {{ m6/noise.json#ablations.hybrid_minus_geo.mae | .2f }} | {{ m7/heat.json#ablations.hybrid_minus_geo.mae | .2f }} |
+| − weather features | {{ m5/sun.json#ablations.hybrid_minus_weather.mae | .2f }} | {{ m6/noise.json#ablations.hybrid_minus_weather.mae | .2f }} | {{ m7/heat.json#ablations.hybrid_minus_weather.mae | .2f }} |
+| − hidden-property inference (default materials as physics base) | n/a (sun does not depend on them) | {{ m6/noise.json#ablations.hybrid_minus_inference.mae | .2f }} | {{ m7/heat.json#ablations.hybrid_minus_inference.mae | .2f }} |
+| − obstruction model | {{ m8/comparison.json#variant_ablations.sun_no_obstruction.hybrid.mae | .2f }} | — | — |
+| − transit sources | — | {{ m8/comparison.json#variant_ablations.noise_no_transit.hybrid.mae | .2f }} | — |
+| − all physics features (pure ML) | {{ m5/sun.json#methods.pure_ml.marginal.mae | .2f }} | {{ m6/noise.json#methods.pure_ml.marginal.mae | .2f }} | {{ m7/heat.json#methods.pure_ml.marginal.mae | .2f }} |
 
-Firmware builds for ESP32 and passes host DSP tests (A-weighting vs IEC 61672, level statistics) and a static
-no-raw-audio check in CI. The deployment protocol (HUMAN_TODO.md) covers recruiting, consent scopes, co-location
-calibration, placement, the window diary, the walkthrough and tape-measured ground truth. The decision study
-(study/) pre-registers a within-subject comparison (video tour vs video tour + Dwell report); a simulation-based
-power analysis shows that {{ m11/study_dryrun.json#power.table.5.N | int }} participants with
-{{ m11/study_dryrun.json#power.table.5.K | int }} pairs give power
-{{ m11/study_dryrun.json#power.table.5.power_glmm_perm | .2f }} for a 15-point improvement, below the conventional
-0.8 — the study as specified is underpowered unless effects are larger or more pairs are used.
+Three readings. (i) For sun, the physics does almost all the work: the residual improves on physics with
+default materials only marginally ({{ m5/sun.json#methods.physics_default.marginal.mae | .2f }} → {{ m5/sun.json#methods.hybrid.marginal.mae | .2f }} h/day),
+while removing the obstruction model costs much more. (ii) For heat, the physics alone is biased
+({{ m7/heat.json#methods.physics_inferred.marginal.bias | .2f }} °C mean error with inferred properties), and
+pure ML is competitive. The hybrid is best, and hidden-property inference is its most valuable input. (iii) For
+noise, the hybrid improves on physics mainly by learning the microphone floor and occupant events. Removing
+transit sources has little effect because, in the synthetic world, no held-out room is transit-dominated (share
+{{ m6/noise.json#attribution.share_rooms_transit_dominant | .2f }}). This is a property of our generator and should
+not be read as a statement about Toronto streetcar corridors.
 
-## 8 Limitations, privacy and ethics
+**Leave-one-building-out.** On the train split, LOBO MAE of the hybrid is
+{{ m5/sun.json#methods.hybrid.lobo_train.mae | .2f }} h/day, {{ m6/noise.json#methods.hybrid.lobo_train.mae | .2f }} dB and
+{{ m7/heat.json#methods.hybrid.lobo_train.mae | .2f }} °C over {{ m5/sun.json#methods.hybrid.lobo_train.n_buildings | int }}
+buildings; for pure ML it is {{ m5/sun.json#methods.pure_ml.lobo_train.mae | .2f }}, {{ m6/noise.json#methods.pure_ml.lobo_train.mae | .2f }}
+and {{ m7/heat.json#methods.pure_ml.lobo_train.mae | .2f }}.
+
+**Group-conditional coverage (Table 3).** Marginal coverage hides uneven groups. By façade orientation
+(N / E / S / W), the hybrid's empirical 90 % coverage with marginal CV+ intervals and with Mondrian
+(orientation-conditional) intervals is:
+
+| Target | Marginal CV+: N / E / S / W | Mondrian: N / E / S / W |
+|---|---|---|
+| Sun | {{ m5/sun.json#methods.hybrid.group_coverage.g_orient.N.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.group_coverage.g_orient.E.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.group_coverage.g_orient.S.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.group_coverage.g_orient.W.coverage90 | pct }} | {{ m5/sun.json#methods.hybrid.mondrian.g_orient.N.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.mondrian.g_orient.E.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.mondrian.g_orient.S.coverage90 | pct }} / {{ m5/sun.json#methods.hybrid.mondrian.g_orient.W.coverage90 | pct }} |
+| Noise | {{ m6/noise.json#methods.hybrid.group_coverage.g_orient.N.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.group_coverage.g_orient.E.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.group_coverage.g_orient.S.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.group_coverage.g_orient.W.coverage90 | pct }} | {{ m6/noise.json#methods.hybrid.mondrian.g_orient.N.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.mondrian.g_orient.E.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.mondrian.g_orient.S.coverage90 | pct }} / {{ m6/noise.json#methods.hybrid.mondrian.g_orient.W.coverage90 | pct }} |
+| Heat | {{ m7/heat.json#methods.hybrid.group_coverage.g_orient.N.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.group_coverage.g_orient.E.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.group_coverage.g_orient.S.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.group_coverage.g_orient.W.coverage90 | pct }} | {{ m7/heat.json#methods.hybrid.mondrian.g_orient.N.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.mondrian.g_orient.E.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.mondrian.g_orient.S.coverage90 | pct }} / {{ m7/heat.json#methods.hybrid.mondrian.g_orient.W.coverage90 | pct }} |
+
+South-facing sun is the clearest under-coverage. South windows have the largest and most weather-dependent
+sun hours, so a single marginal score quantile is too narrow for them. Mondrian conditioning fixes most of it, at
+the cost of wider intervals (mean south width {{ m5/sun.json#methods.hybrid.mondrian.g_orient.S.width90 | .2f }} h).
+Each group holds only a handful of buildings, so these per-group estimates carry wide sampling error. The app
+currently shows marginal room-level intervals; switching it to orientation-conditional intervals is planned work.
+
+## 7 Sensor protocol
+
+**Kit.** ESP32 dev board, BH1750 lux sensor (sill, facing up), SHT31 or BME280 temperature/RH probe on a
+cable (interior wall, shaded, 1.1–1.7 m), and an INMP441 I²S MEMS microphone. The firmware applies an IEC 61672
+A-weighting filter on-device and logs only levels: 1-s L_Aeq (optional), and per-minute L_Aeq, L_Amax and L_A90
+(optionally octave bands). Audio sample buffers live only inside the level DSP and are never written to the SD card
+or sent over Wi-Fi. A static checker in CI verifies that raw I²S samples reach only the DSP functions, and host
+tests check the A-weighting response against the IEC table and the level statistics against analytic cases.
+Time comes from NTP when Wi-Fi is available; between syncs the firmware keeps time on the ESP32's system clock.
+
+**Calibration.** All kits are co-located for 24 h before deployment, covering a quiet night, with a reference
+tone or pink-noise level from a class-2 meter or a calibrated phone app. The co-location run gives per-kit offsets
+for temperature, dB and lux, and the kit's own noise floor. Inter-kit agreement is written to `results/m1/`.
+That report does not exist yet, because no kits have been built.
+
+**Placement and diary.** One kit per main room (bedroom + living room minimum) on the sill of the largest
+window for 2–4 weeks. Occupants keep a one-tap window/blind diary, because the sensor-only open-window heuristic
+is weak (above).
+
+**Targets.** Direct-sun hours/day at the sill come from lux thresholding against a clear-sky beam model behind
+glass (D-014). Night L_Aeq,23–07 is computed on closed-window nights, with the kit floor added energetically to
+predictions (D-010). Daily peak indoor temperature comes from the wall probe. Evaluation splits by unit and
+building, freezes the real test units with a checksum once three exist, and bootstraps CIs over buildings.
+
+**Privacy.** Addresses, videos and raw logs stay in a git-ignored private directory. Released data are per-room
+aggregates with coarse location only (orientation, floor band, age band), and real rows are included only with
+release consent. Synthetic rows are released now (`release/`, `docs/DATASHEET.md`).
+
+## 8 Real-world validation and decision study (prepared, not yet run)
+
+**Real validation.** `make validate` evaluates the frozen model bundle against ingested real targets per room,
+with leave-one-building-out conformal recalibration on real residuals, building-bootstrap CIs, and the months
+covered by the data stated per target. Its current status is
+"{{ real/validation.json#status }}" with zero units.
+
+**Decision study.** Within-subject design: participants state weights for quiet, sun and coolness, then choose
+between pairs of real consented units, first with a video tour only and then with a video tour plus the Dwell
+report (order and pairs randomised). The ground truth for each pair is which unit better matches the participant's
+stated preferences according to sensor data. The primary outcome is the preference-consistent choice rate,
+analysed with a mixed-effects logistic regression (participant and pair random effects). Secondary outcomes are
+confidence, perceived usefulness and trust calibration (do people over-trust narrow intervals?). The full analysis
+runs on simulated participants. A simulation-based power analysis shows that
+{{ m11/study_dryrun.json#power.table.5.N | int }} participants with {{ m11/study_dryrun.json#power.table.5.K | int }}
+pairs each give power {{ m11/study_dryrun.json#power.table.5.power_glmm_perm | .2f }} for a 15-point improvement, below the
+conventional 0.8. Power reaches {{ m11/study_dryrun.json#power.table.7.power_glmm_perm | .2f }} with
+{{ m11/study_dryrun.json#power.table.7.K | int }} pairs, so the study should use more pairs per participant than the
+brief's minimum.
+
+## 9 Limitations, privacy and ethics
 
 All accuracy numbers are synthetic; they bound internal consistency under our assumptions (priors in
 `synth/priors.py`, behaviours in `synth/truth.py`) and say nothing yet about Toronto homes. The MEMS microphone
@@ -174,9 +252,28 @@ privacy scan runs in CI.
 
 ## Figures
 
-1. `results/m8/figs/method_mae.png` — MAE by method and target.
-2. `results/m8/figs/coverage.png` — interval coverage vs nominal.
-3. `results/m8/figs/pred_vs_measured.png` — room-mean predicted vs sensor-derived targets.
-4. `results/m8/figs/sobol_shares.png` — variance shares by hidden property / input.
-5. `results/m3/figs/scan_quality.png` — scan-quality ablation.
-6. `results/m11/figs/power_curve.png` — decision-study power.
+All figures show synthetic data and are regenerated by `make figures` (`bench/figures.py`).
+
+![Figure 1](../results/m8/figs/method_mae.png)
+
+*Figure 1. MAE by method and target.*
+
+![Figure 2](../results/m8/figs/coverage.png)
+
+*Figure 2. Interval coverage vs nominal.*
+
+![Figure 3](../results/m8/figs/pred_vs_measured.png)
+
+*Figure 3. Room-mean predicted vs sensor-derived targets.*
+
+![Figure 4](../results/m8/figs/sobol_shares.png)
+
+*Figure 4. Variance shares by hidden property / input.*
+
+![Figure 5](../results/m3/figs/scan_quality.png)
+
+*Figure 5. Scan-quality ablation.*
+
+![Figure 6](../results/m11/figs/power_curve.png)
+
+*Figure 6. Decision-study power.*

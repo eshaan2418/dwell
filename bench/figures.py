@@ -166,7 +166,7 @@ def sobol() -> None:
         cols = [SERIES[1] if i < 3 else MUTED for i in range(len(names))]
         ax.barh(y, [sh[n] for n in names], height=0.55, color=cols, edgecolor=SURFACE, linewidth=2)
         ax.set_yticks(y, [n.replace("_", " ") for n in names])
-        ax.set_xlabel("Mean share of prediction variance (normalised total-effect Sobol)")
+        ax.set_xlabel("Share of variance (total-effect Sobol)")
         ax.set_title(
             f"{'Night noise' if t == 'noise' else 'Heat-wave peak temperature'} — hidden properties highlighted",
             fontsize=8,
