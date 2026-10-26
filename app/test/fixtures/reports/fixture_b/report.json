@@ -1,0 +1,738 @@
+{
+ "schema": "dwell-report/1",
+ "generated_utc": "2026-10-24T00:00:00Z",
+ "data_kind": "synthetic",
+ "disclaimer": "FIXTURE: hand-written test data for app development, not a model output.",
+ "unit": {
+  "id": "fixture_b",
+  "label": "Fixture B (north-facing)",
+  "floor": 4,
+  "building_kind": "midrise",
+  "year_built": 1978,
+  "main_orientation": "N",
+  "has_ac": false
+ },
+ "geometry": {
+  "rooms": [
+   {
+    "id": "fixture_b_living",
+    "kind": "living",
+    "name": "Living room",
+    "polygon": [
+     [
+      0,
+      7
+     ],
+     [
+      6,
+      7
+     ],
+     [
+      6,
+      12
+     ],
+     [
+      0,
+      12
+     ]
+    ],
+    "floor_z": 12.0,
+    "ceiling_height": 2.6
+   },
+   {
+    "id": "fixture_b_bedroom",
+    "kind": "bedroom",
+    "name": "Bedroom",
+    "polygon": [
+     [
+      6,
+      8
+     ],
+     [
+      10,
+      8
+     ],
+     [
+      10,
+      12
+     ],
+     [
+      6,
+      12
+     ]
+    ],
+    "floor_z": 12.0,
+    "ceiling_height": 2.6
+   }
+  ],
+  "windows": [
+   {
+    "id": "fixture_b_w1",
+    "room_id": "fixture_b_living",
+    "corners": [
+     [
+      1.5,
+      12.0,
+      12.9
+     ],
+     [
+      4.5,
+      12.0,
+      12.9
+     ],
+     [
+      4.5,
+      12.0,
+      14.4
+     ],
+     [
+      1.5,
+      12.0,
+      14.4
+     ]
+    ],
+    "azimuth": 0.0,
+    "overhang_depth": 0.0
+   },
+   {
+    "id": "fixture_b_w2",
+    "room_id": "fixture_b_bedroom",
+    "corners": [
+     [
+      7,
+      12.0,
+      12.9
+     ],
+     [
+      9,
+      12.0,
+      12.9
+     ],
+     [
+      9,
+      12.0,
+      14.4
+     ],
+     [
+      7,
+      12.0,
+      14.4
+     ]
+    ],
+    "azimuth": 0.0,
+    "overhang_depth": 0.0
+   }
+  ],
+  "context_buildings": [
+   {
+    "footprint": [
+     [
+      0,
+      0
+     ],
+     [
+      20,
+      0
+     ],
+     [
+      20,
+      12
+     ],
+     [
+      0,
+      12
+     ]
+    ],
+    "height": 18.0,
+    "own": true
+   },
+   {
+    "footprint": [
+     [
+      -5,
+      -30
+     ],
+     [
+      25,
+      -30
+     ],
+     [
+      25,
+      -22
+     ],
+     [
+      -5,
+      -22
+     ]
+    ],
+    "height": 9.0,
+    "own": false
+   },
+   {
+    "footprint": [
+     [
+      30,
+      0
+     ],
+     [
+      45,
+      0
+     ],
+     [
+      45,
+      15
+     ],
+     [
+      30,
+      15
+     ]
+    ],
+    "height": 24.0,
+    "own": false
+   },
+   {
+    "footprint": [
+     [
+      -5,
+      30
+     ],
+     [
+      22,
+      30
+     ],
+     [
+      22,
+      42
+     ],
+     [
+      -5,
+      42
+     ]
+    ],
+    "height": 30.0,
+    "own": false
+   }
+  ],
+  "roads": [
+   {
+    "coords": [
+     [
+      -60,
+      -12
+     ],
+     [
+      80,
+      -12
+     ]
+    ],
+    "road_class": "primary"
+   },
+   {
+    "coords": [
+     [
+      25,
+      -50
+     ],
+     [
+      25,
+      60
+     ]
+    ],
+    "road_class": "residential"
+   }
+  ],
+  "trees": [
+   {
+    "x": 5,
+    "y": -8,
+    "radius": 2.5,
+    "height": 8
+   },
+   {
+    "x": 15,
+    "y": -9,
+    "radius": 3,
+    "height": 10
+   }
+  ]
+ },
+ "sun": {
+  "dates": [
+   "2026-12-21",
+   "2026-03-20",
+   "2026-06-21",
+   "2026-09-22"
+  ],
+  "hours": [
+   6.0,
+   8.0,
+   10.0,
+   12.0,
+   14.0,
+   16.0,
+   18.0
+  ],
+  "sun_position": [
+   [
+    [
+     112,
+     -14
+    ],
+    [
+     127,
+     5
+    ],
+    [
+     150,
+     18
+    ],
+    [
+     180,
+     23
+    ],
+    [
+     210,
+     18
+    ],
+    [
+     233,
+     5
+    ],
+    [
+     248,
+     -14
+    ]
+   ],
+   [
+    [
+     90,
+     -1
+    ],
+    [
+     110,
+     20
+    ],
+    [
+     138,
+     38
+    ],
+    [
+     180,
+     46
+    ],
+    [
+     222,
+     38
+    ],
+    [
+     250,
+     20
+    ],
+    [
+     270,
+     -1
+    ]
+   ],
+   [
+    [
+     64,
+     10
+    ],
+    [
+     90,
+     34
+    ],
+    [
+     118,
+     57
+    ],
+    [
+     180,
+     70
+    ],
+    [
+     242,
+     57
+    ],
+    [
+     270,
+     34
+    ],
+    [
+     296,
+     10
+    ]
+   ],
+   [
+    [
+     90,
+     -1
+    ],
+    [
+     110,
+     20
+    ],
+    [
+     138,
+     38
+    ],
+    [
+     180,
+     46
+    ],
+    [
+     222,
+     38
+    ],
+    [
+     250,
+     20
+    ],
+    [
+     270,
+     -1
+    ]
+   ]
+  ],
+  "patches": {
+   "fixture_b_living": [
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   ],
+   "fixture_b_bedroom": [
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ],
+    [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   ]
+  },
+  "rooms": {
+   "fixture_b_living": {
+    "winter_sun_h": {
+     "pred": 0.2,
+     "lo": 0.0,
+     "hi": 0.6
+    },
+    "summer_sun_h": {
+     "pred": 1.1,
+     "lo": 0.4,
+     "hi": 2.0
+    },
+    "monthly_sun_h": [
+     0.2,
+     0.26,
+     0.42,
+     0.65,
+     0.88,
+     1.04,
+     1.1,
+     1.04,
+     0.88,
+     0.65,
+     0.42,
+     0.26
+    ],
+    "clear_sky_winter_solstice_h": 0.3,
+    "daylight_factor_pct": 1.4
+   },
+   "fixture_b_bedroom": {
+    "winter_sun_h": {
+     "pred": 0.1,
+     "lo": 0.0,
+     "hi": 0.4
+    },
+    "summer_sun_h": {
+     "pred": 0.8,
+     "lo": 0.2,
+     "hi": 1.6
+    },
+    "monthly_sun_h": [
+     0.1,
+     0.15,
+     0.28,
+     0.45,
+     0.62,
+     0.75,
+     0.8,
+     0.75,
+     0.63,
+     0.45,
+     0.28,
+     0.15
+    ],
+    "clear_sky_winter_solstice_h": 0.2,
+    "daylight_factor_pct": 1.4
+   }
+  }
+ },
+ "noise": {
+  "rooms": {
+   "fixture_b_living": {
+    "night_laeq_closed": {
+     "pred": 36,
+     "lo": 31,
+     "hi": 41
+    },
+    "night_laeq_open": {
+     "pred": 50,
+     "lo": 45,
+     "hi": 55
+    },
+    "outdoor_night_facade": 63.0,
+    "attribution_db": {
+     "road": 35.5,
+     "streetcar": 29
+    },
+    "hourly_closed": [
+     33.2,
+     32.5,
+     32.1,
+     32.0,
+     32.1,
+     32.5,
+     33.2,
+     34.0,
+     35.0,
+     36.0,
+     37.0,
+     38.0,
+     38.8,
+     39.5,
+     39.9,
+     40.0,
+     39.9,
+     39.5,
+     38.8,
+     38.0,
+     37.0,
+     36.0,
+     35.0,
+     34.0
+    ]
+   },
+   "fixture_b_bedroom": {
+    "night_laeq_closed": {
+     "pred": 33,
+     "lo": 28,
+     "hi": 38
+    },
+    "night_laeq_open": {
+     "pred": 47,
+     "lo": 42,
+     "hi": 52
+    },
+    "outdoor_night_facade": 63.0,
+    "attribution_db": {
+     "road": 32.5,
+     "streetcar": 26
+    },
+    "hourly_closed": [
+     30.2,
+     29.5,
+     29.1,
+     29.0,
+     29.1,
+     29.5,
+     30.2,
+     31.0,
+     32.0,
+     33.0,
+     34.0,
+     35.0,
+     35.8,
+     36.5,
+     36.9,
+     37.0,
+     36.9,
+     36.5,
+     35.8,
+     35.0,
+     34.0,
+     33.0,
+     32.0,
+     31.0
+    ],
+    "who_guideline_note": "FIXTURE PLACEHOLDER: the pipeline supplies the guideline note text."
+   }
+  },
+  "audio": {
+   "fixture_b_living": {
+    "closed": "audio/fixture_b_living_0200_closed.wav",
+    "open": "audio/fixture_b_living_0200_open.wav",
+    "label": "Illustrative synthesis, not a recording"
+   },
+   "fixture_b_bedroom": {
+    "closed": "audio/fixture_b_bedroom_0200_closed.wav",
+    "open": "audio/fixture_b_bedroom_0200_open.wav",
+    "label": "Illustrative synthesis, not a recording"
+   }
+  }
+ },
+ "heat": {
+  "rooms": {
+   "fixture_b_living": {
+    "typical_summer_peak": {
+     "pred": 26.1,
+     "lo": 25.0,
+     "hi": 27.4
+    },
+    "heatwave_peak": {
+     "pred": 29.2,
+     "lo": 27.8,
+     "hi": 30.9
+    },
+    "hours_above_26_typical_summer": 120,
+    "hours_above_28_typical_summer": 25
+   },
+   "fixture_b_bedroom": {
+    "typical_summer_peak": {
+     "pred": 25.8,
+     "lo": 24.8,
+     "hi": 27.0
+    },
+    "heatwave_peak": {
+     "pred": 28.9,
+     "lo": 27.5,
+     "hi": 30.4
+    },
+    "hours_above_26_typical_summer": 120,
+    "hours_above_28_typical_summer": 25
+   }
+  }
+ },
+ "uncertainty": {
+  "fixture_b_living": {
+   "what_we_couldnt_see": [
+    {
+     "property": "glazing",
+     "posterior": {
+      "single": 0.1,
+      "double": 0.6,
+      "double_lowe": 0.3,
+      "triple": 0.0
+     },
+     "variance_share": {
+      "noise": 0.55,
+      "heat": 0.2
+     },
+     "explanation": "Fixture text: the glazing type could not be confirmed from the video."
+    },
+    {
+     "property": "balcony_depth",
+     "posterior": {
+      "none": 0.5,
+      "shallow": 0.3,
+      "deep": 0.2
+     },
+     "variance_share": {
+      "sun": 0.4,
+      "heat": 0.1
+     },
+     "explanation": "Fixture text: the balcony was only partly visible."
+    }
+   ]
+  },
+  "fixture_b_bedroom": {
+   "what_we_couldnt_see": [
+    {
+     "property": "glazing",
+     "posterior": {
+      "single": 0.1,
+      "double": 0.6,
+      "double_lowe": 0.3,
+      "triple": 0.0
+     },
+     "variance_share": {
+      "noise": 0.55,
+      "heat": 0.2
+     },
+     "explanation": "Fixture text: the glazing type could not be confirmed from the video."
+    },
+    {
+     "property": "balcony_depth",
+     "posterior": {
+      "none": 0.5,
+      "shallow": 0.3,
+      "deep": 0.2
+     },
+     "variance_share": {
+      "sun": 0.4,
+      "heat": 0.1
+     },
+     "explanation": "Fixture text: the balcony was only partly visible."
+    }
+   ]
+  }
+ },
+ "provenance": {
+  "commit": "fixture",
+  "model": "none (hand-written fixture)",
+  "calibration": "none"
+ }
+}

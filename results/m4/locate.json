@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "dirty": true,
+    "data_hash": "66b1044454a80d67e8354fc42fa5e10c28a0679b2b79a6bf5545118471accebb",
+    "data_kind": "synthetic",
+    "seed": 4,
+    "config": {
+      "n_units": 55
+    },
+    "timestamp_utc": "2026-10-24T18:26:24+00:00",
+    "script": "m4_locate.py",
+    "python": "3.12.14"
+  },
+  "orientation": {
+    "compass_single": {
+      "median_abs_deg": 7.487700473520107,
+      "p90_abs_deg": 17.76799481456307,
+      "n": 55
+    },
+    "compass_averaged": {
+      "median_abs_deg": 4.675209145858759,
+      "p90_abs_deg": 13.729894986007583,
+      "n": 55
+    },
+    "footprint_snap": {
+      "median_abs_deg": 1.0633346890455755,
+      "p90_abs_deg": 2.533628862393442,
+      "n": 55
+    }
+  },
+  "footprint_snap_gross_errors_gt20deg": 0,
+  "skyline_extraction_vs_true_median_abs_deg": 0.21801316658769987,
+  "geodata_horizon_vs_true_median_abs_deg": 2.452324917213982,
+  "n_horizon_checks": 16,
+  "real_geodata_demo": {
+    "location": "Nathan Phillips Square (public)",
+    "n_buildings": 67,
+    "height_sources": {
+      "height_tag": 9,
+      "levels_x3": 34,
+      "class_default": 24
+    },
+    "n_roads": 368,
+    "n_rail_tram": 57,
+    "horizon_median_el_deg": 5.48987399668874,
+    "horizon_max_el_deg": 43.35722369411885
+  },
+  "assumptions": {
+    "compass_bias_sd_deg": 8.0,
+    "compass_noise_sd_deg": 8.0,
+    "n_readings": 5,
+    "footprint_rot_sd_deg": 1.5
+  },
+  "note": "SfM frames have arbitrary heading, so the reconstruction contributes only relative wall directions; absolute azimuth comes from the compass and/or the footprint."
+}

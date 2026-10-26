@@ -31,8 +31,11 @@ def solar_position(
         times, lat, lon, altitude=elev, pressure=pressure_hpa * 100.0, temperature=temp_c
     )
     return pd.DataFrame(
-        {"elevation": sp["apparent_elevation"].to_numpy(), "azimuth": sp["azimuth"].to_numpy(),
-         "zenith": sp["apparent_zenith"].to_numpy()},
+        {
+            "elevation": sp["apparent_elevation"].to_numpy(),
+            "azimuth": sp["azimuth"].to_numpy(),
+            "zenith": sp["apparent_zenith"].to_numpy(),
+        },
         index=times,
     )
 

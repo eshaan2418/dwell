@@ -23,11 +23,15 @@ import requests
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "data" / "weather" / "cache"
 LAT, LON = 43.6532, -79.3832
-ECCC = ("https://climate.weather.gc.ca/climate_data/bulk_data_e.html?format=csv&stationID=31688"
-        "&Year={y}&Month={m}&Day=1&timeframe=1&submit=Download+Data")
-POWER = ("https://power.larc.nasa.gov/api/temporal/hourly/point?parameters=ALLSKY_SFC_SW_DWN,"
-         "ALLSKY_SFC_SW_DNI,ALLSKY_SFC_SW_DIFF,CLRSKY_SFC_SW_DWN,CLRSKY_SFC_SW_DNI,T2M,RH2M,WS10M"
-         "&community=RE&longitude={lon}&latitude={lat}&start={y}0101&end={y}1231&format=CSV&time-standard=UTC")
+ECCC = (
+    "https://climate.weather.gc.ca/climate_data/bulk_data_e.html?format=csv&stationID=31688"
+    "&Year={y}&Month={m}&Day=1&timeframe=1&submit=Download+Data"
+)
+POWER = (
+    "https://power.larc.nasa.gov/api/temporal/hourly/point?parameters=ALLSKY_SFC_SW_DWN,"
+    "ALLSKY_SFC_SW_DNI,ALLSKY_SFC_SW_DIFF,CLRSKY_SFC_SW_DWN,CLRSKY_SFC_SW_DNI,T2M,RH2M,WS10M"
+    "&community=RE&longitude={lon}&latitude={lat}&start={y}0101&end={y}1231&format=CSV&time-standard=UTC"
+)
 
 
 def _get(url: str, path: Path) -> str:
@@ -54,12 +58,15 @@ def eccc_year(y: int) -> pd.DataFrame:
         frames.append(df)
     df = pd.concat(frames)
     t = pd.to_datetime(df["Date/Time (LST)"]).dt.tz_localize("Etc/GMT+5").dt.tz_convert("UTC")
-    out = pd.DataFrame({
-        "temp_c": pd.to_numeric(df["Temp (°C)"], errors="coerce").to_numpy(),
-        "rh_pct": pd.to_numeric(df["Rel Hum (%)"], errors="coerce").to_numpy(),
-        "wind_kmh": pd.to_numeric(df["Wind Spd (km/h)"], errors="coerce").to_numpy(),
-        "weather": df["Weather"].astype(str).to_numpy(),
-    }, index=pd.DatetimeIndex(t, name="time_utc"))
+    out = pd.DataFrame(
+        {
+            "temp_c": pd.to_numeric(df["Temp (°C)"], errors="coerce").to_numpy(),
+            "rh_pct": pd.to_numeric(df["Rel Hum (%)"], errors="coerce").to_numpy(),
+            "wind_kmh": pd.to_numeric(df["Wind Spd (km/h)"], errors="coerce").to_numpy(),
+            "weather": df["Weather"].astype(str).to_numpy(),
+        },
+        index=pd.DatetimeIndex(t, name="time_utc"),
+    )
     return out[~out.index.duplicated()]
 
 
@@ -69,11 +76,17 @@ def power_year(y: int) -> pd.DataFrame:
     df = pd.read_csv(io.StringIO(body))
     t = pd.to_datetime(dict(year=df.YEAR, month=df.MO, day=df.DY, hour=df.HR)).dt.tz_localize("UTC")
     df = df.set_index(pd.DatetimeIndex(t, name="time_utc")).replace(-999.0, float("nan"))
-    return pd.DataFrame({
-        "ghi": df.ALLSKY_SFC_SW_DWN, "dni": df.ALLSKY_SFC_SW_DNI, "dhi": df.ALLSKY_SFC_SW_DIFF,
-        "ghi_clear": df.CLRSKY_SFC_SW_DWN, "dni_clear": df.CLRSKY_SFC_SW_DNI,
-        "t2m_power": df.T2M, "rh2m_power": df.RH2M,
-    })
+    return pd.DataFrame(
+        {
+            "ghi": df.ALLSKY_SFC_SW_DWN,
+            "dni": df.ALLSKY_SFC_SW_DNI,
+            "dhi": df.ALLSKY_SFC_SW_DIFF,
+            "ghi_clear": df.CLRSKY_SFC_SW_DWN,
+            "dni_clear": df.CLRSKY_SFC_SW_DNI,
+            "t2m_power": df.T2M,
+            "rh2m_power": df.RH2M,
+        }
+    )
 
 
 def main() -> None:

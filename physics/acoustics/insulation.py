@@ -54,7 +54,9 @@ def composite_r(elements: list[tuple[float, np.ndarray]], leak_area: float = 0.0
 
 
 def facade_r(
-    wall_area: float, wall_type: str, windows: list[tuple[float, str, str, float]],
+    wall_area: float,
+    wall_type: str,
+    windows: list[tuple[float, str, str, float]],
     open_area: float = 0.0,
 ) -> np.ndarray:
     """Composite R of a room facade.
@@ -75,7 +77,8 @@ def absorption_area(volume_m3: float, furnishing: str) -> float:
     return 0.161 * volume_m3 / T60_BY_FURNISHING[furnishing]
 
 
-def indoor_level(l_inc_band: np.ndarray, r_band: np.ndarray, facade_area: float, a_abs: float,
-                 c_inc: float = 3.0) -> np.ndarray:
+def indoor_level(
+    l_inc_band: np.ndarray, r_band: np.ndarray, facade_area: float, a_abs: float, c_inc: float = 3.0
+) -> np.ndarray:
     """Indoor band levels from incident band levels (any leading shape, last axis = bands)."""
     return l_inc_band - r_band + 10 * np.log10(facade_area / a_abs) + c_inc

@@ -1,0 +1,16 @@
+{
+  "provenance": {
+    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "dirty": true,
+    "data_hash": "none",
+    "data_kind": "none",
+    "seed": null,
+    "config": {},
+    "timestamp_utc": "2026-10-24T18:39:26+00:00",
+    "script": "validate_real.py",
+    "python": "3.12.14"
+  },
+  "status": "awaiting-human",
+  "n_units": 0,
+  "reason": "no consented real units with sensor data yet (HUMAN_TODO)"
+}

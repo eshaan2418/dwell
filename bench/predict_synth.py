@@ -36,13 +36,24 @@ def _job(args: tuple) -> tuple[str, dict]:
     obs = Unit.from_dict(rec["obs"])
     from hybrid.priors import HiddenPosterior
 
-    post = HiddenPosterior({k: np.array(v) for k, v in post_dict["glazing"].items()},
-                           {k: np.array(v) for k, v in post_dict["frame"].items()}, np.array(post_dict["wall"]))
+    post = HiddenPosterior(
+        {k: np.array(v) for k, v in post_dict["glazing"].items()},
+        {k: np.array(v) for k, v in post_dict["frame"].items()},
+        np.array(post_dict["wall"]),
+    )
     # kit floor as measured during co-location (true floor + 0.5 dB estimation noise)
     rng = np.random.default_rng(zlib.crc32(obs.id.encode()))
     floor = {rid: float(v["mic_floor"] + v["cal_err_db"] + rng.normal(0, 0.5)) for rid, v in rec["kit"].items()}
-    p = predict_all(obs, post, rec["start"], rec["days"], weather(), seed=zlib.crc32((obs.id + tag).encode()),
-                    o=opts, kit_floor=floor)
+    p = predict_all(
+        obs,
+        post,
+        rec["start"],
+        rec["days"],
+        weather(),
+        seed=zlib.crc32((obs.id + tag).encode()),
+        o=opts,
+        kit_floor=floor,
+    )
     return obs.id, p
 
 
@@ -52,8 +63,13 @@ def posteriors(records: list[dict], test_b: set[str]) -> dict[str, dict]:
     out = {}
     full = HiddenPropertyModel().fit([(Unit.from_dict(r["true"]), Unit.from_dict(r["obs"])) for r in train])
     for k in range(N_FOLDS):
-        m = HiddenPropertyModel().fit([(Unit.from_dict(r["true"]), Unit.from_dict(r["obs"])) for r in train
-                                       if folds[r["true"]["building_id"]] != k])
+        m = HiddenPropertyModel().fit(
+            [
+                (Unit.from_dict(r["true"]), Unit.from_dict(r["obs"]))
+                for r in train
+                if folds[r["true"]["building_id"]] != k
+            ]
+        )
         for r in train:
             if folds[r["true"]["building_id"]] == k:
                 p = m.posterior(Unit.from_dict(r["obs"]))
@@ -61,8 +77,14 @@ def posteriors(records: list[dict], test_b: set[str]) -> dict[str, dict]:
     for r in records:
         if r["true"]["building_id"] in test_b:
             out[r["true"]["id"]] = full.posterior(Unit.from_dict(r["obs"]))
-    return {k: {"glazing": {i: v.tolist() for i, v in p.glazing.items()},
-                "frame": {i: v.tolist() for i, v in p.frame.items()}, "wall": p.wall.tolist()} for k, p in out.items()}
+    return {
+        k: {
+            "glazing": {i: v.tolist() for i, v in p.glazing.items()},
+            "frame": {i: v.tolist() for i, v in p.frame.items()},
+            "wall": p.wall.tolist(),
+        }
+        for k, p in out.items()
+    }
 
 
 def run(name: str, tag: str, opts: PredictOptions) -> Path:

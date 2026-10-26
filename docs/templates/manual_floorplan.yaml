@@ -1,0 +1,31 @@
+# Manual floor plan (capture fallback rung 2). Save as data/private/units/<unit_pid>/floorplan.yaml.
+# Coordinates: metres in a room-local frame; the facade direction comes from the compass reading.
+unit_pid: U03
+lat: 43.0000        # from geocoding (private) — never commit
+lon: -79.0000
+floor: 4            # storey number (ground = 0)
+floor_height_m: 3.0
+building_kind: midrise   # house | lowrise | midrise | highrise
+year_built: 1978         # null if unknown
+has_ac: false
+main_facade_compass_deg: 172   # phone compass, standing at the main window facing out (magnetic)
+rooms:
+  - id: bedroom
+    kind: bedroom
+    width_m: 3.2        # along the facade
+    depth_m: 3.8
+    ceiling_m: 2.55
+    offset_m: 0.0       # position along the facade from the unit's left edge (looking out)
+    windows:
+      - {width_m: 1.2, height_m: 1.4, sill_m: 0.85, offset_m: 1.6, reveal_m: 0.15, overhang_m: 0.0,
+         has_blinds: true, pane_count_seen: 2, lowe_tint_seen: false, frame_material: vinyl, drafty: false}
+  - id: living
+    kind: living
+    width_m: 4.5
+    depth_m: 5.0
+    ceiling_m: 2.55
+    offset_m: 3.2
+    windows:
+      - {width_m: 2.0, height_m: 1.6, sill_m: 0.6, offset_m: 2.2, reveal_m: 0.15, overhang_m: 1.5,
+         has_blinds: false, pane_count_seen: 2, lowe_tint_seen: true, frame_material: aluminum, drafty: false}
+cues: {radiator_visible: false, exposed_brick: false, wall_thickness_m: 0.30}

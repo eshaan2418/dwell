@@ -1,0 +1,8 @@
+.venv
+data/private
+data/synthetic/cache
+data/weather/cache
+firmware/.pio
+app/node_modules
+app/dist
+.git

@@ -48,3 +48,11 @@ Dated decisions with rationale. IDs are referenced from code/docs.
 - **D-015 (2026-10-24) Window-open nights.** The sensor-only heuristic (cooling slope / background jump)
   is weak on synthetic data (see results/m1), so the protocol adds a one-tap window diary (HUMAN_TODO);
   evaluation uses the diary when present, the heuristic otherwise, and reports both.
+- **D-016 (2026-10-24) Orientation.** Absolute facade azimuth = circular mean of compass readings logged at
+  window prompts (+ Toronto magnetic declination ≈ −9.9°, approximate), snapped to the nearest building
+  footprint edge normal within ±30°. SfM frames have arbitrary heading, so reconstruction contributes
+  only relative wall directions. Indoor compass error model (bias sd 8°, per-reading sd 8°) is an
+  assumption pending real compass-vs-footprint checks (HUMAN_TODO §6).
+- **D-017 (2026-10-24) Type checking as a ratchet.** With pandas-stubs, mypy reports ~860 mostly stub-driven
+  errors; without them 71 (annotation gaps, Optional narrowing). CI runs `bench/mypy_ratchet.py`: it fails if
+  the count exceeds `docs/mypy_baseline.txt`, so new code cannot add type errors; the backlog is tech debt.

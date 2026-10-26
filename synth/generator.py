@@ -18,7 +18,16 @@ from dataclasses import dataclass
 import numpy as np
 
 from core.scene import (
-    FRAME_TYPES, GLAZING_TYPES, WALL_TYPES, Building, ExteriorWall, Road, Room, TransitLine, Tree, Unit,
+    FRAME_TYPES,
+    GLAZING_TYPES,
+    WALL_TYPES,
+    Building,
+    ExteriorWall,
+    Road,
+    Room,
+    TransitLine,
+    Tree,
+    Unit,
     Window,
 )
 from physics.acoustics.model import AADT_BY_CLASS, SPEED_BY_CLASS
@@ -67,26 +76,53 @@ def sample_building(rng: np.random.Generator, bid: str) -> BuildingSpec:
         front_az = (TORONTO_GRID_DEG + 90 * rng.integers(0, 4) + rng.normal(0, 2)) % 360
     else:
         front_az = rng.uniform(0, 360)
-    sc_p = {"house": [0.0, 0.05, 0.1, 0.25, 0.6], "lowrise": [0.05, 0.2, 0.25, 0.25, 0.25],
-            "midrise": [0.1, 0.35, 0.3, 0.15, 0.1], "highrise": [0.15, 0.35, 0.3, 0.15, 0.05]}[kind]
+    sc_p = {
+        "house": [0.0, 0.05, 0.1, 0.25, 0.6],
+        "lowrise": [0.05, 0.2, 0.25, 0.25, 0.25],
+        "midrise": [0.1, 0.35, 0.3, 0.15, 0.1],
+        "highrise": [0.15, 0.35, 0.3, 0.15, 0.05],
+    }[kind]
     sclass = str(rng.choice(["trunk", "primary", "secondary", "tertiary", "residential"], p=sc_p))
     swidth = {"trunk": 30, "primary": 24, "secondary": 20, "tertiary": 18, "residential": 15}[sclass]
-    return BuildingSpec(bid, kind, levels, P.FLOOR_HEIGHT[kind], float(rng.uniform(*width)),
-                        float(rng.uniform(*depth)), year, wall, float(front_az), sclass,
-                        float(swidth * rng.uniform(0.85, 1.25)), int(rng.integers(1 << 31)))
+    return BuildingSpec(
+        bid,
+        kind,
+        levels,
+        P.FLOOR_HEIGHT[kind],
+        float(rng.uniform(*width)),
+        float(rng.uniform(*depth)),
+        year,
+        wall,
+        float(front_az),
+        sclass,
+        float(swidth * rng.uniform(0.85, 1.25)),
+        int(rng.integers(1 << 31)),
+    )
 
 
-def _context(rng: np.random.Generator, b: BuildingSpec) -> tuple[list[Building], list[Road], list[TransitLine],
-                                                                  list[Tree]]:
+def _context(
+    rng: np.random.Generator, b: BuildingSpec
+) -> tuple[list[Building], list[Road], list[TransitLine], list[Tree]]:
     """Context in the building frame (unrotated)."""
     H = b.levels * b.floor_h
-    blds = [Building(b.id, [tuple(p) for p in _rect(0, 0, b.width, b.depth)], H, year_built=b.year,
-                     kind=b.kind, levels=b.levels)]
+    blds = [
+        Building(
+            b.id, [tuple(p) for p in _rect(0, 0, b.width, b.depth)], H, year_built=b.year, kind=b.kind, levels=b.levels
+        )
+    ]
 
     def h_like() -> float:
-        k = str(rng.choice(P.KINDS, p={"house": [0.7, 0.25, 0.05, 0.0], "lowrise": [0.35, 0.45, 0.15, 0.05],
-                                         "midrise": [0.15, 0.3, 0.4, 0.15],
-                                         "highrise": [0.05, 0.2, 0.35, 0.4]}[b.kind]))
+        k = str(
+            rng.choice(
+                P.KINDS,
+                p={
+                    "house": [0.7, 0.25, 0.05, 0.0],
+                    "lowrise": [0.35, 0.45, 0.15, 0.05],
+                    "midrise": [0.15, 0.3, 0.4, 0.15],
+                    "highrise": [0.05, 0.2, 0.35, 0.4],
+                }[b.kind],
+            )
+        )
         lo, hi = P.LEVELS[k]
         return float(rng.integers(lo, hi + 1) * P.FLOOR_HEIGHT[k])
 
@@ -105,74 +141,140 @@ def _context(rng: np.random.Generator, b: BuildingSpec) -> tuple[list[Building],
         gap = float(rng.choice([0.0, rng.uniform(1, 8)], p=[0.4, 0.6]))
         w = float(rng.uniform(8, 30))
         x0 = -gap - w if side < 0 else b.width + gap
-        blds.append(Building(f"{b.id}_n{side}", [tuple(p) for p in _rect(x0, 0, x0 + w, b.depth * rng.uniform(0.7, 1.2))],
-                             h_like()))
+        blds.append(
+            Building(
+                f"{b.id}_n{side}", [tuple(p) for p in _rect(x0, 0, x0 + w, b.depth * rng.uniform(0.7, 1.2))], h_like()
+            )
+        )
     rear_gap = float(rng.uniform(8, 35))
     x = -40.0
     while x < b.width + 40:
         w = float(rng.uniform(8, 30))
         d = float(rng.uniform(8, 20))
         if rng.random() < 0.8:
-            blds.append(Building(f"{b.id}_r{len(blds)}",
-                                 [tuple(p) for p in _rect(x, b.depth + rear_gap, x + w, b.depth + rear_gap + d)], h_like()))
+            blds.append(
+                Building(
+                    f"{b.id}_r{len(blds)}",
+                    [tuple(p) for p in _rect(x, b.depth + rear_gap, x + w, b.depth + rear_gap + d)],
+                    h_like(),
+                )
+            )
         x += w + float(rng.uniform(0, 8))
     # roads: front street centreline, maybe a rear lane, maybe a parallel arterial behind
     yc = -b.street_width / 2
     aadt = AADT_BY_CLASS[b.street_class] * float(rng.lognormal(0, 0.45))
-    roads = [Road(f"{b.id}_front", [(-400.0, yc), (b.width + 400.0, yc)], b.street_class, aadt=aadt,
-                  speed_kmh=float(SPEED_BY_CLASS[b.street_class] * rng.uniform(0.85, 1.15)),
-                  heavy_share=float(rng.uniform(0.02, 0.1)))]
+    roads = [
+        Road(
+            f"{b.id}_front",
+            [(-400.0, yc), (b.width + 400.0, yc)],
+            b.street_class,
+            aadt=aadt,
+            speed_kmh=float(SPEED_BY_CLASS[b.street_class] * rng.uniform(0.85, 1.15)),
+            heavy_share=float(rng.uniform(0.02, 0.1)),
+        )
+    ]
     if rng.random() < 0.35:
-        roads.append(Road(f"{b.id}_lane", [(-300.0, b.depth + rear_gap / 2), (b.width + 300.0, b.depth + rear_gap / 2)],
-                          "service", aadt=float(300 * rng.lognormal(0, 0.5)), speed_kmh=20.0, heavy_share=0.02))
+        roads.append(
+            Road(
+                f"{b.id}_lane",
+                [(-300.0, b.depth + rear_gap / 2), (b.width + 300.0, b.depth + rear_gap / 2)],
+                "service",
+                aadt=float(300 * rng.lognormal(0, 0.5)),
+                speed_kmh=20.0,
+                heavy_share=0.02,
+            )
+        )
     if rng.random() < 0.4:
         dist = float(rng.uniform(60, 250))
         cls = str(rng.choice(["primary", "secondary", "trunk"], p=[0.5, 0.35, 0.15]))
-        roads.append(Road(f"{b.id}_art", [(-600.0, b.depth + dist), (b.width + 600.0, b.depth + dist)], cls,
-                          aadt=AADT_BY_CLASS[cls] * float(rng.lognormal(0, 0.4)),
-                          speed_kmh=float(SPEED_BY_CLASS[cls]), heavy_share=float(rng.uniform(0.03, 0.12))))
+        roads.append(
+            Road(
+                f"{b.id}_art",
+                [(-600.0, b.depth + dist), (b.width + 600.0, b.depth + dist)],
+                cls,
+                aadt=AADT_BY_CLASS[cls] * float(rng.lognormal(0, 0.4)),
+                speed_kmh=float(SPEED_BY_CLASS[cls]),
+                heavy_share=float(rng.uniform(0.03, 0.12)),
+            )
+        )
     if rng.random() < 0.3:  # perpendicular cross street at one end
         xc = float(rng.choice([-rng.uniform(5, 40), b.width + rng.uniform(5, 40)]))
         cls = str(rng.choice(["residential", "tertiary", "secondary"]))
-        roads.append(Road(f"{b.id}_cross", [(xc, -300.0), (xc, 300.0)], cls,
-                          aadt=AADT_BY_CLASS[cls] * float(rng.lognormal(0, 0.45)), speed_kmh=float(SPEED_BY_CLASS[cls]),
-                          heavy_share=0.04))
+        roads.append(
+            Road(
+                f"{b.id}_cross",
+                [(xc, -300.0), (xc, 300.0)],
+                cls,
+                aadt=AADT_BY_CLASS[cls] * float(rng.lognormal(0, 0.45)),
+                speed_kmh=float(SPEED_BY_CLASS[cls]),
+                heavy_share=0.04,
+            )
+        )
     transit = []
     if b.street_class in ("primary", "secondary") and rng.random() < 0.45:
         # Toronto streetcars: night (Blue Night) service ~2/h each direction on some routes, day ~10-20/h
         trips = [float(t) for t in ([4, 4, 4, 4, 4, 6] + [20] * 16 + [12, 8])]
         trips = [t * float(rng.uniform(0.6, 1.3)) for t in trips]
-        transit.append(TransitLine(f"{b.id}_streetcar", [(-400.0, yc), (b.width + 400.0, yc)], "streetcar",
-                                   trips, speed_kmh=float(rng.uniform(15, 30))))
+        transit.append(
+            TransitLine(
+                f"{b.id}_streetcar",
+                [(-400.0, yc), (b.width + 400.0, yc)],
+                "streetcar",
+                trips,
+                speed_kmh=float(rng.uniform(15, 30)),
+            )
+        )
     if rng.random() < 0.12:
         dist = float(rng.uniform(40, 300))
         side = float(rng.choice([-1, 1]))
         y_r = (b.depth + dist) if side > 0 else (-b.street_width - dist)
         trips = [float(t) for t in [1, 0, 0, 0, 1, 3] + [6] * 16 + [4, 2]]
-        transit.append(TransitLine(f"{b.id}_rail", [(-800.0, y_r), (b.width + 800.0, y_r)], "rail", trips,
-                                   speed_kmh=float(rng.uniform(50, 90))))
+        transit.append(
+            TransitLine(
+                f"{b.id}_rail",
+                [(-800.0, y_r), (b.width + 800.0, y_r)],
+                "rail",
+                trips,
+                speed_kmh=float(rng.uniform(50, 90)),
+            )
+        )
     trees = []
     if rng.random() < 0.7:
         spacing = float(rng.uniform(7, 15))
         for xt in np.arange(-30, b.width + 30, spacing):
             if rng.random() < 0.8:
                 h = float(rng.uniform(6, 18))
-                trees.append(Tree(float(xt + rng.normal(0, 1)), float(-rng.uniform(1.5, 3.5)), float(rng.uniform(2.5, 5.5)),
-                                  h, trunk_height=float(min(2.5, h * 0.3)),
-                                  porosity_leaf_on=float(rng.uniform(0.1, 0.35)),
-                                  porosity_leaf_off=float(rng.uniform(0.5, 0.8))))
+                trees.append(
+                    Tree(
+                        float(xt + rng.normal(0, 1)),
+                        float(-rng.uniform(1.5, 3.5)),
+                        float(rng.uniform(2.5, 5.5)),
+                        h,
+                        trunk_height=float(min(2.5, h * 0.3)),
+                        porosity_leaf_on=float(rng.uniform(0.1, 0.35)),
+                        porosity_leaf_off=float(rng.uniform(0.5, 0.8)),
+                    )
+                )
     if rng.random() < 0.5:
         for _ in range(int(rng.integers(1, 5))):
             h = float(rng.uniform(6, 20))
-            trees.append(Tree(float(rng.uniform(0, b.width)), float(b.depth + rng.uniform(3, rear_gap)),
-                              float(rng.uniform(2.5, 6)), h, trunk_height=2.5,
-                              porosity_leaf_on=float(rng.uniform(0.1, 0.3)),
-                              porosity_leaf_off=float(rng.uniform(0.5, 0.8))))
+            trees.append(
+                Tree(
+                    float(rng.uniform(0, b.width)),
+                    float(b.depth + rng.uniform(3, rear_gap)),
+                    float(rng.uniform(2.5, 6)),
+                    h,
+                    trunk_height=2.5,
+                    porosity_leaf_on=float(rng.uniform(0.1, 0.3)),
+                    porosity_leaf_off=float(rng.uniform(0.5, 0.8)),
+                )
+            )
     return blds, roads, transit, trees
 
 
-def _unit_layout(rng: np.random.Generator, b: BuildingSpec, uid: str, floor: int, facade: str, x_start: float,
-                 width: float) -> tuple[list[Room], list[Window], list[ExteriorWall]]:
+def _unit_layout(
+    rng: np.random.Generator, b: BuildingSpec, uid: str, floor: int, facade: str, x_start: float, width: float
+) -> tuple[list[Room], list[Window], list[ExteriorWall]]:
     """Rooms along one facade (front: y'=0, rear: y'=D) in the building frame."""
     fz = floor * b.floor_h
     ceil = float(rng.uniform(2.4, 2.9) if b.kind != "house" else rng.uniform(2.3, 3.0))
@@ -182,8 +284,10 @@ def _unit_layout(rng: np.random.Generator, b: BuildingSpec, uid: str, floor: int
     spans = [("bedroom", x_start, x_start + bed_w), ("living", x_start + bed_w, x_start + width)]
     if rng.random() < 0.5:
         spans = spans[::-1]
-        spans = [(spans[0][0], x_start, x_start + (spans[0][2] - spans[0][1])),
-                 (spans[1][0], x_start + (spans[0][2] - spans[0][1]), x_start + width)]
+        spans = [
+            (spans[0][0], x_start, x_start + (spans[0][2] - spans[0][1])),
+            (spans[1][0], x_start + (spans[0][2] - spans[0][1]), x_start + width),
+        ]
     front = facade == "front"
     era_new = b.year >= 1990
     condo = b.kind in ("midrise", "highrise") and b.year >= 1995
@@ -198,11 +302,22 @@ def _unit_layout(rng: np.random.Generator, b: BuildingSpec, uid: str, floor: int
         else:
             poly = _rect(x0, b.depth - depth, x1, b.depth)
             y_face = b.depth
-        rooms.append(Room(rid, kind, [tuple(p) for p in poly], fz, ceil,
-                          furnishing=str(rng.choice(["sparse", "typical", "heavy"], p=[0.2, 0.6, 0.2]))))
+        rooms.append(
+            Room(
+                rid,
+                kind,
+                [tuple(p) for p in poly],
+                fz,
+                ceil,
+                furnishing=str(rng.choice(["sparse", "typical", "heavy"], p=[0.2, 0.6, 0.2])),
+            )
+        )
         L = x1 - x0
-        walls.append(ExteriorWall(rid, 180.0 if front else 0.0, L, ceil, b.wall_type, None,
-                                  cx=(x0 + x1) / 2, cy=y_face, base_z=fz))
+        walls.append(
+            ExteriorWall(
+                rid, 180.0 if front else 0.0, L, ceil, b.wall_type, None, cx=(x0 + x1) / 2, cy=y_face, base_z=fz
+            )
+        )
         n_w = 1 if (L < 3.2 or rng.random() < 0.6) else 2
         for k in range(n_w):
             if condo:
@@ -214,15 +329,27 @@ def _unit_layout(rng: np.random.Generator, b: BuildingSpec, uid: str, floor: int
                 wh = float(min(rng.uniform(1.1, 1.7), ceil - 0.9))
                 sill = float(rng.uniform(0.6, 0.95))
             cxk = x0 + L * (k + 0.5) / n_w
-            wins.append(Window(f"{rid}_w{k}", rid, cxk, y_face, fz + sill, ww, wh, 180.0 if front else 0.0,
-                               reveal_depth=float(np.clip(rng.normal(0.4, 0.1), 0.15, 0.8) * thick),
-                               wall_thickness=thick,
-                               overhang_depth=float(rng.uniform(1.2, 2.0)) if balcony and kind == "living" else
-                               (float(rng.uniform(1.2, 2.0)) if balcony and rng.random() < 0.4 else 0.0),
-                               overhang_gap=float(max(ceil - sill - wh, 0.05) + 0.25),
-                               frame_fraction=float(rng.uniform(0.12, 0.2) if condo else rng.uniform(0.2, 0.3)),
-                               operable=bool(rng.random() < 0.9),
-                               has_blinds=bool(rng.random() < (0.75 if kind == "bedroom" else 0.45))))
+            wins.append(
+                Window(
+                    f"{rid}_w{k}",
+                    rid,
+                    cxk,
+                    y_face,
+                    fz + sill,
+                    ww,
+                    wh,
+                    180.0 if front else 0.0,
+                    reveal_depth=float(np.clip(rng.normal(0.4, 0.1), 0.15, 0.8) * thick),
+                    wall_thickness=thick,
+                    overhang_depth=float(rng.uniform(1.2, 2.0))
+                    if balcony and kind == "living"
+                    else (float(rng.uniform(1.2, 2.0)) if balcony and rng.random() < 0.4 else 0.0),
+                    overhang_gap=float(max(ceil - sill - wh, 0.05) + 0.25),
+                    frame_fraction=float(rng.uniform(0.12, 0.2) if condo else rng.uniform(0.2, 0.3)),
+                    operable=bool(rng.random() < 0.9),
+                    has_blinds=bool(rng.random() < (0.75 if kind == "bedroom" else 0.45)),
+                )
+            )
         _ = era_new
     return rooms, wins, walls
 
@@ -257,23 +384,33 @@ def _visual_cues(rng: np.random.Generator, b: BuildingSpec, unit: Unit) -> None:
             obs = None  # reflections not visible in the video
         tint = bool(rng.random() < (0.6 if w.glazing in ("double_lowe", "triple") else 0.12))
         if b.year < 1960:
-            mat_p = {"single": [0.75, 0.15, 0.1], "double": [0.3, 0.55, 0.15], "double_lowe": [0.15, 0.65, 0.2],
-                     "triple": [0.1, 0.7, 0.2]}[w.glazing]
+            mat_p = {
+                "single": [0.75, 0.15, 0.1],
+                "double": [0.3, 0.55, 0.15],
+                "double_lowe": [0.15, 0.65, 0.2],
+                "triple": [0.1, 0.7, 0.2],
+            }[w.glazing]
         else:
-            mat_p = {"single": [0.3, 0.1, 0.6], "double": [0.1, 0.5, 0.4], "double_lowe": [0.05, 0.6, 0.35],
-                     "triple": [0.05, 0.75, 0.2]}[w.glazing]
+            mat_p = {
+                "single": [0.3, 0.1, 0.6],
+                "double": [0.1, 0.5, 0.4],
+                "double_lowe": [0.05, 0.6, 0.35],
+                "triple": [0.05, 0.75, 0.2],
+            }[w.glazing]
         frame_mat = str(rng.choice(["wood", "vinyl", "aluminum"], p=mat_p))
         draft = bool(rng.random() < {"tight": 0.03, "average": 0.12, "leaky": 0.45}[w.frame])
-        w.cues = {"pane_count_obs": obs, "lowe_tint_obs": tint, "frame_material_obs": frame_mat,
-                  "draft_cue_obs": draft}
+        w.cues = {"pane_count_obs": obs, "lowe_tint_obs": tint, "frame_material_obs": frame_mat, "draft_cue_obs": draft}
     rad = bool(rng.random() < (0.7 if b.year < 1970 and b.wall_type == "masonry" else 0.12))
-    unit.meta["cues"] = {"radiator_visible": rad,
-                         "wall_thickness_obs": float(unit.windows[0].wall_thickness + rng.normal(0, 0.03)),
-                         "exposed_brick_obs": bool(rng.random() < (0.3 if b.wall_type == "masonry" else 0.02))}
+    unit.meta["cues"] = {
+        "radiator_visible": rad,
+        "wall_thickness_obs": float(unit.windows[0].wall_thickness + rng.normal(0, 0.03)),
+        "exposed_brick_obs": bool(rng.random() < (0.3 if b.wall_type == "masonry" else 0.02)),
+    }
 
 
 def _transform(unit: Unit, delta: float) -> None:
     """Rotate the whole scene (building frame -> ENU) clockwise by delta degrees."""
+
     def r2(p: tuple[float, float]) -> tuple[float, float]:
         q = _rot(np.asarray(p, float), delta)
         return float(q[0]), float(q[1])
@@ -321,12 +458,30 @@ def generate_building_units(rng: np.random.Generator, bid: str, n_units: int) ->
         x0 = float(rng.uniform(0, max(b.width - width, 0.01)))
         uid = f"{bid}_u{k}"
         rooms, wins, walls = _unit_layout(rng, b, uid, floor, facade, x0, width)
-        u = Unit(uid, LAT0, LON0, bid, floor, rooms, wins, walls, year_built=b.year, building_kind=b.kind,
-                 has_ac=bool(rng.random() < (0.55 if b.year >= 1995 else 0.25)),
-                 context_buildings=copy.deepcopy(blds), roads=copy.deepcopy(roads),
-                 transit=copy.deepcopy(transit), trees=copy.deepcopy(trees),
-                 meta={"facade": facade, "levels": b.levels, "floor_height": b.floor_h,
-                       "top_floor": floor == b.levels - 1, "street_class": b.street_class})
+        u = Unit(
+            uid,
+            LAT0,
+            LON0,
+            bid,
+            floor,
+            rooms,
+            wins,
+            walls,
+            year_built=b.year,
+            building_kind=b.kind,
+            has_ac=bool(rng.random() < (0.55 if b.year >= 1995 else 0.25)),
+            context_buildings=copy.deepcopy(blds),
+            roads=copy.deepcopy(roads),
+            transit=copy.deepcopy(transit),
+            trees=copy.deepcopy(trees),
+            meta={
+                "facade": facade,
+                "levels": b.levels,
+                "floor_height": b.floor_h,
+                "top_floor": floor == b.levels - 1,
+                "street_class": b.street_class,
+            },
+        )
         _assign_hidden(rng, b, u)
         _visual_cues(rng, b, u)
         _transform(u, b.front_az - 180.0)
@@ -383,8 +538,11 @@ def observe(rng: np.random.Generator, true_unit: Unit, scan_quality: float = 1.0
     elif u.year_built is not None:
         u.year_built = int(u.year_built + rng.normal(0, 3))
     u.has_ac = true_unit.has_ac  # visible in scan (window/portable AC unit) — assumed observable
-    u.meta = {k: v for k, v in u.meta.items() if k in ("levels", "floor_height", "top_floor", "street_class", "cues",
-                                                       "facade")}
+    u.meta = {
+        k: v
+        for k, v in u.meta.items()
+        if k in ("levels", "floor_height", "top_floor", "street_class", "cues", "facade")
+    }
     return u
 
 

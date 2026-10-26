@@ -1,0 +1,46 @@
+{
+  "provenance": {
+    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "dirty": true,
+    "data_hash": "d180e46e3d9e3f58bf7d95aac29f0a7d3fe1d0960edbb95f1236e69d1376e90a",
+    "data_kind": "synthetic",
+    "seed": 7,
+    "config": {
+      "alpha": 1.0
+    },
+    "timestamp_utc": "2026-10-24T19:09:13+00:00",
+    "script": "m8_priors.py",
+    "python": "3.12.14"
+  },
+  "n_train_units": 234,
+  "n_test_units": 55,
+  "full": {
+    "glazing_acc": 0.6644295302013423,
+    "frame_acc": 0.5369127516778524,
+    "wall_acc": 0.9636363636363636,
+    "glazing_logloss": 0.8436213967378637,
+    "frame_logloss": 0.9451443611886786,
+    "wall_logloss": 0.18692761620599638
+  },
+  "no_cues": {
+    "glazing_acc": 0.5838926174496645,
+    "frame_acc": 0.47651006711409394,
+    "wall_acc": 0.8181818181818182,
+    "glazing_logloss": 1.0087953648501649,
+    "frame_logloss": 1.0112488204929524,
+    "wall_logloss": 0.6176596793139586
+  },
+  "no_metadata": {
+    "glazing_acc": 0.6174496644295302,
+    "frame_acc": 0.5033557046979866,
+    "wall_acc": 0.8,
+    "glazing_logloss": 0.9374746910551307,
+    "frame_logloss": 0.9704373338551506,
+    "wall_logloss": 0.44360267399845627
+  },
+  "default_materials": {
+    "glazing_acc": 0.4697986577181208,
+    "frame_acc": 0.47651006711409394,
+    "wall_acc": 0.6363636363636364
+  }
+}

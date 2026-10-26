@@ -37,9 +37,14 @@ def _geo_features(u: Unit, rid: str) -> dict[str, float]:
     az = np.radians(wl.azimuth)
     front = Point(wl.cx + 30 * np.sin(az), wl.cy + 30 * np.cos(az)).buffer(30)
     hs = [b.height for b in u.context_buildings if b.id != u.building_id and Polygon(b.footprint).intersects(front)]
-    return {"geo_road_dist": float(d_road), "geo_road_class": float(cls), "geo_road_aadt": aadt,
-            "geo_transit_dist": float(d_tr), "geo_front_bldg_h": float(np.mean(hs)) if hs else 0.0,
-            "geo_n_trees": float(len(u.trees))}
+    return {
+        "geo_road_dist": float(d_road),
+        "geo_road_class": float(cls),
+        "geo_road_aadt": aadt,
+        "geo_transit_dist": float(d_tr),
+        "geo_front_bldg_h": float(np.mean(hs)) if hs else 0.0,
+        "geo_n_trees": float(len(u.trees)),
+    }
 
 
 def _static_features(u: Unit, rid: str) -> dict[str, float]:
@@ -55,15 +60,20 @@ def _static_features(u: Unit, rid: str) -> dict[str, float]:
         "geom_az_cos": float(np.cos(np.radians(sw.azimuth))) if sw else 0.0,
         "geom_win_area": float(sum(w.width * w.height for w in wins)),
         "geom_wwr": float(sum(w.width * w.height for w in wins) / max(area, 1)),
-        "geom_floor_area": float(area), "geom_floor": float(u.floor),
+        "geom_floor_area": float(area),
+        "geom_floor": float(u.floor),
         "geom_overhang": float(max((w.overhang_depth for w in wins), default=0.0)),
         "geom_reveal": float(sw.reveal_depth) if sw else 0.0,
-        "geom_bedroom": float(room.kind == "bedroom"), "geom_has_blinds": float(bool(sw and sw.has_blinds)),
-        "meta_kind": float(KIND_CODE.get(u.building_kind or "lowrise", 1)), "meta_year": float(year),
-        "meta_levels": float(u.meta.get("levels", np.nan)), "meta_top": float(bool(u.meta.get("top_floor"))),
+        "geom_bedroom": float(room.kind == "bedroom"),
+        "geom_has_blinds": float(bool(sw and sw.has_blinds)),
+        "meta_kind": float(KIND_CODE.get(u.building_kind or "lowrise", 1)),
+        "meta_year": float(year),
+        "meta_levels": float(u.meta.get("levels", np.nan)),
+        "meta_top": float(bool(u.meta.get("top_floor"))),
         "meta_has_ac": float(u.has_ac),
         "meta_pane_obs": float(cues.get("pane_count_obs") or np.nan),
-        "meta_tint": float(bool(cues.get("lowe_tint_obs"))), "meta_draft": float(bool(cues.get("draft_cue_obs"))),
+        "meta_tint": float(bool(cues.get("lowe_tint_obs"))),
+        "meta_draft": float(bool(cues.get("draft_cue_obs"))),
         "meta_radiator": float(bool(uc.get("radiator_visible"))),
         "meta_wall_thick": float(uc.get("wall_thickness_obs", np.nan)),
     }
@@ -86,12 +96,19 @@ def daily_weather(weather: pd.DataFrame) -> pd.DataFrame:
     with np.errstate(divide="ignore", invalid="ignore"):
         sf = np.clip(loc["dni"] / loc["dni_clear"], 0, 1).where(loc["dni_clear"] > 5)
     g = loc.groupby(loc.index.date)
-    return pd.DataFrame({"wx_tmax": g["temp_c"].max(), "wx_tmean": g["temp_c"].mean(),
-                         "wx_sunfrac": sf.groupby(loc.index.date).mean(), "wx_ghi": g["ghi"].mean()})
+    return pd.DataFrame(
+        {
+            "wx_tmax": g["temp_c"].max(),
+            "wx_tmean": g["temp_c"].mean(),
+            "wx_sunfrac": sf.groupby(loc.index.date).mean(),
+            "wx_ghi": g["ghi"].mean(),
+        }
+    )
 
 
-def build_tables(records: list[dict], preds: dict[str, dict], weather: pd.DataFrame,
-                 test_buildings: set[str]) -> dict[str, pd.DataFrame]:
+def build_tables(
+    records: list[dict], preds: dict[str, dict], weather: pd.DataFrame, test_buildings: set[str]
+) -> dict[str, pd.DataFrame]:
     wd = daily_weather(weather)
     sun_rows, noise_rows, heat_rows = [], [], []
     for rec in records:
@@ -100,8 +117,14 @@ def build_tables(records: list[dict], preds: dict[str, dict], weather: pd.DataFr
         p = preds[uid]
         split = "test" if bid in test_buildings else "train"
         for rid, tg in rec["targets"].items():
-            base = {"unit": uid, "building": bid, "room": rid, "split": split, **_static_features(u, rid),
-                    **group_labels(u, rid)}
+            base = {
+                "unit": uid,
+                "building": bid,
+                "room": rid,
+                "split": split,
+                **_static_features(u, rid),
+                **group_labels(u, rid),
+            }
             # ---- sun (room-day)
             ps = p["sun"].get(rid)
             if ps is not None:
@@ -110,29 +133,53 @@ def build_tables(records: list[dict], preds: dict[str, dict], weather: pd.DataFr
                         continue
                     q = ps.loc[day]
                     w = wd.loc[day] if day in wd.index else pd.Series(dtype=float)
-                    sun_rows.append({**base, "day": day, "y": row["sun_h"], "y_true_world": row["sun_h_true"],
-                                     "phys_nominal": q["physics"], "phys_mc_mean": q["mc_mean"], "phys_mc_std": q["mc_std"],
-                                     "base_sunpath_only": q["sunpath_only"],
-                                     "wx_sunfrac": w.get("wx_sunfrac", np.nan), "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
-                                     "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25)})
+                    sun_rows.append(
+                        {
+                            **base,
+                            "day": day,
+                            "y": row["sun_h"],
+                            "y_true_world": row["sun_h_true"],
+                            "phys_nominal": q["physics"],
+                            "phys_mc_mean": q["mc_mean"],
+                            "phys_mc_std": q["mc_std"],
+                            "base_sunpath_only": q["sunpath_only"],
+                            "wx_sunfrac": w.get("wx_sunfrac", np.nan),
+                            "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                            "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                        }
+                    )
             # ---- noise (room-night), closed nights by heuristic (diary unavailable in synthetic)
             pn = p["noise"].get(rid)
             nz = tg["noise"]
             if pn is not None and len(nz):
                 for day, row in nz.iterrows():
-                    noise_rows.append({**base, "day": day, "y": row["laeq"], "y_la90": row["la90"],
-                                       "y_trim": row["laeq_trim"], "floor_frac": row["floor_frac"],
-                                       "open_heur": bool(row["open_heur"]), "open_true": bool(row["open_true"]),
-                                       "phys_default": pn["physics_default"], "phys_mc_mean": pn["mc_mean"],
-                                       "phys_mc_std": pn["mc_std"], "phys_raw_mean": pn["mc_raw_mean"],
-                                       "phys_raw_std": pn["mc_raw_std"], "phys_outdoor": pn["outdoor_night"],
-                                       "phys_floor": pn["floor"], "base_noisemap_only": pn["noisemap_only"],
-                                       "phys_attr_road": pn["attribution_db"].get("road", -99.0),
-                                       "phys_attr_transit": max([v for k, v in pn["attribution_db"].items() if k != "road"],
-                                                                default=-99.0),
-                                       "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
-                                       "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
-                                       "wx_tmean": wd.loc[day, "wx_tmean"] if day in wd.index else np.nan})
+                    noise_rows.append(
+                        {
+                            **base,
+                            "day": day,
+                            "y": row["laeq"],
+                            "y_la90": row["la90"],
+                            "y_trim": row["laeq_trim"],
+                            "floor_frac": row["floor_frac"],
+                            "open_heur": bool(row["open_heur"]),
+                            "open_true": bool(row["open_true"]),
+                            "phys_default": pn["physics_default"],
+                            "phys_mc_mean": pn["mc_mean"],
+                            "phys_mc_std": pn["mc_std"],
+                            "phys_raw_mean": pn["mc_raw_mean"],
+                            "phys_raw_std": pn["mc_raw_std"],
+                            "phys_outdoor": pn["outdoor_night"],
+                            "phys_floor": pn["floor"],
+                            "base_noisemap_only": pn["noisemap_only"],
+                            "phys_attr_road": pn["attribution_db"].get("road", -99.0),
+                            "phys_attr_transit": max(
+                                [v for k, v in pn["attribution_db"].items() if k != "road"], default=-99.0
+                            ),
+                            "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                            "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                            "wx_tmean": wd.loc[day, "wx_tmean"] if day in wd.index else np.nan,
+                        }
+                    )
             # ---- heat (room-day)
             ph = p["heat"].get(rid)
             if ph is not None:
@@ -141,14 +188,22 @@ def build_tables(records: list[dict], preds: dict[str, dict], weather: pd.DataFr
                     if day not in ph.index:
                         continue
                     q = ph.loc[day]
-                    heat_rows.append({**base, "day": day, "y": row["peak"], "phys_default": q["physics_default"],
-                                      "phys_mc_mean": q["mc_mean"], "phys_mc_std": q["mc_std"],
-                                      "base_outdoor_max": float(omax.get(day, np.nan)),
-                                      "wx_tmax": wd.loc[day, "wx_tmax"] if day in wd.index else np.nan,
-                                      "wx_tmean": wd.loc[day, "wx_tmean"] if day in wd.index else np.nan,
-                                      "wx_ghi": wd.loc[day, "wx_ghi"] if day in wd.index else np.nan,
-                                      "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
-                                      "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25)})
+                    heat_rows.append(
+                        {
+                            **base,
+                            "day": day,
+                            "y": row["peak"],
+                            "phys_default": q["physics_default"],
+                            "phys_mc_mean": q["mc_mean"],
+                            "phys_mc_std": q["mc_std"],
+                            "base_outdoor_max": float(omax.get(day, np.nan)),
+                            "wx_tmax": wd.loc[day, "wx_tmax"] if day in wd.index else np.nan,
+                            "wx_tmean": wd.loc[day, "wx_tmean"] if day in wd.index else np.nan,
+                            "wx_ghi": wd.loc[day, "wx_ghi"] if day in wd.index else np.nan,
+                            "wx_doy_sin": np.sin(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                            "wx_doy_cos": np.cos(2 * np.pi * pd.Timestamp(day).dayofyear / 365.25),
+                        }
+                    )
     return {"sun": pd.DataFrame(sun_rows), "noise": pd.DataFrame(noise_rows), "heat": pd.DataFrame(heat_rows)}
 
 

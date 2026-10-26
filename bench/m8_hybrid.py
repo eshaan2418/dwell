@@ -24,9 +24,19 @@ CACHE = ROOT / "data" / "synthetic" / "cache"
 
 def methods_for(target: str) -> list[Method]:
     if target == "sun":
-        fixed_default, fixed_inf, base_single, scale = "phys_nominal", "phys_mc_mean", "base_sunpath_only", "phys_mc_std"
+        fixed_default, fixed_inf, base_single, scale = (
+            "phys_nominal",
+            "phys_mc_mean",
+            "base_sunpath_only",
+            "phys_mc_std",
+        )
     elif target == "noise":
-        fixed_default, fixed_inf, base_single, scale = "phys_default", "phys_mc_mean", "base_noisemap_only", "phys_mc_std"
+        fixed_default, fixed_inf, base_single, scale = (
+            "phys_default",
+            "phys_mc_mean",
+            "base_noisemap_only",
+            "phys_mc_std",
+        )
     else:
         fixed_default, fixed_inf, base_single, scale = "phys_default", "phys_mc_mean", "base_outdoor_max", "phys_mc_std"
     return [
@@ -41,8 +51,11 @@ def methods_for(target: str) -> list[Method]:
 
 def ablations(target: str) -> list[Method]:
     h = methods_for(target)[4]
-    out = [replace(h, name=f"hybrid_minus_{f}", families=tuple(x for x in FAMILIES if x != f))
-           for f in FAMILIES if f != "physics"]
+    out = [
+        replace(h, name=f"hybrid_minus_{f}", families=tuple(x for x in FAMILIES if x != f))
+        for f in FAMILIES
+        if f != "physics"
+    ]
     if target != "sun":  # hidden-property inference only affects noise/heat
         out.append(Method("hybrid_minus_inference", "residual", "phys_default", ("geometry", "meta", "geo", "weather")))
     return out
@@ -64,30 +77,51 @@ def prepare(target: str, df: pd.DataFrame) -> pd.DataFrame:
 
 def main() -> None:
     tabs = tables("main")
-    data_hash = hash_paths([ROOT / "data" / "synthetic" / f"{NAME}_split.json", ROOT / "synth", ROOT / "physics",
-                            ROOT / "hybrid", ROOT / "data" / "weather" / "toronto_hourly_2016_2025.csv.gz"])
-    cfg = {"world": NAME, "alpha": 0.1, "cv": "LOBO (train buildings) CV+, building-weighted quantiles"}
+    data_hash = hash_paths(
+        [
+            ROOT / "data" / "synthetic" / f"{NAME}_split.json",
+            ROOT / "synth",
+            ROOT / "physics",
+            ROOT / "hybrid",
+            ROOT / "data" / "weather" / "toronto_hourly_2016_2025.csv.gz",
+        ]
+    )
+    cfg = {
+        "world": NAME,
+        "alpha": 0.1,
+        "cv": "CV+ with 16 building-grouped folds on the train split, "
+        "building-weighted quantiles; LOBO MAE for hybrid/pure_ml/fixed methods",
+    }
     summary = {}
     figs_data = {}
     for target, out in [("sun", "m5/sun.json"), ("noise", "m6/noise.json"), ("heat", "m7/heat.json")]:
         df = prepare(target, tabs[target])
         tr, te = df[df.split == "train"].reset_index(drop=True), df[df.split == "test"].reset_index(drop=True)
-        res, frames = run_methods(tr, te, methods_for(target))
+        res, frames = run_methods(tr, te, methods_for(target), lobo_for=("hybrid", "pure_ml"))
         abl, _ = run_methods(tr, te, ablations(target), mondrian=False)
-        payload = {"target": target, "n_train_rows": len(tr), "n_test_rows": len(te),
-                   "methods": res, "ablations": {k: v["marginal"] for k, v in abl.items()}}
+        payload = {
+            "target": target,
+            "n_train_rows": len(tr),
+            "n_test_rows": len(te),
+            "methods": res,
+            "ablations": {k: v["marginal"] for k, v in abl.items()},
+        }
         if target == "noise":
             # rooms whose nights are mostly above the mic floor (non-censored)
             above = te.groupby("room")["floor_frac"].mean() < 0.5
             keep = set(above[above].index)
             payload["above_floor"] = {}
             from hybrid.evaluate import metrics
+
             for name, fr in frames.items():
                 sub = fr[fr.room.isin(keep)]
                 if sub["building"].nunique() >= 3:
                     payload["above_floor"][name] = metrics(sub)
-            payload["censoring"] = {"test_rooms": int(te.room.nunique()), "test_rooms_above_floor": len(keep),
-                                    "mean_floor_frac": float(te.floor_frac.mean())}
+            payload["censoring"] = {
+                "test_rooms": int(te.room.nunique()),
+                "test_rooms_above_floor": len(keep),
+                "mean_floor_frac": float(te.floor_frac.mean()),
+            }
             # secondary targets with the hybrid method
             for ycol in ("y_la90", "y_trim"):
                 d2 = df.assign(y=df[ycol])
@@ -97,22 +131,35 @@ def main() -> None:
             # source attribution summary (test rooms)
             payload["attribution"] = {
                 "median_road_db": float(te.groupby("room")["phys_attr_road"].first().median()),
-                "share_rooms_transit_dominant": float((te.groupby("room")["phys_attr_transit"].first()
-                                                       > te.groupby("room")["phys_attr_road"].first()).mean()),
+                "share_rooms_transit_dominant": float(
+                    (
+                        te.groupby("room")["phys_attr_transit"].first() > te.groupby("room")["phys_attr_road"].first()
+                    ).mean()
+                ),
             }
             # window-open heuristic vs truth over all nights
             allr = tabs["noise"]
             payload["open_window_detection"] = {
-                "tp": int((allr.open_heur & allr.open_true).sum()), "fp": int((allr.open_heur & ~allr.open_true).sum()),
-                "fn": int((~allr.open_heur & allr.open_true).sum()), "tn": int((~allr.open_heur & ~allr.open_true).sum())}
+                "tp": int((allr.open_heur & allr.open_true).sum()),
+                "fp": int((allr.open_heur & ~allr.open_true).sum()),
+                "fn": int((~allr.open_heur & allr.open_true).sum()),
+                "tn": int((~allr.open_heur & ~allr.open_true).sum()),
+            }
         if target == "sun":
             payload["target_noise_vs_world_truth"] = {
                 "mae_h": float((te["y"] - te["y_true_world"]).abs().mean()),
-                "bias_h": float((te["y"] - te["y_true_world"]).mean())}
+                "bias_h": float((te["y"] - te["y_true_world"]).mean()),
+            }
         write_result(out, payload, seed=7, config=cfg, data_hash=data_hash, data_kind="synthetic")
-        summary[target] = {k: {"mae": v["marginal"]["mae"], "mae_ci95": v["marginal"]["mae_ci95"],
-                               "coverage90": v["marginal"]["coverage90"], "width90": v["marginal"]["width90"]}
-                           for k, v in res.items()}
+        summary[target] = {
+            k: {
+                "mae": v["marginal"]["mae"],
+                "mae_ci95": v["marginal"]["mae_ci95"],
+                "coverage90": v["marginal"]["coverage90"],
+                "width90": v["marginal"]["width90"],
+            }
+            for k, v in res.items()
+        }
         figs_data[target] = frames
         print(target, {k: round(v["mae"], 3) for k, v in summary[target].items()})
         print("  cov", {k: round(v["coverage90"], 3) for k, v in summary[target].items()})
@@ -126,8 +173,14 @@ def main() -> None:
         tr, te = df[df.split == "train"].reset_index(drop=True), df[df.split == "test"].reset_index(drop=True)
         r, _ = run_methods(tr, te, [methods_for(target)[2], methods_for(target)[4]], mondrian=False)
         var[f"{target}_{tag}"] = {k: v["marginal"] for k, v in r.items()}
-    write_result("m8/comparison.json", {"summary": summary, "variant_ablations": var}, seed=7, config=cfg,
-                 data_hash=data_hash, data_kind="synthetic")
+    write_result(
+        "m8/comparison.json",
+        {"summary": summary, "variant_ablations": var},
+        seed=7,
+        config=cfg,
+        data_hash=data_hash,
+        data_kind="synthetic",
+    )
     with open(CACHE / f"{NAME}_m8_frames.pkl", "wb") as f:
         pickle.dump(figs_data, f)
     print("variants", {k: {m: round(x["mae"], 3) for m, x in v.items()} for k, v in var.items()})

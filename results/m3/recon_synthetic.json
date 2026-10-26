@@ -1,0 +1,168 @@
+{
+  "provenance": {
+    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "dirty": true,
+    "data_hash": "b11ce8c40f527814e2f36f32b64902f19ae6e1f67559ffffe88fd72e5f95c827",
+    "data_kind": "synthetic",
+    "seed": 0,
+    "config": {
+      "n_rooms": 60,
+      "qualities": {
+        "short_60s": {
+          "coverage": 0.7,
+          "density": 250.0
+        },
+        "nominal_120s": {
+          "coverage": 0.88,
+          "density": 400.0
+        },
+        "long_240s": {
+          "coverage": 0.96,
+          "density": 600.0
+        }
+      },
+      "lighting_sigma_m": {
+        "good": 0.012,
+        "dim": 0.035
+      }
+    },
+    "timestamp_utc": "2026-10-24T18:19:46+00:00",
+    "script": "m3_recon.py",
+    "python": "3.12.14"
+  },
+  "table": {
+    "short_60s|good|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.028910176056150427,
+      "ceiling_abs_err_m_median": 0.0360101600038949,
+      "wall_dir_abs_err_deg_median": 0.030536629834976736,
+      "wall_dir_abs_err_deg_p90": 0.07647338997653322,
+      "window_recall": 0.06896551724137931,
+      "window_precision": 0.06,
+      "window_area_abs_rel_err_median": 0.9579051931905074,
+      "scale_abs_rel_err_median": 0.01459100073902142
+    },
+    "short_60s|good|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.019197172108490645,
+      "ceiling_abs_err_m_median": 0.018105245288894567,
+      "wall_dir_abs_err_deg_median": 0.02581048003699493,
+      "wall_dir_abs_err_deg_p90": 0.060161797007970114,
+      "window_recall": 0.10344827586206896,
+      "window_precision": 0.09183673469387756,
+      "window_area_abs_rel_err_median": 0.7531377837118061,
+      "scale_abs_rel_err_median": 0.0
+    },
+    "short_60s|dim|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.0768495357334682,
+      "ceiling_abs_err_m_median": 0.07189475471110884,
+      "wall_dir_abs_err_deg_median": 0.12207522889454481,
+      "wall_dir_abs_err_deg_p90": 1.4090871660097806,
+      "window_recall": 0.022988505747126436,
+      "window_precision": 0.15384615384615385,
+      "window_area_abs_rel_err_median": 0.25809856953631605,
+      "scale_abs_rel_err_median": 0.02591600924960863
+    },
+    "short_60s|dim|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.05651533203152259,
+      "ceiling_abs_err_m_median": 0.014564100321833529,
+      "wall_dir_abs_err_deg_median": 0.09238965073353711,
+      "wall_dir_abs_err_deg_p90": 1.6960802707173899,
+      "window_recall": 0.0,
+      "window_precision": 0.0,
+      "window_area_abs_rel_err_median": null,
+      "scale_abs_rel_err_median": 0.0
+    },
+    "nominal_120s|good|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.035706217691517605,
+      "ceiling_abs_err_m_median": 0.04176936598545522,
+      "wall_dir_abs_err_deg_median": 0.026901689677576,
+      "wall_dir_abs_err_deg_p90": 0.05852151464824829,
+      "window_recall": 0.4367816091954023,
+      "window_precision": 0.48717948717948717,
+      "window_area_abs_rel_err_median": 0.29015096692453746,
+      "scale_abs_rel_err_median": 0.016336973528718934
+    },
+    "nominal_120s|good|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.023519826618376816,
+      "ceiling_abs_err_m_median": 0.022313420934592543,
+      "wall_dir_abs_err_deg_median": 0.030456385764015437,
+      "wall_dir_abs_err_deg_p90": 0.05861554453362602,
+      "window_recall": 0.6436781609195402,
+      "window_precision": 0.717948717948718,
+      "window_area_abs_rel_err_median": 0.2922330678402856,
+      "scale_abs_rel_err_median": 0.0
+    },
+    "nominal_120s|dim|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.09927989713630014,
+      "ceiling_abs_err_m_median": 0.07873214826858232,
+      "wall_dir_abs_err_deg_median": 0.20929287268498342,
+      "wall_dir_abs_err_deg_p90": 5.709535749725477,
+      "window_recall": 0.28735632183908044,
+      "window_precision": 0.43103448275862066,
+      "window_area_abs_rel_err_median": 0.432301662626978,
+      "scale_abs_rel_err_median": 0.029276240573014922
+    },
+    "nominal_120s|dim|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.07247763559857212,
+      "ceiling_abs_err_m_median": 0.021096132869652617,
+      "wall_dir_abs_err_deg_median": 0.1381983067061583,
+      "wall_dir_abs_err_deg_p90": 9.090024583456616,
+      "window_recall": 0.3218390804597701,
+      "window_precision": 0.509090909090909,
+      "window_area_abs_rel_err_median": 0.4218741283010936,
+      "scale_abs_rel_err_median": 0.0
+    },
+    "long_240s|good|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.04143620328102382,
+      "ceiling_abs_err_m_median": 0.049647344152573325,
+      "wall_dir_abs_err_deg_median": 0.028077451897985384,
+      "wall_dir_abs_err_deg_p90": 0.45304245533542,
+      "window_recall": 0.6206896551724138,
+      "window_precision": 0.7714285714285715,
+      "window_area_abs_rel_err_median": 0.1292865694799047,
+      "scale_abs_rel_err_median": 0.015637097662587918
+    },
+    "long_240s|good|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.020816339997045907,
+      "ceiling_abs_err_m_median": 0.022183604074091257,
+      "wall_dir_abs_err_deg_median": 0.027022752097039415,
+      "wall_dir_abs_err_deg_p90": 0.528459851447457,
+      "window_recall": 0.7816091954022989,
+      "window_precision": 0.9444444444444444,
+      "window_area_abs_rel_err_median": 0.11062212058949317,
+      "scale_abs_rel_err_median": 0.0
+    },
+    "long_240s|dim|door-scale": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.1773001675425533,
+      "ceiling_abs_err_m_median": 0.06962826148888923,
+      "wall_dir_abs_err_deg_median": 4.8474471268217485,
+      "wall_dir_abs_err_deg_p90": 16.15226670760374,
+      "window_recall": 0.1839080459770115,
+      "window_precision": 0.5925925925925926,
+      "window_area_abs_rel_err_median": 0.13085878025624387,
+      "scale_abs_rel_err_median": 0.025222593810086957
+    },
+    "long_240s|dim|AR": {
+      "n_rooms": 60,
+      "room_area_abs_rel_err_median": 0.10735264828662483,
+      "ceiling_abs_err_m_median": 0.03212151196550872,
+      "wall_dir_abs_err_deg_median": 1.6505195389099612,
+      "wall_dir_abs_err_deg_p90": 16.755316772696524,
+      "window_recall": 0.3793103448275862,
+      "window_precision": 0.8918918918918919,
+      "window_area_abs_rel_err_median": 0.08962053748456955,
+      "scale_abs_rel_err_median": 0.0
+    }
+  },
+  "note": "synthetic scans of synthetic rooms; thresholds of recon/floorplan.py were set by inspecting a handful of rooms (not the evaluation set)."
+}

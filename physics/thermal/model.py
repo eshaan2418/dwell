@@ -68,7 +68,10 @@ def window_irradiance(unit: Unit, weather: pd.DataFrame) -> dict[str, pd.DataFra
         frac = sow[w.id]["sunlit_frac"].to_numpy()
         beam = weather["dni"].fillna(0).to_numpy() * cos_t * frac * incidence_modifier(cos_t)
         svf = vertical_sky_view_factor(ctx.horizon, w.azimuth)
-        diff = weather["dhi"].fillna(0).to_numpy() * svf * 0.9 + weather["ghi"].fillna(0).to_numpy() * GROUND_ALBEDO * 0.5 * 0.9
+        diff = (
+            weather["dhi"].fillna(0).to_numpy() * svf * 0.9
+            + weather["ghi"].fillna(0).to_numpy() * GROUND_ALBEDO * 0.5 * 0.9
+        )
         out[w.id] = pd.DataFrame({"beam": beam, "diffuse": diff}, index=weather.index)
     return out
 
@@ -87,16 +90,27 @@ def room_rc(unit: Unit, room_id: str, p: ThermalParams) -> tuple[RCParams, float
         h_op += 0.35 * af
     frames = [p.frame.get(w.id, "average") for w in wins] or ["average"]
     ach = float(np.mean([ACH_BY_FRAME[f] for f in frames]))
-    rc = RCParams(floor_area=af, h_tr_w=h_w, h_tr_op=h_op,
-                  mass_class=p.mass_class or MASS_BY_WALL[p.wall_type],
-                  heat_setpoint=p.heat_setpoint, cool_setpoint=p.ac_setpoint)
+    rc = RCParams(
+        floor_area=af,
+        h_tr_w=h_w,
+        h_tr_op=h_op,
+        mass_class=p.mass_class or MASS_BY_WALL[p.wall_type],
+        heat_setpoint=p.heat_setpoint,
+        cool_setpoint=p.ac_setpoint,
+    )
     return rc, vol, ach
 
 
-def predict_room_temperatures(unit: Unit, weather: pd.DataFrame, p: ThermalParams,
-                              irr: dict[str, pd.DataFrame] | None = None, tz: str = "America/Toronto",
-                              spinup_days: int = 7, party: float = 0.0,
-                              theta_party: float = 22.0) -> dict[str, pd.DataFrame]:
+def predict_room_temperatures(
+    unit: Unit,
+    weather: pd.DataFrame,
+    p: ThermalParams,
+    irr: dict[str, pd.DataFrame] | None = None,
+    tz: str = "America/Toronto",
+    spinup_days: int = 7,
+    party: float = 0.0,
+    theta_party: float = 22.0,
+) -> dict[str, pd.DataFrame]:
     """Hourly indoor air temperature per room (index = weather index, UTC)."""
     irr = irr if irr is not None else window_irradiance(unit, weather)
     hours_local = weather.index.tz_convert(tz).hour.to_numpy()
@@ -125,8 +139,9 @@ def predict_room_temperatures(unit: Unit, weather: pd.DataFrame, p: ThermalParam
             pre = simulate(rc, te[:k], h_ve[:k], phi_int[:k], phi_sol[:k], h_party=hp, theta_party=theta_party)
             tm0 = float(pre["mass"][-1])
         res = simulate(rc, te, h_ve, phi_int, phi_sol, theta_m0=tm0, h_party=hp, theta_party=theta_party)
-        out[room.id] = pd.DataFrame({"t_air": res["air"], "t_out": te, "phi_sol": phi_sol,
-                                     "phi_hc": res["phi_hc"]}, index=weather.index)
+        out[room.id] = pd.DataFrame(
+            {"t_air": res["air"], "t_out": te, "phi_sol": phi_sol, "phi_hc": res["phi_hc"]}, index=weather.index
+        )
     return out
 
 
@@ -134,5 +149,10 @@ def daily_heat_metrics(ts: pd.DataFrame, tz: str = "America/Toronto") -> pd.Data
     loc = ts["t_air"].copy()
     loc.index = loc.index.tz_convert(tz)
     g = loc.groupby(loc.index.date)
-    return pd.DataFrame({"peak": g.max(), "h_above_26": g.apply(lambda x: float((x > 26).sum())),
-                         "h_above_28": g.apply(lambda x: float((x > 28).sum()))})
+    return pd.DataFrame(
+        {
+            "peak": g.max(),
+            "h_above_26": g.apply(lambda x: float((x > 26).sum())),
+            "h_above_28": g.apply(lambda x: float((x > 28).sum())),
+        }
+    )

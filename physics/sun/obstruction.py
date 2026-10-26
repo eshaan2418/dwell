@@ -56,7 +56,11 @@ def ray_hits(px: float, py: float, az_deg: np.ndarray, p1: np.ndarray, p2: np.nd
 
 
 def horizon_profile(
-    x: float, y: float, z: float, buildings: list[Building], az_grid: np.ndarray = AZ_GRID,
+    x: float,
+    y: float,
+    z: float,
+    buildings: list[Building],
+    az_grid: np.ndarray = AZ_GRID,
     max_dist: float = 2000.0,
 ) -> Horizon:
     p1, p2, h = _segments(buildings)
@@ -71,7 +75,12 @@ def horizon_profile(
 
 
 def tree_transmittance(
-    x: float, y: float, z: float, sun_az: np.ndarray, sun_el: np.ndarray, trees: list[Tree],
+    x: float,
+    y: float,
+    z: float,
+    sun_az: np.ndarray,
+    sun_el: np.ndarray,
+    trees: list[Tree],
     leaf_on: np.ndarray,
 ) -> np.ndarray:
     """Fraction of direct beam transmitted through tree canopies (vertical-cylinder canopies)."""

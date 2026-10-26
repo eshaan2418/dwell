@@ -71,7 +71,7 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
     t0 = dep.start.tz_convert("UTC")
     t1 = t0 + pd.Timedelta(days=dep.days)
     mins = pd.date_range(t0, t1, freq="1min", inclusive="left")
-    wx = weather.loc[t0 - pd.Timedelta(days=8): t1 + pd.Timedelta(hours=1)]
+    wx = weather.loc[t0 - pd.Timedelta(days=8) : t1 + pd.Timedelta(hours=1)]
     hourly_idx = mins.floor("h")
     wh = wx.reindex(hourly_idx)
 
@@ -81,7 +81,10 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
     for r in unit.rooms:
         sw = sensor_window(unit, r.id)
         if sw is not None:
-            offsets[sw.id] = (float(rng.normal(0, 0.12 * sw.width)), float(np.clip(rng.normal(SENSOR_DEPTH_BEHIND_GLASS, 0.03), 0.03, 0.2)))
+            offsets[sw.id] = (
+                float(rng.normal(0, 0.12 * sw.width)),
+                float(np.clip(rng.normal(SENSOR_DEPTH_BEHIND_GLASS, 0.03), 0.03, 0.2)),
+            )
     ctxs = window_contexts(unit)
     sow = sun_on_windows(unit, mins, ctxs, solpos=sp, sensor_offsets=offsets)
     with np.errstate(divide="ignore", invalid="ignore"):
@@ -102,12 +105,25 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
 
     # ---------------- noise (hourly physics with TRUE params + extras) ----------------
     c_inc = float(rng.uniform(1.0, 5.0))
-    noise_true = predict_room_noise(unit, NoiseParams({w.id: w.glazing for w in unit.windows},
-                                                      {w.id: w.frame for w in unit.windows},
-                                                      unit.walls[0].wall_type, c_inc=c_inc))
-    noise_open = predict_room_noise(unit, NoiseParams({w.id: w.glazing for w in unit.windows},
-                                                      {w.id: w.frame for w in unit.windows},
-                                                      unit.walls[0].wall_type, c_inc=c_inc, open_fraction=0.08))
+    noise_true = predict_room_noise(
+        unit,
+        NoiseParams(
+            {w.id: w.glazing for w in unit.windows},
+            {w.id: w.frame for w in unit.windows},
+            unit.walls[0].wall_type,
+            c_inc=c_inc,
+        ),
+    )
+    noise_open = predict_room_noise(
+        unit,
+        NoiseParams(
+            {w.id: w.glazing for w in unit.windows},
+            {w.id: w.frame for w in unit.windows},
+            unit.walls[0].wall_type,
+            c_inc=c_inc,
+            open_fraction=0.08,
+        ),
+    )
     # canyon gain for facades facing nearby buildings
     canyon = {}
     for ctx in ctxs:
@@ -127,12 +143,17 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
     opens_windows = bool(rng.random() < 0.6) and not unit.has_ac
     vent_ach = float(rng.uniform(1.5, 5.0)) if opens_windows else 0.0
     party_h = float(rng.uniform(0.5, 1.5))  # W/K per m2 floor to neighbours
-    tp = ThermalParams({w.id: w.glazing for w in unit.windows}, {w.id: w.frame for w in unit.windows},
-                       unit.walls[0].wall_type, u_wall=unit.walls[0].u_value,
-                       internal_gain_scale=float(rng.lognormal(0, 0.35)), night_vent_ach=vent_ach,
-                       blinds_factor=float(rng.uniform(0.6, 1.0)),
-                       ac_setpoint=float(rng.uniform(22.5, 26.0)) if unit.has_ac and rng.random() < 0.85 else None,
-                       heat_setpoint=float(rng.uniform(19.5, 22.5)))
+    tp = ThermalParams(
+        {w.id: w.glazing for w in unit.windows},
+        {w.id: w.frame for w in unit.windows},
+        unit.walls[0].wall_type,
+        u_wall=unit.walls[0].u_value,
+        internal_gain_scale=float(rng.lognormal(0, 0.35)),
+        night_vent_ach=vent_ach,
+        blinds_factor=float(rng.uniform(0.6, 1.0)),
+        ac_setpoint=float(rng.uniform(22.5, 26.0)) if unit.has_ac and rng.random() < 0.85 else None,
+        heat_setpoint=float(rng.uniform(19.5, 22.5)),
+    )
     irr = window_irradiance(unit, wth)
     temps = predict_room_temperatures(unit, wth, tp, irr=irr, spinup_days=0, party=party_h)
 
@@ -143,7 +164,9 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
         assert sw is not None
         # --- lux
         beam = sow[sw.id]["sensor_beam"].to_numpy() * sun_vis
-        blinds_days = {d: bool(sw.has_blinds and rng.random() < (0.3 if r.kind == "bedroom" else 0.12)) for d in uniq_days}
+        blinds_days = {
+            d: bool(sw.has_blinds and rng.random() < (0.3 if r.kind == "bedroom" else 0.12)) for d in uniq_days
+        }
         blinds = np.array([blinds_days[d] for d in local_days])
         ctx = next(c for c in ctxs if c.window.id == sw.id)
         svf = vertical_sky_view_factor(ctx.horizon, sw.azimuth)
@@ -188,10 +211,17 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
         t_meas = t_air + 0.3 + t_bias + rng.normal(0, 0.08, len(mins))
         rh = np.clip(55 + rng.normal(0, 5) - 2.0 * (t_meas - 22), 15, 95)
 
-        rooms_out[r.id] = pd.DataFrame({
-            "lux": np.round(lux, 1), "temp_c": np.round(t_meas, 2), "rh_pct": np.round(rh, 1),
-            "laeq": np.round(measured, 1), "lamax": np.round(lamax, 1), "la90": np.round(la90, 1),
-        }, index=mins)
+        rooms_out[r.id] = pd.DataFrame(
+            {
+                "lux": np.round(lux, 1),
+                "temp_c": np.round(t_meas, 2),
+                "rh_pct": np.round(rh, 1),
+                "laeq": np.round(measured, 1),
+                "lamax": np.round(lamax, 1),
+                "la90": np.round(la90, 1),
+            },
+            index=mins,
+        )
         traffic_only = base + 10 * np.log10(rng.gamma(veh_per_min, 1.0 / veh_per_min))
         truth[r.id] = {
             "true_sensor_sun_min": pd.Series(true_sensor_sun.astype(float), index=mins),
@@ -201,9 +231,18 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
             "t_air_true": temps[r.id]["t_air"],
         }
         kit_cal[r.id] = {"mic_floor": floor, "cal_err_db": cal_err, "temp_bias": t_bias}
-    return {"rooms": rooms_out, "truth": truth, "kit": kit_cal,
-            "behaviour": {"opens_windows": opens_windows, "vent_ach": vent_ach, "c_inc": c_inc,
-                          "ac": tp.ac_setpoint, "gain_scale": tp.internal_gain_scale}}
+    return {
+        "rooms": rooms_out,
+        "truth": truth,
+        "kit": kit_cal,
+        "behaviour": {
+            "opens_windows": opens_windows,
+            "vent_ach": vent_ach,
+            "c_inc": c_inc,
+            "ac": tp.ac_setpoint,
+            "gain_scale": tp.internal_gain_scale,
+        },
+    }
 
 
 def total_db(levels: np.ndarray) -> float:

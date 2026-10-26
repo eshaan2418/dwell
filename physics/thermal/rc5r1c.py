@@ -16,8 +16,11 @@ RHO_CP_AIR = 1200.0  # J/m3K
 
 # ISO 13790 Table 12 (A_m factor x A_f, C_m per m2 A_f in J/K)
 MASS_CLASSES = {
-    "very_light": (2.5, 80e3), "light": (2.5, 110e3), "medium": (2.5, 165e3),
-    "heavy": (3.0, 260e3), "very_heavy": (3.5, 370e3),
+    "very_light": (2.5, 80e3),
+    "light": (2.5, 110e3),
+    "medium": (2.5, 165e3),
+    "heavy": (3.0, 260e3),
+    "very_heavy": (3.5, 370e3),
 }
 
 
@@ -45,9 +48,16 @@ class RCParams:
         return MASS_CLASSES[self.mass_class][1] * self.floor_area
 
 
-def simulate(p: RCParams, theta_e: np.ndarray, h_ve: np.ndarray, phi_int: np.ndarray,
-             phi_sol: np.ndarray, theta_m0: float | None = None, h_party: float = 0.0,
-             theta_party: float = 22.0) -> dict[str, np.ndarray]:
+def simulate(
+    p: RCParams,
+    theta_e: np.ndarray,
+    h_ve: np.ndarray,
+    phi_int: np.ndarray,
+    phi_sol: np.ndarray,
+    theta_m0: float | None = None,
+    h_party: float = 0.0,
+    theta_party: float = 22.0,
+) -> dict[str, np.ndarray]:
     """Hourly simulation. All inputs are per-hour arrays (h_ve in W/K). Returns node temps and HC power.
 
     ``h_party`` (W/K) optionally couples the air node to neighbouring units at ``theta_party`` using the
@@ -111,10 +121,12 @@ def steady_state(p: RCParams, theta_e: float, h_ve: float, phi_int: float, phi_s
     phi_m = p.a_m / p.a_t * (0.5 * phi_int + phi_sol)
     phi_st = (1 - p.a_m / p.a_t - p.h_tr_w / (9.1 * p.a_t)) * (0.5 * phi_int + phi_sol)
     # unknowns [air, s, m]
-    g = np.array([
-        [h_ve + h_tr_is, -h_tr_is, 0.0],
-        [-h_tr_is, h_tr_is + p.h_tr_w + h_tr_ms, -h_tr_ms],
-        [0.0, -h_tr_ms, h_tr_ms + h_tr_em],
-    ])
+    g = np.array(
+        [
+            [h_ve + h_tr_is, -h_tr_is, 0.0],
+            [-h_tr_is, h_tr_is + p.h_tr_w + h_tr_ms, -h_tr_ms],
+            [0.0, -h_tr_ms, h_tr_ms + h_tr_em],
+        ]
+    )
     b = np.array([phi_ia + h_ve * theta_e, phi_st + p.h_tr_w * theta_e, phi_m + h_tr_em * theta_e])
     return np.linalg.solve(g, b)

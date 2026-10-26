@@ -74,8 +74,11 @@ def window_contexts(unit: Unit, include_trees_in_horizon: bool = False) -> list[
 
 
 def sun_on_windows(
-    unit: Unit, times: pd.DatetimeIndex, contexts: list[WindowContext] | None = None,
-    use_trees: bool = True, solpos: pd.DataFrame | None = None,
+    unit: Unit,
+    times: pd.DatetimeIndex,
+    contexts: list[WindowContext] | None = None,
+    use_trees: bool = True,
+    solpos: pd.DataFrame | None = None,
     sensor_offsets: dict[str, tuple[float, float]] | None = None,
 ) -> dict[str, pd.DataFrame]:
     """Per window: sunlit glazing area [m2], sunlit fraction, sensor-point sunlit flag (if room sensor
@@ -92,8 +95,15 @@ def sun_on_windows(
         visible = up & (sp["elevation"].to_numpy() > ctx.horizon.at(sp["azimuth"].to_numpy()))
         trans = np.ones(len(times))
         if use_trees and unit.trees:
-            trans = tree_transmittance(w.cx, w.cy, w.sill_z + w.height / 2, sp["azimuth"].to_numpy(),
-                                       sp["elevation"].to_numpy(), unit.trees, leaf)
+            trans = tree_transmittance(
+                w.cx,
+                w.cy,
+                w.sill_z + w.height / 2,
+                sp["azimuth"].to_numpy(),
+                sp["elevation"].to_numpy(),
+                unit.trees,
+                leaf,
+            )
         beam = visible * trans
         area = rect_area(rect) * beam
         # sensor point on the sill: ray to glass plane must land inside the aperture
@@ -106,9 +116,14 @@ def sun_on_windows(
         vs = SENSOR_HEIGHT_ABOVE_SILL + tau_g * s[:, 2]
         in_ap = (us > rect[:, 0]) & (us < rect[:, 1]) & (vs > rect[:, 2]) & (vs < rect[:, 3]) & (s_n > 1e-6)
         out[w.id] = pd.DataFrame(
-            {"sunlit_area": area, "sunlit_frac": area / (w.width * w.height),
-             "sensor_beam": np.where(in_ap, beam, 0.0), "beam_factor": beam,
-             "sun_el": sp["elevation"].to_numpy(), "sun_az": sp["azimuth"].to_numpy()},
+            {
+                "sunlit_area": area,
+                "sunlit_frac": area / (w.width * w.height),
+                "sensor_beam": np.where(in_ap, beam, 0.0),
+                "beam_factor": beam,
+                "sun_el": sp["elevation"].to_numpy(),
+                "sun_az": sp["azimuth"].to_numpy(),
+            },
             index=times,
         )
     return out
@@ -126,16 +141,23 @@ def sensor_window(unit: Unit, room_id: str) -> Window | None:
     return min(wins, key=lambda w: (w.cx - sx) ** 2 + (w.cy - sy) ** 2)
 
 
-def room_sun_timeseries(unit: Unit, times: pd.DatetimeIndex, per_window: dict[str, pd.DataFrame],
-                        min_area_m2: float = 0.1) -> dict[str, pd.DataFrame]:
+def room_sun_timeseries(
+    unit: Unit, times: pd.DatetimeIndex, per_window: dict[str, pd.DataFrame], min_area_m2: float = 0.1
+) -> dict[str, pd.DataFrame]:
     out = {}
     for r in unit.rooms:
         wins = unit.windows_of(r.id)
         area = sum((per_window[w.id]["sunlit_area"] for w in wins), start=pd.Series(0.0, index=times))
         sw = sensor_window(unit, r.id)
         sensor = per_window[sw.id]["sensor_beam"] if sw is not None else pd.Series(0.0, index=times)
-        out[r.id] = pd.DataFrame({"sunlit_area": area, "room_sun": (area >= min_area_m2).astype(float),
-                                  "sensor_sun": (sensor > 0.5).astype(float)}, index=times)
+        out[r.id] = pd.DataFrame(
+            {
+                "sunlit_area": area,
+                "room_sun": (area >= min_area_m2).astype(float),
+                "sensor_sun": (sensor > 0.5).astype(float),
+            },
+            index=times,
+        )
     return out
 
 
@@ -145,8 +167,9 @@ def daily_sun_hours(ts: pd.DataFrame, p_sun: pd.Series | None, step_h: float, tz
     ``p_sun`` is the probability that the sun disc is unobscured by cloud at each time step
     (1.0 = clear-sky potential)."""
     p = p_sun.reindex(ts.index).fillna(0.0) if p_sun is not None else 1.0
-    df = pd.DataFrame({"room_h": ts["room_sun"] * p * step_h, "sensor_h": ts["sensor_sun"] * p * step_h},
-                      index=ts.index)
+    df = pd.DataFrame(
+        {"room_h": ts["room_sun"] * p * step_h, "sensor_h": ts["sensor_sun"] * p * step_h}, index=ts.index
+    )
     return df.groupby(df.index.tz_convert(tz).date).sum()
 
 
@@ -171,8 +194,9 @@ def sun_patch_polygon(unit: Unit, w: Window, sun_az: float, sun_el: float) -> Po
     return clipped if clipped.area > 1e-4 else None
 
 
-def average_daylight_factor(unit: Unit, room_id: str, contexts: list[WindowContext],
-                            tau_vis: float = 0.7, r_mean: float = 0.5) -> float:
+def average_daylight_factor(
+    unit: Unit, room_id: str, contexts: list[WindowContext], tau_vis: float = 0.7, r_mean: float = 0.5
+) -> float:
     """BRE average daylight factor (%), ADF = T * Aw * theta / (A * (1 - R^2)), theta = visible sky angle.
 
     theta (deg) is derived from the vertical sky view factor: unobstructed vertical window -> 90 deg.

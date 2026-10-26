@@ -47,8 +47,11 @@ def _one(args: tuple[int, int, str]) -> dict:
         ol.index = (ol.index.tz_convert(TZ) - pd.Timedelta(hours=12)).normalize().date
         true_open = ol.groupby(level=0).max().astype(bool)
         both = feats.index.intersection(true_open.index)
-        res["rooms"][rid] = {"grid": grid, "true_mean_h": float(true_h.mean()),
-                             "nights": [{**feats.loc[k].to_dict(), "open": bool(true_open[k])} for k in both]}
+        res["rooms"][rid] = {
+            "grid": grid,
+            "true_mean_h": float(true_h.mean()),
+            "nights": [{**feats.loc[k].to_dict(), "open": bool(true_open[k])} for k in both],
+        }
     return res
 
 
@@ -57,8 +60,10 @@ def jobs(seed: int, n: int) -> list[tuple[int, int, str]]:
     rng = np.random.default_rng(seed)
     starts = pd.date_range("2025-01-05", "2025-12-15", freq="7D")
     summer = pd.date_range("2025-06-01", "2025-08-20", freq="5D")
-    return [(seed, i, str((summer if i % 2 else starts)[rng.integers(len(summer if i % 2 else starts))].date()))
-            for i in range(n)]
+    return [
+        (seed, i, str((summer if i % 2 else starts)[rng.integers(len(summer if i % 2 else starts))].date()))
+        for i in range(n)
+    ]
 
 
 def summarise(results: list[dict]) -> pd.DataFrame:
@@ -77,9 +82,11 @@ def main() -> None:
     th, lm = best.split("_")
     gval = summarise(val)
     per_room_err = gval[best]
+
     def nights(res: list[dict]) -> pd.DataFrame:
         return pd.DataFrame([n for r in res for v in r["rooms"].values() for n in v["nights"]]).fillna(
-            {"slope": 0.0, "dt_io": 0.0})
+            {"slope": 0.0, "dt_io": 0.0}
+        )
 
     def confusion(df: pd.DataFrame, st: float, dt: float, lt: float) -> dict:
         p = ((df.slope < st) & (df.dt_io > dt)) | (df.loud > lt)
@@ -87,15 +94,30 @@ def main() -> None:
         tp, fp = int((p & t).sum()), int((p & ~t).sum())
         fn, tn = int((~p & t).sum()), int((~p & ~t).sum())
         f1 = 2 * tp / max(2 * tp + fp + fn, 1)
-        return {"tp": tp, "fp": fp, "fn": fn, "tn": tn, "precision": tp / max(tp + fp, 1),
-                "recall": tp / max(tp + fn, 1), "f1": f1}
+        return {
+            "tp": tp,
+            "fp": fp,
+            "fn": fn,
+            "tn": tn,
+            "precision": tp / max(tp + fp, 1),
+            "recall": tp / max(tp + fn, 1),
+            "f1": f1,
+        }
 
     ncal, nval = nights(cal), nights(val)
-    cands = [(st, dt, lt) for st in [-0.1, -0.15, -0.2, -0.25, -0.35] for dt in [0.0, 1.0, 2.0, 3.0]
-             for lt in [3.0, 4.0, 6.0, 8.0, 99.0]]
+    cands = [
+        (st, dt, lt)
+        for st in [-0.1, -0.15, -0.2, -0.25, -0.35]
+        for dt in [0.0, 1.0, 2.0, 3.0]
+        for lt in [3.0, 4.0, 6.0, 8.0, 99.0]
+    ]
     st, dt, lt = max(cands, key=lambda c: confusion(ncal, *c)["f1"])
-    open_val = {**confusion(nval, st, dt, lt), "thresholds": {"slope": st, "dt_io": dt, "loud": lt},
-                "n_nights": int(len(nval)), "n_open": int(nval.open.sum())}
+    open_val = {
+        **confusion(nval, st, dt, lt),
+        "thresholds": {"slope": st, "dt_io": dt, "loud": lt},
+        "n_nights": int(len(nval)),
+        "n_open": int(nval.open.sum()),
+    }
     rng = np.random.default_rng(0)
     boots = [float(np.mean(rng.choice(per_room_err.to_numpy(), len(per_room_err)))) for _ in range(2000)]
     write_result(
@@ -112,8 +134,10 @@ def main() -> None:
             "open_window_heuristic_validation": open_val,
             "note": "Target noise of sensor-derived sun hours vs simulator truth (synthetic sensor model).",
         },
-        seed=101, config={"thetas": THETAS, "luxmins": LUXMINS, "n_cal": 30, "n_val": 30, "days": 10},
-        data_hash=hash_paths(["data/weather/toronto_hourly_2016_2025.csv.gz", "synth"]), data_kind="synthetic",
+        seed=101,
+        config={"thetas": THETAS, "luxmins": LUXMINS, "n_cal": 30, "n_val": 30, "days": 10},
+        data_hash=hash_paths(["data/weather/toronto_hourly_2016_2025.csv.gz", "synth"]),
+        data_kind="synthetic",
     )
     print("best", best, "val err", per_room_err.mean(), "open", open_val)
 

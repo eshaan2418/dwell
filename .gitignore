@@ -25,3 +25,7 @@ results/**/tmp/
 .DS_Store
 .env
 data/weather/cache/
+data/models/
+app/public/reports/*
+!app/public/reports/.gitkeep
+*.egg-info/

@@ -149,16 +149,23 @@ class Unit:
     @staticmethod
     def from_dict(d: dict[str, Any]) -> Unit:
         d = dict(d)
-        d["rooms"] = [Room(**{**r, "polygon": [tuple(p) for p in r["polygon"]],
-                              "sensor_xyz": tuple(r["sensor_xyz"]) if r.get("sensor_xyz") else None})
-                      for r in d["rooms"]]
+        d["rooms"] = [
+            Room(
+                **{
+                    **r,
+                    "polygon": [tuple(p) for p in r["polygon"]],
+                    "sensor_xyz": tuple(r["sensor_xyz"]) if r.get("sensor_xyz") else None,
+                }
+            )
+            for r in d["rooms"]
+        ]
         d["windows"] = [Window(**w) for w in d["windows"]]
         d["walls"] = [ExteriorWall(**w) for w in d["walls"]]
-        d["context_buildings"] = [Building(**{**b, "footprint": [tuple(p) for p in b["footprint"]]})
-                                  for b in d.get("context_buildings", [])]
+        d["context_buildings"] = [
+            Building(**{**b, "footprint": [tuple(p) for p in b["footprint"]]}) for b in d.get("context_buildings", [])
+        ]
         d["roads"] = [Road(**{**r, "coords": [tuple(p) for p in r["coords"]]}) for r in d.get("roads", [])]
-        d["transit"] = [TransitLine(**{**t, "coords": [tuple(p) for p in t["coords"]]})
-                        for t in d.get("transit", [])]
+        d["transit"] = [TransitLine(**{**t, "coords": [tuple(p) for p in t["coords"]]}) for t in d.get("transit", [])]
         d["trees"] = [Tree(**t) for t in d.get("trees", [])]
         return Unit(**d)
 

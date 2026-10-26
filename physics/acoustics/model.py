@@ -19,25 +19,73 @@ import numpy as np
 import shapely
 from shapely.geometry import LineString, Polygon
 
-from core.scene import Building, Road, TransitLine, Unit
+from core.scene import Building, Road, Unit
 from physics.acoustics.insulation import absorption_area, facade_r, indoor_level
 from physics.acoustics.levels import (
-    A_WEIGHT, AIR_ABS_DB_PER_M, C_SOUND, OCTAVES, TRAFFIC_SPECTRUM_A, db_mean, db_sum,
+    A_WEIGHT,
+    AIR_ABS_DB_PER_M,
+    C_SOUND,
+    OCTAVES,
+    TRAFFIC_SPECTRUM_A,
+    db_mean,
+    db_sum,
 )
 
 NIGHT_HOURS = [23, 0, 1, 2, 3, 4, 5, 6]
 
 # Fraction of daily traffic in each local hour (urban arterial weekday shape; sums to 1)
-_PROFILE = np.array([1.0, 0.6, 0.45, 0.4, 0.6, 1.6, 4.2, 6.4, 6.6, 5.6, 5.2, 5.4,
-                     5.6, 5.7, 6.0, 6.8, 7.5, 7.3, 6.0, 4.6, 3.8, 3.3, 2.6, 1.8])
+_PROFILE = np.array(
+    [
+        1.0,
+        0.6,
+        0.45,
+        0.4,
+        0.6,
+        1.6,
+        4.2,
+        6.4,
+        6.6,
+        5.6,
+        5.2,
+        5.4,
+        5.6,
+        5.7,
+        6.0,
+        6.8,
+        7.5,
+        7.3,
+        6.0,
+        4.6,
+        3.8,
+        3.3,
+        2.6,
+        1.8,
+    ]
+)
 HOURLY_TRAFFIC_PROFILE = _PROFILE / _PROFILE.sum()
 NIGHT_HEAVY_FACTOR = 1.3  # heavy share relative to daily mean at night (deliveries)
 
 # Default AADT by OSM road class (Toronto-scale assumption; used only when counts are missing)
-AADT_BY_CLASS = {"motorway": 120000, "trunk": 50000, "primary": 25000, "secondary": 14000,
-                 "tertiary": 7000, "residential": 1200, "service": 300, "living_street": 200}
-SPEED_BY_CLASS = {"motorway": 90, "trunk": 70, "primary": 50, "secondary": 50, "tertiary": 40,
-                  "residential": 30, "service": 20, "living_street": 15}
+AADT_BY_CLASS = {
+    "motorway": 120000,
+    "trunk": 50000,
+    "primary": 25000,
+    "secondary": 14000,
+    "tertiary": 7000,
+    "residential": 1200,
+    "service": 300,
+    "living_street": 200,
+}
+SPEED_BY_CLASS = {
+    "motorway": 90,
+    "trunk": 70,
+    "primary": 50,
+    "secondary": 50,
+    "tertiary": 40,
+    "residential": 30,
+    "service": 20,
+    "living_street": 15,
+}
 
 
 def lw_light(v_kmh: float) -> float:
@@ -137,8 +185,9 @@ class SourceLine:
     lw_per_m_by_hour: np.ndarray  # (24,) A-weighted
 
 
-def build_sources(unit: Unit, aadt_scale: float = 1.0, emission_offset_db: float = 0.0,
-                  transit_scale: float = 1.0, step: float = 2.0) -> list[SourceLine]:
+def build_sources(
+    unit: Unit, aadt_scale: float = 1.0, emission_offset_db: float = 0.0, transit_scale: float = 1.0, step: float = 2.0
+) -> list[SourceLine]:
     out = []
     for r in unit.roads:
         pts, ln = discretise(r.coords, step)
@@ -146,15 +195,28 @@ def build_sources(unit: Unit, aadt_scale: float = 1.0, emission_offset_db: float
         out.append(SourceLine(r.id, "road", np.c_[pts, np.full(len(pts), 0.5)], ln, lw))
     for t in unit.transit:
         pts, ln = discretise(t.coords, step)
-        lw = np.array([line_lw_per_m(t.night_trips_per_hour[h] * transit_scale, t.speed_kmh,
-                                     transit_lw(t.mode, t.speed_kmh)) for h in range(24)]) + emission_offset_db
-        out.append(SourceLine(t.id, t.mode if t.mode != "subway_surface" else "rail",
-                              np.c_[pts, np.full(len(pts), 1.0)], ln, lw))
+        lw = (
+            np.array(
+                [
+                    line_lw_per_m(
+                        t.night_trips_per_hour[h] * transit_scale, t.speed_kmh, transit_lw(t.mode, t.speed_kmh)
+                    )
+                    for h in range(24)
+                ]
+            )
+            + emission_offset_db
+        )
+        out.append(
+            SourceLine(
+                t.id, t.mode if t.mode != "subway_surface" else "rail", np.c_[pts, np.full(len(pts), 1.0)], ln, lw
+            )
+        )
     return out
 
 
-def incident_levels(rcv: np.ndarray, sources: list[SourceLine], obs: Obstacles,
-                    max_dist: float = 500.0) -> dict[str, np.ndarray]:
+def incident_levels(
+    rcv: np.ndarray, sources: list[SourceLine], obs: Obstacles, max_dist: float = 500.0
+) -> dict[str, np.ndarray]:
     """Free-field incident band levels at a receiver per source line: {id: (24, bands)} unweighted."""
     out = {}
     spec_unweighted = TRAFFIC_SPECTRUM_A - A_WEIGHT
@@ -188,8 +250,9 @@ class NoiseParams:
     open_fraction: float = 0.0  # fraction of window area open (ajar scenario)
 
 
-def predict_room_noise(unit: Unit, p: NoiseParams, sources: list[SourceLine] | None = None,
-                       incident_cache: dict | None = None) -> dict[str, dict]:
+def predict_room_noise(
+    unit: Unit, p: NoiseParams, sources: list[SourceLine] | None = None, incident_cache: dict | None = None
+) -> dict[str, dict]:
     """Hourly indoor/outdoor A-levels per room and source attribution."""
     obs = Obstacles.from_buildings(unit.context_buildings)
     sources = sources if sources is not None else build_sources(unit, p.aadt_scale, p.emission_offset_db)
@@ -201,11 +264,11 @@ def predict_room_noise(unit: Unit, p: NoiseParams, sources: list[SourceLine] | N
         vol = Polygon(room.polygon).area * room.ceiling_height
         a_abs = absorption_area(vol, room.furnishing)
         contrib_by_src: dict[str, list[np.ndarray]] = {}
+        band_night: list[np.ndarray] = []
         outdoor_facade = []
         for wi, wall in enumerate(walls):
             az = np.radians(wall.azimuth)
-            rcv = np.array([wall.cx + 0.5 * np.sin(az), wall.cy + 0.5 * np.cos(az),
-                            wall.base_z + 1.5])
+            rcv = np.array([wall.cx + 0.5 * np.sin(az), wall.cy + 0.5 * np.cos(az), wall.base_z + 1.5])
             key = (room.id, wi)
             if incident_cache is not None and key in incident_cache:
                 inc = incident_cache[key]
@@ -214,14 +277,17 @@ def predict_room_noise(unit: Unit, p: NoiseParams, sources: list[SourceLine] | N
                 if incident_cache is not None:
                     incident_cache[key] = inc
             wins = [w for w in unit.windows_of(room.id) if abs(((w.azimuth - wall.azimuth + 180) % 360) - 180) < 1]
-            win_list = [(w.width * w.height, p.glazing.get(w.id, "double"), p.frame.get(w.id, "average"),
-                         w.frame_fraction) for w in wins]
+            win_list = [
+                (w.width * w.height, p.glazing.get(w.id, "double"), p.frame.get(w.id, "average"), w.frame_fraction)
+                for w in wins
+            ]
             open_area = p.open_fraction * sum(w.width * w.height for w in wins)
             s_area = wall.length * wall.height
             r_band = facade_r(s_area, p.wall_type, win_list, open_area)
             for sid, band in inc.items():
                 lin = indoor_level(band, r_band, s_area, a_abs, p.c_inc)
                 contrib_by_src.setdefault(sid, []).append(lin)
+                band_night.append(lin[NIGHT_HOURS])
             outdoor_facade.append(a_level(db_sum(np.stack(list(inc.values())), axis=0)) if inc else None)
         kinds = {s.id: s.kind for s in sources}
         per_src_a = {sid: a_level(db_sum(np.stack(v), axis=0)) for sid, v in contrib_by_src.items()}
@@ -233,9 +299,13 @@ def predict_room_noise(unit: Unit, p: NoiseParams, sources: list[SourceLine] | N
         out[room.id] = {
             "indoor_hourly": indoor_hourly,
             "outdoor_facade_hourly": db_sum(np.stack([o for o in outdoor_facade if o is not None]), axis=0)
-            if outdoor_facade else np.full(24, -np.inf),
+            if outdoor_facade
+            else np.full(24, -np.inf),
             "by_kind_hourly": by_kind,
             "night_laeq": float(db_mean(indoor_hourly[NIGHT_HOURS])),
+            "indoor_band_night": db_mean(db_sum(np.stack(band_night), axis=0), axis=0)
+            if band_night
+            else np.full(len(OCTAVES), -np.inf),
         }
     return out
 

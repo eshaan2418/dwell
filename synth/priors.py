@@ -68,8 +68,11 @@ def wall_type_probs(kind: str, year: int) -> list[float]:
 
 
 U_WALL_TRUE = {  # (median, log-sd) by wall type and old/new
-    ("light_frame", True): (0.7, 0.3), ("light_frame", False): (0.35, 0.25),
-    ("masonry", True): (1.6, 0.25), ("masonry", False): (0.6, 0.3),
-    ("concrete", True): (1.2, 0.3), ("concrete", False): (0.55, 0.3),
+    ("light_frame", True): (0.7, 0.3),
+    ("light_frame", False): (0.35, 0.25),
+    ("masonry", True): (1.6, 0.25),
+    ("masonry", False): (0.6, 0.3),
+    ("concrete", True): (1.2, 0.3),
+    ("concrete", False): (0.55, 0.3),
 }
 WALL_THICKNESS = {"light_frame": (0.18, 0.03), "masonry": (0.38, 0.05), "concrete": (0.27, 0.04)}

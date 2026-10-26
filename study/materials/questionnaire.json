@@ -1,0 +1,97 @@
+{
+  "schema": "dwell-study-questionnaire/1",
+  "version": "1.0 (2026-10-24, pre-registration draft)",
+  "notes": "Machine-readable copy of study/materials/questionnaire.md. 'column' = the CSV column the answer is entered into (study/README.md, Data formats). Likert items are 1-7 (1 = strongly disagree, 7 = strongly agree) unless stated.",
+  "sections": [
+    {
+      "id": "preferences",
+      "when": "start of session, before any unit is shown",
+      "file": "participants.csv",
+      "items": [
+        {
+          "id": "points",
+          "type": "allocation",
+          "total": 100,
+          "step": 5,
+          "text": "Imagine you are choosing your next apartment and everything else (rent, size, location, layout) is equal. Split 100 points across these three qualities according to how much each matters to you. More points = more important. You may give 0 to a quality you do not care about.",
+          "options": [
+            {"key": "quiet", "label": "Quiet at night in the bedroom (little traffic / street / transit noise)", "column": "w_quiet"},
+            {"key": "sunny", "label": "Direct sunlight in the living room in winter", "column": "w_sunny"},
+            {"key": "cool", "label": "Staying cool on hot summer days (lower indoor peak temperature)", "column": "w_cool"}
+          ],
+          "validation": "integers in steps of 5, each >= 0, sum = 100"
+        },
+        {
+          "id": "ranking",
+          "type": "forced_ranking",
+          "text": "Now rank the same three qualities from most important (1) to least important (3). No ties.",
+          "options": [
+            {"key": "quiet", "column": "rank_quiet"},
+            {"key": "sunny", "column": "rank_sunny"},
+            {"key": "cool", "column": "rank_cool"}
+          ],
+          "validation": "a permutation of 1, 2, 3; if it contradicts the points (a lower-ranked quality got strictly more points) the experimenter asks once 'Your points and ranking disagree - which reflects your view?' and corrects the one the participant chooses; note it in 'notes'"
+        }
+      ]
+    },
+    {
+      "id": "per_pair",
+      "when": "after each of the K pairs",
+      "file": "responses.csv",
+      "items": [
+        {
+          "id": "choice",
+          "type": "binary_choice",
+          "text": "If these were the only two options at the same rent, which apartment would you choose to live in?",
+          "options": ["Apartment A (shown first)", "Apartment B (shown second)"],
+          "column": "chosen_unit",
+          "entry": "enter the unit ID of the chosen apartment (unit_a or unit_b from the schedule)"
+        },
+        {
+          "id": "confidence",
+          "type": "likert7",
+          "text": "How confident are you that this apartment would actually suit you better on the qualities you care about?",
+          "anchors": {"1": "not at all confident", "4": "moderately confident", "7": "completely confident"},
+          "column": "confidence"
+        },
+        {
+          "id": "probability_probe",
+          "type": "probability",
+          "condition": "only on trials with probe = True in the schedule (all report trials)",
+          "text_by_dim": {
+            "quiet": "What is the probability (0-100 %) that Apartment A's bedroom is QUIETER at night than Apartment B's?",
+            "sunny": "What is the probability (0-100 %) that Apartment A's living room gets MORE direct winter sun than Apartment B's?",
+            "cool": "What is the probability (0-100 %) that Apartment A stays COOLER on hot summer days than Apartment B?"
+          },
+          "help": "50 % means 'no idea / equally likely', 100 % means 'certain A is', 0 % means 'certain B is'. Any value is allowed; steps of 5 are fine.",
+          "column": "probe_p_a",
+          "dim_column": "probe_dim"
+        }
+      ]
+    },
+    {
+      "id": "end_of_session",
+      "when": "after the last pair",
+      "file": "participants.csv",
+      "scale": "likert7 (1 = strongly disagree ... 7 = strongly agree)",
+      "items": [
+        {"id": "useful_1", "column": "useful_1", "construct": "usefulness", "text": "The Dwell reports helped me compare the apartments on the qualities I care about."},
+        {"id": "useful_2", "column": "useful_2", "construct": "usefulness", "text": "I would want a report like this before signing a lease."},
+        {"id": "useful_3", "column": "useful_3", "construct": "usefulness", "text": "The reports told me things I could not have judged from the video tour."},
+        {"id": "trust_1", "column": "trust_1", "construct": "trust", "text": "I trusted the numbers in the Dwell reports."},
+        {"id": "trust_2", "column": "trust_2", "construct": "trust", "text": "I understood what the ranges (intervals) in the reports meant."},
+        {"id": "trust_3", "column": "trust_3", "construct": "trust", "reverse_keyed": true, "text": "I would want to double-check everything the report said before relying on it."},
+        {"id": "trust_4", "column": "trust_4", "construct": "trust", "text": "When the ranges of two apartments overlapped, I relied on the report less."},
+        {"id": "attention", "column": "attention_pass", "construct": "attention_check", "type": "single_choice",
+         "text": "To show you are reading carefully, please select 'Somewhat disagree' for this statement.",
+         "options": ["Strongly disagree", "Disagree", "Somewhat disagree", "Neither", "Somewhat agree", "Agree", "Strongly agree"],
+         "correct": "Somewhat disagree", "entry": "TRUE if correct else FALSE"},
+        {"id": "knows_unit", "column": "knows_a_unit", "type": "yes_no",
+         "text": "Did you recognise any of the apartments, or do you know someone who lives in one of them?",
+         "entry": "TRUE if yes (participant is excluded from analysis; their data are kept only as excluded)"},
+        {"id": "comments", "column": "notes", "type": "free_text", "optional": true,
+         "text": "Anything else you'd like to tell us about the reports or the apartments? (Do not include names or addresses.)"}
+      ]
+    }
+  ]
+}

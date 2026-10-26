@@ -3,10 +3,14 @@
 from __future__ import annotations
 
 import os
+
+# gradient boosting runs inside thread pools: cap OpenMP threads per fit to avoid oversubscription
+os.environ.setdefault("OMP_NUM_THREADS", "2")
+from collections.abc import Callable
 from concurrent.futures import ProcessPoolExecutor
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import pandas as pd
 

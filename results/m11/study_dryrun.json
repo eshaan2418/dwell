@@ -1,0 +1,566 @@
+{
+  "provenance": {
+    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "dirty": true,
+    "data_hash": "74e6f1edf127cd609c5d756e19d522914b094dcde10a85cf80092e60c084f2f8",
+    "data_kind": "synthetic",
+    "seed": 20261024,
+    "config": {
+      "n_coverage": 200,
+      "n_coverage_glmm": 200,
+      "n_power": 500,
+      "n_power_glmm": 200,
+      "power_tie_rate": 0.2,
+      "power_extra": [
+        [
+          40,
+          8,
+          0.75
+        ],
+        [
+          30,
+          12,
+          0.75
+        ],
+        [
+          30,
+          8,
+          0.8
+        ]
+      ],
+      "power_N": [
+        15,
+        20,
+        30
+      ],
+      "power_K": [
+        6,
+        8
+      ],
+      "sim": {
+        "n_participants": 24,
+        "k": 6,
+        "n_units": null,
+        "p_base": 0.6,
+        "p_report": 0.75,
+        "sd_participant": 0.5,
+        "sd_pair": 0.3,
+        "conf_base": 4.3,
+        "conf_report": 0.4,
+        "conf_consistent": 0.3,
+        "conf_overlap_report": -0.6,
+        "conf_sd_participant": 0.7,
+        "conf_sd_resid": 1.0,
+        "probe_gain": 0.6,
+        "probe_noise": 1.0,
+        "p_attention_fail": 0.0,
+        "seed": 20261024
+      }
+    },
+    "timestamp_utc": "2026-10-24T19:02:09+00:00",
+    "script": "analysis.py",
+    "python": "3.12.14"
+  },
+  "mode": "dry-run (SIMULATED participants, units and responses; not evidence about Dwell)",
+  "simulation_params": {
+    "n_participants": 24,
+    "k": 6,
+    "n_units": null,
+    "p_base": 0.6,
+    "p_report": 0.75,
+    "sd_participant": 0.5,
+    "sd_pair": 0.3,
+    "conf_base": 4.3,
+    "conf_report": 0.4,
+    "conf_consistent": 0.3,
+    "conf_overlap_report": -0.6,
+    "conf_sd_participant": 0.7,
+    "conf_sd_resid": 1.0,
+    "probe_gain": 0.6,
+    "probe_noise": 1.0,
+    "p_attention_fail": 0.0,
+    "seed": 20261024
+  },
+  "simulated_data_dir": "study/data/simulated",
+  "analysis_of_one_simulated_study": {
+    "n_participants_enrolled": 24,
+    "n_participants_analysed": 24,
+    "exclusions": {},
+    "n_units": 4,
+    "k_pairs_per_participant": 6,
+    "n_trials_answered": 144,
+    "n_trials_tie": 57,
+    "n_trials_non_tie": 87,
+    "tie_rate": 0.3958333333333333,
+    "primary_H1": {
+      "rates_by_condition": {
+        "video": {
+          "rate": 0.5,
+          "n_trials": 44,
+          "ci95_cluster_bootstrap": [
+            0.3684210526315789,
+            0.627906976744186
+          ]
+        },
+        "report": {
+          "rate": 0.7209302325581395,
+          "n_trials": 43,
+          "ci95_cluster_bootstrap": [
+            0.5713474025974026,
+            0.8780487804878049
+          ]
+        }
+      },
+      "glmm": {
+        "method": "BinomialBayesMixedGLM.fit_vb, consistent ~ report + (1|participant) + (1|pair), fixed-effect prior N(0, 1.0^2)",
+        "log_or": 0.8749446158766155,
+        "post_sd": 0.33059112818734454,
+        "ci95": [
+          0.226997911020956,
+          1.522891320732275
+        ],
+        "odds_ratio": 2.3987424380409212,
+        "p_positive": 0.9959348045613852,
+        "intercept": 0.040642806604314526,
+        "vc_sd_posterior_mean": {
+          "participant": 0.4151729729248742,
+          "pair": 0.6179935669086732
+        }
+      },
+      "glmm_permutation_test": {
+        "method": "within-participant permutation test of GLMM z (two-sided)",
+        "z_obs": 2.646604128018612,
+        "n_perm": 1000,
+        "p_two_sided": 0.025974025974025976,
+        "perm_abs_z_95": 2.390462731620556
+      },
+      "gee": {
+        "method": "GEE logit, exchangeable, groups=participant: consistent ~ report",
+        "log_or": 0.9116654234925472,
+        "se_bias_reduced": 0.5617876963397692,
+        "se_robust": 0.5301098029429435,
+        "ci95": [
+          -0.18941822829112476,
+          2.0127490752762194
+        ],
+        "odds_ratio": 2.4884634297108796,
+        "p_two_sided": 0.10463355514756377,
+        "working_correlation": -0.09290876759485328
+      },
+      "gee_plus_trial_position": {
+        "method": "GEE logit, exchangeable, groups=participant: consistent ~ report + trial",
+        "log_or": 0.8951272607479273,
+        "se_bias_reduced": 0.5754287673385663,
+        "se_robust": NaN,
+        "ci95": [
+          -0.2326923989039409,
+          2.0229469203997956
+        ],
+        "odds_ratio": 2.447647259063814,
+        "p_two_sided": 0.11980726202801419,
+        "working_correlation": -0.11065619932338025
+      },
+      "paired_per_participant": {
+        "method": "per-participant rate difference (report - video), paired t and Wilcoxon signed-rank",
+        "n_participants": 24,
+        "mean_rate_video": 0.5277777777777778,
+        "mean_rate_report": 0.75,
+        "mean_diff": 0.22222222222222224,
+        "ci95_t": [
+          -0.024788986873703206,
+          0.46923343131814765
+        ],
+        "p_paired_t": 0.07556741257193847,
+        "p_wilcoxon": 0.07878013487447676
+      }
+    },
+    "ties_descriptive": {
+      "video": {
+        "n": 28,
+        "rate_chose_measured_best": 0.5357142857142857
+      },
+      "report": {
+        "n": 29,
+        "rate_chose_measured_best": 0.5862068965517241
+      }
+    },
+    "secondary": {
+      "confidence_by_condition": {
+        "method": "MixedLM (REML): confidence ~ report + C(pair_id) + (1|participant)",
+        "report_effect": 0.027777777777777752,
+        "se": 0.17792162765336622,
+        "ci95": [
+          -0.3209422044935658,
+          0.3764977600491213
+        ],
+        "p_two_sided": 0.8759355398607497,
+        "mean_video": 4.416666666666667,
+        "mean_report": 4.444444444444445
+      },
+      "overtrust_index_H2": {
+        "report": {
+          "mean_conf_overlap": 4.2592592592592595,
+          "mean_conf_no_overlap": 5.0,
+          "n_overlap": 54,
+          "n_no_overlap": 18,
+          "index_raw": -0.7407407407407405,
+          "index_mixedlm": -0.7104025294878556,
+          "ci95": [
+            -1.402261099128613,
+            -0.018543959847098224
+          ],
+          "p_two_sided": 0.04416756096081851
+        },
+        "video": {
+          "mean_conf_overlap": 4.150943396226415,
+          "mean_conf_no_overlap": 5.157894736842105,
+          "n_overlap": 53,
+          "n_no_overlap": 19,
+          "index_raw": -1.0069513406156902,
+          "index_mixedlm": -1.066026567812871,
+          "ci95": [
+            -1.681321875970124,
+            -0.4507312596556182
+          ],
+          "p_two_sided": 0.0006844708337144658
+        }
+      },
+      "probe_brier_H3": {
+        "n_probes": 43,
+        "n_probe_ties_excluded": 29,
+        "brier_participants": 0.17924418604651163,
+        "ci95_participants": [
+          0.11671041666666666,
+          0.24904166666666666
+        ],
+        "brier_report_implied": 0.11625408021070485,
+        "brier_uninformed": 0.25,
+        "skill_vs_uninformed": 0.2830232558139535,
+        "diff_participants_minus_report": 0.06299010583580678,
+        "ci95_diff": [
+          0.017400344668511293,
+          0.11810976395083503
+        ],
+        "by_dim": {
+          "cool": 0.03416666666666667,
+          "quiet": 0.2325,
+          "sunny": 0.2415
+        }
+      },
+      "usefulness_trust_likert": {
+        "usefulness_scale_mean": 4.972222222222222,
+        "usefulness_scale_sd": 0.9423819479965769,
+        "usefulness_alpha": 0.807116953762466,
+        "trust_scale_mean": 4.666666666666667,
+        "trust_scale_sd": 0.9517337345336012,
+        "trust_alpha": 0.8649999999999999,
+        "item_means": {
+          "useful_1": 5.125,
+          "useful_2": 4.958333333333333,
+          "useful_3": 4.833333333333333,
+          "trust_1": 4.833333333333333,
+          "trust_2": 4.791666666666667,
+          "trust_3": 3.4166666666666665,
+          "trust_4": 4.458333333333333
+        }
+      }
+    },
+    "hypotheses": {
+      "H1_report_increases_consistent_choice": {
+        "supported": true,
+        "rule": "GLMM report log-OR > 0 and within-participant permutation p < 0.05",
+        "gee_agrees": false
+      },
+      "H2_confidence_lower_when_intervals_overlap": {
+        "supported": true,
+        "rule": "report-trial MixedLM overlap 95% CI < 0"
+      },
+      "H3_probe_brier_better_than_uninformed": {
+        "supported": true,
+        "rule": "cluster-bootstrap 95% CI < 0.25"
+      }
+    }
+  },
+  "effect_recovery": {
+    "single_dataset": {
+      "glmm_conditional_log_or": {
+        "true": 0.6931471805599456,
+        "estimate": 0.8749446158766155,
+        "ci95": [
+          0.226997911020956,
+          1.522891320732275
+        ],
+        "ci_covers_true": true
+      },
+      "gee_marginal_log_or": {
+        "true": 0.6472110378630073,
+        "estimate": 0.9116654234925472,
+        "ci95": [
+          -0.18941822829112476,
+          2.0127490752762194
+        ],
+        "ci_covers_true": true
+      },
+      "paired_rate_diff": {
+        "true": 0.1426205764044466,
+        "estimate": 0.22222222222222224,
+        "ci95": [
+          -0.024788986873703206,
+          0.46923343131814765
+        ],
+        "ci_covers_true": true
+      }
+    },
+    "coverage_check": {
+      "truth": {
+        "conditional_log_or": 0.6931471805599456,
+        "marginal_p_video": 0.593263143489661,
+        "marginal_p_report": 0.7358837198941076,
+        "marginal_log_or": 0.6472110378630073,
+        "marginal_risk_diff": 0.1426205764044466
+      },
+      "tie_rate_across_datasets": {
+        "mean": 0.43756944444444446,
+        "p10": 0.2222222222222222,
+        "p90": 0.6743055555555556
+      },
+      "gee_marginal_log_or": {
+        "n_datasets": 200,
+        "n_failed_fits": 0,
+        "true": 0.6472110378630073,
+        "mean_estimate": 0.7498871051297773,
+        "median_estimate": 0.7198646336779848,
+        "bias": 0.10267606726677003,
+        "empirical_sd": 0.5621551525387409,
+        "ci95_coverage": 0.96,
+        "coverage_mc_se": 0.013856406460551024,
+        "rejection_rate_ci_excludes_0": 0.28,
+        "rejection_rate_p_lt_0.05": 0.28
+      },
+      "paired_rate_diff": {
+        "n_datasets": 200,
+        "n_failed_fits": 1,
+        "true": 0.1426205764044466,
+        "mean_estimate": 0.15542250015492862,
+        "median_estimate": 0.15555555555555556,
+        "bias": 0.01280192375048203,
+        "empirical_sd": 0.13482587485395806,
+        "ci95_coverage": 0.95,
+        "coverage_mc_se": 0.015449707678033381,
+        "rejection_rate_ci_excludes_0": 0.23115577889447236,
+        "rejection_rate_p_lt_0.05": 0.23
+      },
+      "glmm_conditional_log_or": {
+        "n_datasets": 200,
+        "n_failed_fits": 0,
+        "true": 0.6931471805599456,
+        "mean_estimate": 0.7102569731929165,
+        "median_estimate": 0.6835049373797566,
+        "bias": 0.017109792632970855,
+        "empirical_sd": 0.40839444170755723,
+        "ci95_coverage": 0.94,
+        "coverage_mc_se": 0.01679285562374667,
+        "rejection_rate_ci_excludes_0": 0.48
+      }
+    }
+  },
+  "power": {
+    "assumptions": {
+      "p_video": 0.6,
+      "p_report": 0.75,
+      "sd_participant_logit": 0.5,
+      "sd_pair_logit": 0.3,
+      "tie_rate_dropped": 0.2,
+      "tests": "power_glmm_perm: primary GLMM permutation test, approximated by size-adjusted power P(|z_alt| > 95th pct of |z_null|) over the first n_sims_glmm datasets of matched alt/null cells; power_glmm_vb_nominal / type1_glmm_vb_nominal: nominal VB 95% CrI (anti-conservative; reported, not used); power_gee: GEE bias-reduced-SE Wald, two-sided alpha 0.05; power_paired_t: paired t on per-participant rates",
+      "n_sims_per_cell": 500,
+      "n_sims_glmm_per_cell": 200
+    },
+    "table": [
+      {
+        "N": 15,
+        "K": 6,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 4,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.33,
+        "power_gee": 0.252,
+        "power_paired_t": 0.214,
+        "power_glmm_vb_nominal": 0.44,
+        "type1_gee": 0.048,
+        "type1_paired_t": 0.058,
+        "type1_glmm_vb_nominal": 0.11,
+        "glmm_null_critical_abs_z": 2.297519179138547,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 20,
+        "K": 6,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 4,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.33,
+        "power_gee": 0.298,
+        "power_paired_t": 0.274,
+        "power_glmm_vb_nominal": 0.525,
+        "type1_gee": 0.05,
+        "type1_paired_t": 0.046,
+        "type1_glmm_vb_nominal": 0.135,
+        "glmm_null_critical_abs_z": 2.541066146452656,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 30,
+        "K": 6,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 4,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.57,
+        "power_gee": 0.436,
+        "power_paired_t": 0.412,
+        "power_glmm_vb_nominal": 0.63,
+        "type1_gee": 0.028,
+        "type1_paired_t": 0.026,
+        "type1_glmm_vb_nominal": 0.095,
+        "glmm_null_critical_abs_z": 2.223694783147812,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 15,
+        "K": 8,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 5,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.385,
+        "power_gee": 0.338,
+        "power_paired_t": 0.312,
+        "power_glmm_vb_nominal": 0.52,
+        "type1_gee": 0.052,
+        "type1_paired_t": 0.046,
+        "type1_glmm_vb_nominal": 0.115,
+        "glmm_null_critical_abs_z": 2.3796148549105802,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 20,
+        "K": 8,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 5,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.42,
+        "power_gee": 0.384,
+        "power_paired_t": 0.332,
+        "power_glmm_vb_nominal": 0.56,
+        "type1_gee": 0.036,
+        "type1_paired_t": 0.038,
+        "type1_glmm_vb_nominal": 0.165,
+        "glmm_null_critical_abs_z": 2.5476031835427686,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 30,
+        "K": 8,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 5,
+        "grid": "requested",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.73,
+        "power_gee": 0.58,
+        "power_paired_t": 0.556,
+        "power_glmm_vb_nominal": 0.835,
+        "type1_gee": 0.058,
+        "type1_paired_t": 0.048,
+        "type1_glmm_vb_nominal": 0.125,
+        "glmm_null_critical_abs_z": 2.298839797869108,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 40,
+        "K": 8,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 5,
+        "grid": "extra",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.77,
+        "power_gee": 0.678,
+        "power_paired_t": 0.634,
+        "power_glmm_vb_nominal": 0.885,
+        "type1_gee": 0.04,
+        "type1_paired_t": 0.034,
+        "type1_glmm_vb_nominal": 0.13,
+        "glmm_null_critical_abs_z": 2.3821456302366277,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 30,
+        "K": 12,
+        "p_video": 0.6,
+        "p_report": 0.75,
+        "n_units_needed": 6,
+        "grid": "extra",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.795,
+        "power_gee": 0.718,
+        "power_paired_t": 0.672,
+        "power_glmm_vb_nominal": 0.895,
+        "type1_gee": 0.058,
+        "type1_paired_t": 0.05,
+        "type1_glmm_vb_nominal": 0.115,
+        "glmm_null_critical_abs_z": 2.4510184747822956,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      },
+      {
+        "N": 30,
+        "K": 8,
+        "p_video": 0.6,
+        "p_report": 0.8,
+        "n_units_needed": 5,
+        "grid": "extra",
+        "n_sims": 500,
+        "n_sims_glmm": 200,
+        "power_glmm_perm": 0.885,
+        "power_gee": 0.824,
+        "power_paired_t": 0.8,
+        "power_glmm_vb_nominal": 0.93,
+        "type1_gee": 0.04,
+        "type1_paired_t": 0.05,
+        "type1_glmm_vb_nominal": 0.11,
+        "glmm_null_critical_abs_z": 2.309973578718885,
+        "mc_se_max": 0.022360679774997897,
+        "mc_se_max_glmm": 0.035355339059327376
+      }
+    ]
+  },
+  "figures": [
+    "results/m11/figs/dryrun_consistency_by_condition.png",
+    "results/m11/figs/power_curve.png"
+  ],
+  "runtime_s": 540.1
+}

@@ -4,7 +4,7 @@ import pytest
 
 from core.scene import Building, Room, Unit, Window
 from physics.sun.daylight import aperture, rect_area, room_sun_timeseries, sun_on_windows, sun_patch_polygon
-from physics.sun.obstruction import Horizon, AZ_GRID, horizon_profile, vertical_sky_view_factor
+from physics.sun.obstruction import AZ_GRID, Horizon, horizon_profile, vertical_sky_view_factor
 from physics.sun.solar import noaa_solar_position, solar_position, sun_vector
 
 
@@ -40,7 +40,9 @@ def test_horizon_prism_exact():
     assert h.at(np.array([180.0]))[0] == pytest.approx(np.degrees(np.arctan2(20, 10)), abs=1e-6)
     assert h.at(np.array([0.0]))[0] == -90
     # oblique azimuth: distance = 10 / cos(30)
-    assert h.at(np.array([150.0]))[0] == pytest.approx(np.degrees(np.arctan2(20, 10 / np.cos(np.radians(30)))), abs=1e-6)
+    assert h.at(np.array([150.0]))[0] == pytest.approx(
+        np.degrees(np.arctan2(20, 10 / np.cos(np.radians(30)))), abs=1e-6
+    )
 
 
 def test_vertical_svf_unobstructed_and_obstructed():
@@ -52,8 +54,18 @@ def test_vertical_svf_unobstructed_and_obstructed():
 
 
 def _win(**kw):
-    d = dict(id="w", room_id="r", cx=0, cy=0, sill_z=1.0, width=1.0, height=1.5, azimuth=180.0,
-             reveal_depth=0.0, overhang_depth=0.0)
+    d = dict(
+        id="w",
+        room_id="r",
+        cx=0,
+        cy=0,
+        sill_z=1.0,
+        width=1.0,
+        height=1.5,
+        azimuth=180.0,
+        reveal_depth=0.0,
+        overhang_depth=0.0,
+    )
     d.update(kw)
     return Window(**d)
 

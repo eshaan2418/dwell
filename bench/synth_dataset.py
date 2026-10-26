@@ -12,7 +12,6 @@ import argparse
 import hashlib
 import json
 import pickle
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -59,8 +58,15 @@ def _build(args: tuple[str, int, int, int, int]) -> str:
         sun = daily_sun_hours(d, u.lat, u.lon)
         sun["sun_h_true"] = (tr.groupby(tr.index.date).sum() / 60.0).reindex(sun.index)
         targets[rid] = {"sun": sun, "noise": noise, "heat": daily_heat(d)}
-    rec = {"true": u.to_dict(), "obs": obs.to_dict(), "start": start, "days": days, "targets": targets,
-           "kit": sim["kit"], "behaviour": sim["behaviour"]}
+    rec = {
+        "true": u.to_dict(),
+        "obs": obs.to_dict(),
+        "start": start,
+        "days": days,
+        "targets": targets,
+        "kit": sim["kit"],
+        "behaviour": sim["behaviour"],
+    }
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "wb") as f:
         pickle.dump(rec, f)

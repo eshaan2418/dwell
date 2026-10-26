@@ -12,8 +12,9 @@ from collections.abc import Callable
 import numpy as np
 
 
-def sobol_indices(f: Callable[[np.ndarray], np.ndarray], d: int, n: int, seed: int = 0,
-                  n_boot: int = 200) -> dict[str, np.ndarray]:
+def sobol_indices(
+    f: Callable[[np.ndarray], np.ndarray], d: int, n: int, seed: int = 0, n_boot: int = 200
+) -> dict[str, np.ndarray]:
     """f maps an (m, d) array of U(0,1) inputs to (m,) outputs. Returns S1, ST and bootstrap SDs."""
     rng = np.random.default_rng(seed)
     a = rng.random((n, d))
@@ -36,8 +37,13 @@ def sobol_indices(f: Callable[[np.ndarray], np.ndarray], d: int, n: int, seed: i
 
     s1, st = est(np.arange(n))
     boots = [est(rng.integers(0, n, n)) for _ in range(n_boot)]
-    return {"S1": s1, "ST": st, "S1_sd": np.std([b[0] for b in boots], axis=0),
-            "ST_sd": np.std([b[1] for b in boots], axis=0), "var": float(np.var(np.concatenate([fa, fb])))}
+    return {
+        "S1": s1,
+        "ST": st,
+        "S1_sd": np.std([b[0] for b in boots], axis=0),
+        "ST_sd": np.std([b[1] for b in boots], axis=0),
+        "var": float(np.var(np.concatenate([fa, fb]))),
+    }
 
 
 def categorical(u: np.ndarray, probs: np.ndarray) -> np.ndarray:

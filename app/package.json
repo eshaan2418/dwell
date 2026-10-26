@@ -1,0 +1,32 @@
+{
+  "name": "dwell-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Dwell local-first viewer + capture PWA",
+  "scripts": {
+    "dev": "vite",
+    "dev:lan": "vite --host --mode lan",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "tsc --noEmit && eslint .",
+    "check-bundle": "node scripts/check_bundle.mjs public/reports",
+    "fixture": "node scripts/copy_fixture.mjs"
+  },
+  "dependencies": {
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
+    "@types/three": "^0.186.0",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}

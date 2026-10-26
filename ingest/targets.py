@@ -67,8 +67,12 @@ def nightly_noise(d: pd.DataFrame) -> pd.DataFrame:
             continue
         srt = np.sort(ok)
         trim = srt[: max(int(len(srt) * 0.95), 1)]
-        rows[k] = {"laeq": float(db_mean(ok)), "la90": float(np.percentile(ok, 10)),
-                   "laeq_trim": float(db_mean(trim)), "coverage": cov}
+        rows[k] = {
+            "laeq": float(db_mean(ok)),
+            "la90": float(np.percentile(ok, 10)),
+            "laeq_trim": float(db_mean(trim)),
+            "coverage": cov,
+        }
     df = pd.DataFrame.from_dict(rows, orient="index")
     if df.empty:
         return df
@@ -103,8 +107,14 @@ def night_features(d: pd.DataFrame, outdoor: pd.Series, noise: pd.DataFrame) -> 
     return pd.DataFrame.from_dict(rows, orient="index")
 
 
-def window_open_nights(d: pd.DataFrame, outdoor: pd.Series, noise: pd.DataFrame, slope_thr: float = OPEN_SLOPE,
-                       dt_thr: float = OPEN_DT, loud_thr: float = OPEN_LOUD_DB) -> pd.Series:
+def window_open_nights(
+    d: pd.DataFrame,
+    outdoor: pd.Series,
+    noise: pd.DataFrame,
+    slope_thr: float = OPEN_SLOPE,
+    dt_thr: float = OPEN_DT,
+    loud_thr: float = OPEN_LOUD_DB,
+) -> pd.Series:
     """Heuristic open-window flag per night (True = likely open): fast night cooling while warmer than
     outside, or a large jump of the nightly background level."""
     f = night_features(d, outdoor, noise)
@@ -121,6 +131,12 @@ def daily_heat(d: pd.DataFrame) -> pd.DataFrame:
     raw.index = raw.index.tz_convert(TZ)
     g = loc.groupby(loc.index.date)
     cov = raw.groupby(raw.index.date).apply(lambda x: x.notna().mean())
-    df = pd.DataFrame({"peak": g.max(), "h_above_26": g.apply(lambda x: float((x > 26).sum()) / 60),
-                       "h_above_28": g.apply(lambda x: float((x > 28).sum()) / 60), "coverage": cov})
+    df = pd.DataFrame(
+        {
+            "peak": g.max(),
+            "h_above_26": g.apply(lambda x: float((x > 26).sum()) / 60),
+            "h_above_28": g.apply(lambda x: float((x > 28).sum()) / 60),
+            "coverage": cov,
+        }
+    )
     return df[df["coverage"] >= MIN_COVERAGE]

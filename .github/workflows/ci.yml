@@ -1,0 +1,14 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}   # privacy scan walks the full history
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.lock && uv pip install --python .venv/bin/python -e . --no-deps
+      - run: make ci
+      - run: uv tool install platformio && make firmware-build

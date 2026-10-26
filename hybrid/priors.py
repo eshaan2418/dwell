@@ -40,9 +40,11 @@ class HiddenPosterior:
     wall: np.ndarray  # P over WALL_TYPES
 
     def map(self) -> dict[str, Any]:
-        return {"glazing": {k: GLAZING_TYPES[int(np.argmax(v))] for k, v in self.glazing.items()},
-                "frame": {k: FRAME_TYPES[int(np.argmax(v))] for k, v in self.frame.items()},
-                "wall": WALL_TYPES[int(np.argmax(self.wall))]}
+        return {
+            "glazing": {k: GLAZING_TYPES[int(np.argmax(v))] for k, v in self.glazing.items()},
+            "frame": {k: FRAME_TYPES[int(np.argmax(v))] for k, v in self.frame.items()},
+            "wall": WALL_TYPES[int(np.argmax(self.wall))],
+        }
 
     def sample(self, rng: np.random.Generator) -> dict[str, Any]:
         """Joint sample; windows of a unit share one draw (they are usually replaced together)."""
@@ -178,9 +180,13 @@ class HiddenPropertyModel:
 def default_assignment(obs: Unit) -> dict[str, Any]:
     """'Physics with default materials' baseline: double glazing, average frames, wall by building kind."""
     wall = {"house": "light_frame", "lowrise": "masonry", "midrise": "concrete", "highrise": "concrete"}.get(
-        obs.building_kind or "lowrise", "masonry")
-    return {"glazing": {w.id: "double" for w in obs.windows}, "frame": {w.id: "average" for w in obs.windows},
-            "wall": wall}
+        obs.building_kind or "lowrise", "masonry"
+    )
+    return {
+        "glazing": {w.id: "double" for w in obs.windows},
+        "frame": {w.id: "average" for w in obs.windows},
+        "wall": wall,
+    }
 
 
 def evaluate(model: HiddenPropertyModel, pairs: list[tuple[Unit, Unit]], **kw) -> dict[str, float]:
@@ -199,7 +205,9 @@ def evaluate(model: HiddenPropertyModel, pairs: list[tuple[Unit, Unit]], **kw) -
         wt = t.walls[0].wall_type
         acc["wall"].append(float(WALL_TYPES[int(np.argmax(post.wall))] == wt))
         ll["wall"].append(-math.log(max(post.wall[WALL_TYPES.index(wt)], 1e-9)))
-    return {f"{k}_acc": float(np.mean(v)) for k, v in acc.items()} | {f"{k}_logloss": float(np.mean(v)) for k, v in ll.items()}
+    return {f"{k}_acc": float(np.mean(v)) for k, v in acc.items()} | {
+        f"{k}_logloss": float(np.mean(v)) for k, v in ll.items()
+    }
 
 
 def evaluate_default(pairs: list[tuple[Unit, Unit]]) -> dict[str, float]:
@@ -213,5 +221,13 @@ def evaluate_default(pairs: list[tuple[Unit, Unit]]) -> dict[str, float]:
     return {f"{k}_acc": float(np.mean(v)) for k, v in acc.items()}
 
 
-__all__ = ["HiddenPropertyModel", "HiddenPosterior", "default_assignment", "evaluate", "evaluate_default", "KINDS",
-           "PANE_OBS", "MATERIALS"]
+__all__ = [
+    "HiddenPropertyModel",
+    "HiddenPosterior",
+    "default_assignment",
+    "evaluate",
+    "evaluate_default",
+    "KINDS",
+    "PANE_OBS",
+    "MATERIALS",
+]

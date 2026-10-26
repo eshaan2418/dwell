@@ -1,0 +1,4 @@
+[
+  {"id": "fixture_a", "label": "Fixture A (south-facing)", "data_kind": "synthetic"},
+  {"id": "fixture_b", "label": "Fixture B (north-facing)", "data_kind": "synthetic"}
+]

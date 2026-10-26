@@ -1,0 +1,1298 @@
+{
+ "schema": "dwell-report/1",
+ "generated_utc": "2026-10-24T00:00:00Z",
+ "data_kind": "synthetic",
+ "disclaimer": "FIXTURE: hand-written test data for app development, not a model output.",
+ "unit": {
+  "id": "fixture_a",
+  "label": "Fixture A (south-facing)",
+  "floor": 4,
+  "building_kind": "midrise",
+  "year_built": 1978,
+  "main_orientation": "S",
+  "has_ac": false
+ },
+ "geometry": {
+  "rooms": [
+   {
+    "id": "fixture_a_living",
+    "kind": "living",
+    "name": "Living room",
+    "polygon": [
+     [
+      0,
+      0
+     ],
+     [
+      6,
+      0
+     ],
+     [
+      6,
+      5
+     ],
+     [
+      0,
+      5
+     ]
+    ],
+    "floor_z": 12.0,
+    "ceiling_height": 2.6
+   },
+   {
+    "id": "fixture_a_bedroom",
+    "kind": "bedroom",
+    "name": "Bedroom",
+    "polygon": [
+     [
+      6,
+      0
+     ],
+     [
+      10,
+      0
+     ],
+     [
+      10,
+      4
+     ],
+     [
+      6,
+      4
+     ]
+    ],
+    "floor_z": 12.0,
+    "ceiling_height": 2.6
+   }
+  ],
+  "windows": [
+   {
+    "id": "fixture_a_w1",
+    "room_id": "fixture_a_living",
+    "corners": [
+     [
+      1.5,
+      0.0,
+      12.9
+     ],
+     [
+      4.5,
+      0.0,
+      12.9
+     ],
+     [
+      4.5,
+      0.0,
+      14.4
+     ],
+     [
+      1.5,
+      0.0,
+      14.4
+     ]
+    ],
+    "azimuth": 180.0,
+    "overhang_depth": 0.0
+   },
+   {
+    "id": "fixture_a_w2",
+    "room_id": "fixture_a_bedroom",
+    "corners": [
+     [
+      7,
+      0.0,
+      12.9
+     ],
+     [
+      9,
+      0.0,
+      12.9
+     ],
+     [
+      9,
+      0.0,
+      14.4
+     ],
+     [
+      7,
+      0.0,
+      14.4
+     ]
+    ],
+    "azimuth": 180.0,
+    "overhang_depth": 0.0
+   }
+  ],
+  "context_buildings": [
+   {
+    "footprint": [
+     [
+      0,
+      0
+     ],
+     [
+      20,
+      0
+     ],
+     [
+      20,
+      12
+     ],
+     [
+      0,
+      12
+     ]
+    ],
+    "height": 18.0,
+    "own": true
+   },
+   {
+    "footprint": [
+     [
+      -5,
+      -30
+     ],
+     [
+      25,
+      -30
+     ],
+     [
+      25,
+      -22
+     ],
+     [
+      -5,
+      -22
+     ]
+    ],
+    "height": 9.0,
+    "own": false
+   },
+   {
+    "footprint": [
+     [
+      30,
+      0
+     ],
+     [
+      45,
+      0
+     ],
+     [
+      45,
+      15
+     ],
+     [
+      30,
+      15
+     ]
+    ],
+    "height": 24.0,
+    "own": false
+   },
+   {
+    "footprint": [
+     [
+      -5,
+      30
+     ],
+     [
+      22,
+      30
+     ],
+     [
+      22,
+      42
+     ],
+     [
+      -5,
+      42
+     ]
+    ],
+    "height": 30.0,
+    "own": false
+   }
+  ],
+  "roads": [
+   {
+    "coords": [
+     [
+      -60,
+      -12
+     ],
+     [
+      80,
+      -12
+     ]
+    ],
+    "road_class": "primary"
+   },
+   {
+    "coords": [
+     [
+      25,
+      -50
+     ],
+     [
+      25,
+      60
+     ]
+    ],
+    "road_class": "residential"
+   }
+  ],
+  "trees": [
+   {
+    "x": 5,
+    "y": -8,
+    "radius": 2.5,
+    "height": 8
+   },
+   {
+    "x": 15,
+    "y": -9,
+    "radius": 3,
+    "height": 10
+   }
+  ]
+ },
+ "sun": {
+  "dates": [
+   "2026-12-21",
+   "2026-03-20",
+   "2026-06-21",
+   "2026-09-22"
+  ],
+  "hours": [
+   6.0,
+   8.0,
+   10.0,
+   12.0,
+   14.0,
+   16.0,
+   18.0
+  ],
+  "sun_position": [
+   [
+    [
+     112,
+     -14
+    ],
+    [
+     127,
+     5
+    ],
+    [
+     150,
+     18
+    ],
+    [
+     180,
+     23
+    ],
+    [
+     210,
+     18
+    ],
+    [
+     233,
+     5
+    ],
+    [
+     248,
+     -14
+    ]
+   ],
+   [
+    [
+     90,
+     -1
+    ],
+    [
+     110,
+     20
+    ],
+    [
+     138,
+     38
+    ],
+    [
+     180,
+     46
+    ],
+    [
+     222,
+     38
+    ],
+    [
+     250,
+     20
+    ],
+    [
+     270,
+     -1
+    ]
+   ],
+   [
+    [
+     64,
+     10
+    ],
+    [
+     90,
+     34
+    ],
+    [
+     118,
+     57
+    ],
+    [
+     180,
+     70
+    ],
+    [
+     242,
+     57
+    ],
+    [
+     270,
+     34
+    ],
+    [
+     296,
+     10
+    ]
+   ],
+   [
+    [
+     90,
+     -1
+    ],
+    [
+     110,
+     20
+    ],
+    [
+     138,
+     38
+    ],
+    [
+     180,
+     46
+    ],
+    [
+     222,
+     38
+    ],
+    [
+     250,
+     20
+    ],
+    [
+     270,
+     -1
+    ]
+   ]
+  ],
+  "patches": {
+   "fixture_a_living": [
+    [
+     null,
+     null,
+     [
+      [
+       0.0,
+       5.0
+      ],
+      [
+       0.0,
+       2.6
+      ],
+      [
+       0.12,
+       2.4
+      ],
+      [
+       3.12,
+       2.4
+      ],
+      [
+       1.61,
+       5.0
+      ]
+     ],
+     [
+      [
+       1.5,
+       5.0
+      ],
+      [
+       1.5,
+       2.12
+      ],
+      [
+       4.5,
+       2.12
+      ],
+      [
+       4.5,
+       5.0
+      ]
+     ],
+     [
+      [
+       4.39,
+       5.0
+      ],
+      [
+       2.88,
+       2.4
+      ],
+      [
+       5.88,
+       2.4
+      ],
+      [
+       6.0,
+       2.6
+      ],
+      [
+       6.0,
+       5.0
+      ]
+     ],
+     null,
+     null
+    ],
+    [
+     null,
+     [
+      [
+       0.0,
+       0.85
+      ],
+      [
+       2.18,
+       0.85
+      ],
+      [
+       0.0,
+       1.64
+      ]
+     ],
+     [
+      [
+       0.0,
+       1.67
+      ],
+      [
+       0.73,
+       0.86
+      ],
+      [
+       3.73,
+       0.86
+      ],
+      [
+       2.44,
+       2.28
+      ],
+      [
+       0.0,
+       2.28
+      ]
+     ],
+     [
+      [
+       1.5,
+       0.87
+      ],
+      [
+       4.5,
+       0.87
+      ],
+      [
+       4.5,
+       2.32
+      ],
+      [
+       1.5,
+       2.32
+      ]
+     ],
+     [
+      [
+       2.27,
+       0.86
+      ],
+      [
+       5.27,
+       0.86
+      ],
+      [
+       6.0,
+       1.67
+      ],
+      [
+       6.0,
+       2.28
+      ],
+      [
+       3.56,
+       2.28
+      ]
+     ],
+     [
+      [
+       6.0,
+       1.64
+      ],
+      [
+       3.82,
+       0.85
+      ],
+      [
+       6.0,
+       0.85
+      ]
+     ],
+     null
+    ],
+    [
+     null,
+     null,
+     [
+      [
+       0.98,
+       0.27
+      ],
+      [
+       3.98,
+       0.27
+      ],
+      [
+       3.12,
+       0.73
+      ],
+      [
+       0.12,
+       0.73
+      ]
+     ],
+     [
+      [
+       1.5,
+       0.33
+      ],
+      [
+       4.5,
+       0.33
+      ],
+      [
+       4.5,
+       0.87
+      ],
+      [
+       1.5,
+       0.87
+      ]
+     ],
+     [
+      [
+       2.02,
+       0.27
+      ],
+      [
+       5.02,
+       0.27
+      ],
+      [
+       5.88,
+       0.73
+      ],
+      [
+       2.88,
+       0.73
+      ]
+     ],
+     null,
+     null
+    ],
+    [
+     null,
+     [
+      [
+       0.0,
+       0.85
+      ],
+      [
+       2.18,
+       0.85
+      ],
+      [
+       0.0,
+       1.64
+      ]
+     ],
+     [
+      [
+       0.0,
+       1.67
+      ],
+      [
+       0.73,
+       0.86
+      ],
+      [
+       3.73,
+       0.86
+      ],
+      [
+       2.44,
+       2.28
+      ],
+      [
+       0.0,
+       2.28
+      ]
+     ],
+     [
+      [
+       1.5,
+       0.87
+      ],
+      [
+       4.5,
+       0.87
+      ],
+      [
+       4.5,
+       2.32
+      ],
+      [
+       1.5,
+       2.32
+      ]
+     ],
+     [
+      [
+       2.27,
+       0.86
+      ],
+      [
+       5.27,
+       0.86
+      ],
+      [
+       6.0,
+       1.67
+      ],
+      [
+       6.0,
+       2.28
+      ],
+      [
+       3.56,
+       2.28
+      ]
+     ],
+     [
+      [
+       6.0,
+       1.64
+      ],
+      [
+       3.82,
+       0.85
+      ],
+      [
+       6.0,
+       0.85
+      ]
+     ],
+     null
+    ]
+   ],
+   "fixture_a_bedroom": [
+    [
+     null,
+     null,
+     [
+      [
+       6.0,
+       4.0
+      ],
+      [
+       6.0,
+       2.4
+      ],
+      [
+       7.62,
+       2.4
+      ],
+      [
+       6.69,
+       4.0
+      ]
+     ],
+     [
+      [
+       7.0,
+       4.0
+      ],
+      [
+       7.0,
+       2.12
+      ],
+      [
+       9.0,
+       2.12
+      ],
+      [
+       9.0,
+       4.0
+      ]
+     ],
+     [
+      [
+       10.0,
+       4.0
+      ],
+      [
+       9.31,
+       4.0
+      ],
+      [
+       8.38,
+       2.4
+      ],
+      [
+       10.0,
+       2.4
+      ]
+     ],
+     null,
+     null
+    ],
+    [
+     null,
+     [
+      [
+       6.0,
+       0.85
+      ],
+      [
+       6.68,
+       0.85
+      ],
+      [
+       6.0,
+       1.09
+      ]
+     ],
+     [
+      [
+       6.0,
+       1.11
+      ],
+      [
+       6.23,
+       0.86
+      ],
+      [
+       8.23,
+       0.86
+      ],
+      [
+       6.94,
+       2.28
+      ],
+      [
+       6.0,
+       2.28
+      ]
+     ],
+     [
+      [
+       7.0,
+       0.87
+      ],
+      [
+       9.0,
+       0.87
+      ],
+      [
+       9.0,
+       2.32
+      ],
+      [
+       7.0,
+       2.32
+      ]
+     ],
+     [
+      [
+       7.77,
+       0.86
+      ],
+      [
+       9.77,
+       0.86
+      ],
+      [
+       10.0,
+       1.11
+      ],
+      [
+       10.0,
+       2.28
+      ],
+      [
+       9.06,
+       2.28
+      ]
+     ],
+     [
+      [
+       10.0,
+       1.09
+      ],
+      [
+       9.32,
+       0.85
+      ],
+      [
+       10.0,
+       0.85
+      ]
+     ],
+     null
+    ],
+    [
+     null,
+     null,
+     [
+      [
+       6.0,
+       0.53
+      ],
+      [
+       6.48,
+       0.27
+      ],
+      [
+       8.48,
+       0.27
+      ],
+      [
+       7.62,
+       0.73
+      ],
+      [
+       6.0,
+       0.73
+      ]
+     ],
+     [
+      [
+       7.0,
+       0.33
+      ],
+      [
+       9.0,
+       0.33
+      ],
+      [
+       9.0,
+       0.87
+      ],
+      [
+       7.0,
+       0.87
+      ]
+     ],
+     [
+      [
+       7.52,
+       0.27
+      ],
+      [
+       9.52,
+       0.27
+      ],
+      [
+       10.0,
+       0.53
+      ],
+      [
+       10.0,
+       0.73
+      ],
+      [
+       8.38,
+       0.73
+      ]
+     ],
+     null,
+     null
+    ],
+    [
+     null,
+     [
+      [
+       6.0,
+       0.85
+      ],
+      [
+       6.68,
+       0.85
+      ],
+      [
+       6.0,
+       1.09
+      ]
+     ],
+     [
+      [
+       6.0,
+       1.11
+      ],
+      [
+       6.23,
+       0.86
+      ],
+      [
+       8.23,
+       0.86
+      ],
+      [
+       6.94,
+       2.28
+      ],
+      [
+       6.0,
+       2.28
+      ]
+     ],
+     [
+      [
+       7.0,
+       0.87
+      ],
+      [
+       9.0,
+       0.87
+      ],
+      [
+       9.0,
+       2.32
+      ],
+      [
+       7.0,
+       2.32
+      ]
+     ],
+     [
+      [
+       7.77,
+       0.86
+      ],
+      [
+       9.77,
+       0.86
+      ],
+      [
+       10.0,
+       1.11
+      ],
+      [
+       10.0,
+       2.28
+      ],
+      [
+       9.06,
+       2.28
+      ]
+     ],
+     [
+      [
+       10.0,
+       1.09
+      ],
+      [
+       9.32,
+       0.85
+      ],
+      [
+       10.0,
+       0.85
+      ]
+     ],
+     null
+    ]
+   ]
+  },
+  "rooms": {
+   "fixture_a_living": {
+    "winter_sun_h": {
+     "pred": 2.1,
+     "lo": 1.2,
+     "hi": 3.0
+    },
+    "summer_sun_h": {
+     "pred": 5.5,
+     "lo": 4.2,
+     "hi": 6.8
+    },
+    "monthly_sun_h": [
+     2.1,
+     2.33,
+     2.95,
+     3.8,
+     4.65,
+     5.27,
+     5.5,
+     5.27,
+     4.65,
+     3.8,
+     2.95,
+     2.33
+    ],
+    "clear_sky_winter_solstice_h": 3.4,
+    "daylight_factor_pct": 2.0
+   },
+   "fixture_a_bedroom": {
+    "winter_sun_h": {
+     "pred": 1.4,
+     "lo": 0.6,
+     "hi": 2.3
+    },
+    "summer_sun_h": {
+     "pred": 4.0,
+     "lo": 2.9,
+     "hi": 5.2
+    },
+    "monthly_sun_h": [
+     1.4,
+     1.57,
+     2.05,
+     2.7,
+     3.35,
+     3.83,
+     4.0,
+     3.83,
+     3.35,
+     2.7,
+     2.05,
+     1.57
+    ],
+    "clear_sky_winter_solstice_h": 2.2,
+    "daylight_factor_pct": 2.0
+   }
+  }
+ },
+ "noise": {
+  "rooms": {
+   "fixture_a_living": {
+    "night_laeq_closed": {
+     "pred": 32,
+     "lo": 27,
+     "hi": 37
+    },
+    "night_laeq_open": {
+     "pred": 44,
+     "lo": 39,
+     "hi": 49
+    },
+    "outdoor_night_facade": 58.0,
+    "attribution_db": {
+     "road": 31.5,
+     "streetcar": 25
+    },
+    "hourly_closed": [
+     29.2,
+     28.5,
+     28.1,
+     28.0,
+     28.1,
+     28.5,
+     29.2,
+     30.0,
+     31.0,
+     32.0,
+     33.0,
+     34.0,
+     34.8,
+     35.5,
+     35.9,
+     36.0,
+     35.9,
+     35.5,
+     34.8,
+     34.0,
+     33.0,
+     32.0,
+     31.0,
+     30.0
+    ]
+   },
+   "fixture_a_bedroom": {
+    "night_laeq_closed": {
+     "pred": 29,
+     "lo": 25,
+     "hi": 34
+    },
+    "night_laeq_open": {
+     "pred": 41,
+     "lo": 36,
+     "hi": 46
+    },
+    "outdoor_night_facade": 58.0,
+    "attribution_db": {
+     "road": 28.5,
+     "streetcar": 22
+    },
+    "hourly_closed": [
+     26.2,
+     25.5,
+     25.1,
+     25.0,
+     25.1,
+     25.5,
+     26.2,
+     27.0,
+     28.0,
+     29.0,
+     30.0,
+     31.0,
+     31.8,
+     32.5,
+     32.9,
+     33.0,
+     32.9,
+     32.5,
+     31.8,
+     31.0,
+     30.0,
+     29.0,
+     28.0,
+     27.0
+    ],
+    "who_guideline_note": "FIXTURE PLACEHOLDER: the pipeline supplies the guideline note text."
+   }
+  },
+  "audio": {
+   "fixture_a_living": {
+    "closed": "audio/fixture_a_living_0200_closed.wav",
+    "open": "audio/fixture_a_living_0200_open.wav",
+    "label": "Illustrative synthesis, not a recording"
+   },
+   "fixture_a_bedroom": {
+    "closed": "audio/fixture_a_bedroom_0200_closed.wav",
+    "open": "audio/fixture_a_bedroom_0200_open.wav",
+    "label": "Illustrative synthesis, not a recording"
+   }
+  }
+ },
+ "heat": {
+  "rooms": {
+   "fixture_a_living": {
+    "typical_summer_peak": {
+     "pred": 27.8,
+     "lo": 26.4,
+     "hi": 29.5
+    },
+    "heatwave_peak": {
+     "pred": 31.6,
+     "lo": 29.6,
+     "hi": 34.0
+    },
+    "hours_above_26_typical_summer": 210,
+    "hours_above_28_typical_summer": 60
+   },
+   "fixture_a_bedroom": {
+    "typical_summer_peak": {
+     "pred": 27.0,
+     "lo": 25.8,
+     "hi": 28.6
+    },
+    "heatwave_peak": {
+     "pred": 30.4,
+     "lo": 28.6,
+     "hi": 32.7
+    },
+    "hours_above_26_typical_summer": 210,
+    "hours_above_28_typical_summer": 60
+   }
+  }
+ },
+ "uncertainty": {
+  "fixture_a_living": {
+   "what_we_couldnt_see": [
+    {
+     "property": "glazing",
+     "posterior": {
+      "single": 0.1,
+      "double": 0.6,
+      "double_lowe": 0.3,
+      "triple": 0.0
+     },
+     "variance_share": {
+      "noise": 0.55,
+      "heat": 0.2
+     },
+     "explanation": "Fixture text: the glazing type could not be confirmed from the video."
+    },
+    {
+     "property": "balcony_depth",
+     "posterior": {
+      "none": 0.5,
+      "shallow": 0.3,
+      "deep": 0.2
+     },
+     "variance_share": {
+      "sun": 0.4,
+      "heat": 0.1
+     },
+     "explanation": "Fixture text: the balcony was only partly visible."
+    }
+   ]
+  },
+  "fixture_a_bedroom": {
+   "what_we_couldnt_see": [
+    {
+     "property": "glazing",
+     "posterior": {
+      "single": 0.1,
+      "double": 0.6,
+      "double_lowe": 0.3,
+      "triple": 0.0
+     },
+     "variance_share": {
+      "noise": 0.55,
+      "heat": 0.2
+     },
+     "explanation": "Fixture text: the glazing type could not be confirmed from the video."
+    },
+    {
+     "property": "balcony_depth",
+     "posterior": {
+      "none": 0.5,
+      "shallow": 0.3,
+      "deep": 0.2
+     },
+     "variance_share": {
+      "sun": 0.4,
+      "heat": 0.1
+     },
+     "explanation": "Fixture text: the balcony was only partly visible."
+    }
+   ]
+  }
+ },
+ "provenance": {
+  "commit": "fixture",
+  "model": "none (hand-written fixture)",
+  "calibration": "none"
+ }
+}

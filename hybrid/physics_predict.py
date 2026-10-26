@@ -25,7 +25,12 @@ from physics.acoustics.levels import db_sum
 from physics.acoustics.model import NIGHT_HOURS, NoiseParams, build_sources, predict_room_noise
 from physics.sun.daylight import room_sun_timeseries, sun_on_windows, window_contexts
 from physics.sun.solar import solar_position
-from physics.thermal.model import ThermalParams, daily_heat_metrics, predict_room_temperatures, window_irradiance
+from physics.thermal.model import (
+    ThermalParams,
+    daily_heat_metrics,
+    predict_room_temperatures,
+    window_irradiance,
+)
 
 TZ = "America/Toronto"
 BACKGROUND_DBA = 22.0  # default indoor background (fridge/HVAC) assumed by the physics layer
@@ -68,10 +73,15 @@ def _local_days(times: pd.DatetimeIndex) -> np.ndarray:
     return np.asarray(times.tz_convert(TZ).date)
 
 
-def predict_sun(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFrame, rng: np.random.Generator,
-                o: PredictOptions) -> dict[str, pd.DataFrame]:
-    t = pd.date_range(start.tz_convert("UTC"), start.tz_convert("UTC") + pd.Timedelta(days=days),
-                      freq=f"{o.sun_step_min}min", inclusive="left")
+def predict_sun(
+    obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFrame, rng: np.random.Generator, o: PredictOptions
+) -> dict[str, pd.DataFrame]:
+    t = pd.date_range(
+        start.tz_convert("UTC"),
+        start.tz_convert("UTC") + pd.Timedelta(days=days),
+        freq=f"{o.sun_step_min}min",
+        inclusive="left",
+    )
     sp = solar_position(t, obs.lat, obs.lon)
     p = sunshine_prob(weather, t).to_numpy()
     step_h = o.sun_step_min / 60.0
@@ -85,8 +95,7 @@ def predict_sun(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFrame
         ctx = window_contexts(u)
         pw = sun_on_windows(u, t, ctx, use_trees=o.use_trees and use_obs, solpos=sp)
         rs = room_sun_timeseries(u, t, pw)
-        return {rid: pd.Series(df["sensor_sun"].to_numpy() * p * step_h).groupby(dkeys).sum()
-                for rid, df in rs.items()}
+        return {rid: pd.Series(df["sensor_sun"].to_numpy() * p * step_h).groupby(dkeys).sum() for rid, df in rs.items()}
 
     nominal = run(obs, o.use_obstruction)
     sunpath = run(obs, False)
@@ -94,8 +103,15 @@ def predict_sun(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFrame
     out = {}
     for rid in nominal:
         m = np.stack([e[rid].to_numpy() for e in ens])
-        out[rid] = pd.DataFrame({"physics": nominal[rid].to_numpy(), "mc_mean": m.mean(0), "mc_std": m.std(0),
-                                 "sunpath_only": sunpath[rid].to_numpy()}, index=nominal[rid].index)
+        out[rid] = pd.DataFrame(
+            {
+                "physics": nominal[rid].to_numpy(),
+                "mc_mean": m.mean(0),
+                "mc_std": m.std(0),
+                "sunpath_only": sunpath[rid].to_numpy(),
+            },
+            index=nominal[rid].index,
+        )
     return out
 
 
@@ -103,8 +119,14 @@ def _with_floor(l_dba: np.ndarray | float, floor: float, bg: float = BACKGROUND_
     return db_sum(np.stack(np.broadcast_arrays(np.asarray(l_dba, float), bg, floor)), axis=0)
 
 
-def predict_noise(obs: Unit, samples: list[dict[str, Any]], default: dict[str, Any], rng: np.random.Generator,
-                  o: PredictOptions, kit_floor: dict[str, float]) -> dict[str, dict[str, float]]:
+def predict_noise(
+    obs: Unit,
+    samples: list[dict[str, Any]],
+    default: dict[str, Any],
+    rng: np.random.Generator,
+    o: PredictOptions,
+    kit_floor: dict[str, float],
+) -> dict[str, dict[str, float]]:
     """Night L_Aeq (closed windows) per room: physics ensembles with/without the kit floor."""
     u = copy.deepcopy(obs)
     if not o.use_transit:
@@ -120,8 +142,9 @@ def predict_noise(obs: Unit, samples: list[dict[str, Any]], default: dict[str, A
         emis = float(rng.normal(0, 2.0))
         scale = float(rng.lognormal(0, 0.15 if all(has_count.values()) else 0.4))
         srcs = build_sources(u, aadt_scale=scale, emission_offset_db=emis)
-        res = predict_room_noise(u, NoiseParams(s["glazing"], s["frame"], s["wall"], c_inc=float(rng.uniform(0, 6))),
-                                 srcs, {})
+        res = predict_room_noise(
+            u, NoiseParams(s["glazing"], s["frame"], s["wall"], c_inc=float(rng.uniform(0, 6))), srcs, {}
+        )
         for rid, r in res.items():
             vals[rid].append(r["night_laeq"])
             for k, lv in r["by_kind_hourly"].items():
@@ -136,18 +159,29 @@ def predict_noise(obs: Unit, samples: list[dict[str, Any]], default: dict[str, A
             "physics_default_raw": float(r["night_laeq"]),
             "mc_mean": float(10 * np.log10(np.mean(10 ** (ens_meas / 10)))),
             "mc_std": float(np.std(ens_meas)),
-            "mc_raw_mean": float(np.mean(v)), "mc_raw_std": float(np.std(v)),
+            "mc_raw_mean": float(np.mean(v)),
+            "mc_raw_std": float(np.std(v)),
             "outdoor_night": float(10 * np.log10(np.mean(10 ** (r["outdoor_facade_hourly"][NIGHT_HOURS] / 10)))),
-            "noisemap_only": float(_with_floor(10 * np.log10(np.mean(10 ** (r["outdoor_facade_hourly"][NIGHT_HOURS] / 10)))
-                                               - GENERIC_FACADE_DB, fl)),
+            "noisemap_only": float(
+                _with_floor(
+                    10 * np.log10(np.mean(10 ** (r["outdoor_facade_hourly"][NIGHT_HOURS] / 10))) - GENERIC_FACADE_DB, fl
+                )
+            ),
             "floor": fl,
             "attribution_db": {k: float(np.mean(x)) for k, x in by_kind[rid].items()},
         }
     return out
 
 
-def predict_heat(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFrame, samples: list[dict[str, Any]],
-                 default: dict[str, Any], rng: np.random.Generator) -> dict[str, pd.DataFrame]:
+def predict_heat(
+    obs: Unit,
+    start: pd.Timestamp,
+    days: int,
+    weather: pd.DataFrame,
+    samples: list[dict[str, Any]],
+    default: dict[str, Any],
+    rng: np.random.Generator,
+) -> dict[str, pd.DataFrame]:
     t0 = start.tz_convert("UTC") - pd.Timedelta(days=7)
     idx = pd.date_range(t0, start.tz_convert("UTC") + pd.Timedelta(days=days), freq="1h", inclusive="left")
     wx = weather.reindex(idx).interpolate(limit_direction="both")
@@ -155,12 +189,19 @@ def predict_heat(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFram
     ac = 24.0 if obs.has_ac else None
 
     def run(a: dict[str, Any], gain: float = 1.0, blinds: float = 1.0) -> dict[str, pd.Series]:
-        tp = ThermalParams(a["glazing"], a["frame"], a["wall"], internal_gain_scale=gain, blinds_factor=blinds,
-                           ac_setpoint=ac, heat_setpoint=21.0)
+        tp = ThermalParams(
+            a["glazing"],
+            a["frame"],
+            a["wall"],
+            internal_gain_scale=gain,
+            blinds_factor=blinds,
+            ac_setpoint=ac,
+            heat_setpoint=21.0,
+        )
         res = predict_room_temperatures(obs, wx, tp, irr=irr, spinup_days=7)
         out = {}
         for rid, df in res.items():
-            m = daily_heat_metrics(df.iloc[7 * 24:])
+            m = daily_heat_metrics(df.iloc[7 * 24 :])
             out[rid] = m["peak"]
         return out
 
@@ -169,14 +210,23 @@ def predict_heat(obs: Unit, start: pd.Timestamp, days: int, weather: pd.DataFram
     out = {}
     for rid in nom:
         m = np.stack([e[rid].to_numpy() for e in ens])
-        out[rid] = pd.DataFrame({"physics_default": nom[rid].to_numpy(), "mc_mean": m.mean(0), "mc_std": m.std(0)},
-                                index=nom[rid].index)
-    out["_outdoor_max"] = wx.iloc[7 * 24:]["temp_c"].groupby(_local_days(wx.index[7 * 24:])).max()
+        out[rid] = pd.DataFrame(
+            {"physics_default": nom[rid].to_numpy(), "mc_mean": m.mean(0), "mc_std": m.std(0)}, index=nom[rid].index
+        )
+    out["_outdoor_max"] = wx.iloc[7 * 24 :]["temp_c"].groupby(_local_days(wx.index[7 * 24 :])).max()
     return out
 
 
-def predict_all(obs: Unit, post: HiddenPosterior, start: pd.Timestamp, days: int, weather: pd.DataFrame,
-                seed: int, o: PredictOptions | None = None, kit_floor: dict[str, float] | None = None) -> dict:
+def predict_all(
+    obs: Unit,
+    post: HiddenPosterior,
+    start: pd.Timestamp,
+    days: int,
+    weather: pd.DataFrame,
+    seed: int,
+    o: PredictOptions | None = None,
+    kit_floor: dict[str, float] | None = None,
+) -> dict:
     o = o or PredictOptions()
     rng = np.random.default_rng(seed)
     samples = [post.sample(rng) for _ in range(o.n_mc)]
@@ -185,6 +235,9 @@ def predict_all(obs: Unit, post: HiddenPosterior, start: pd.Timestamp, days: int
         "sun": predict_sun(obs, start, days, weather, rng, o),
         "noise": predict_noise(obs, samples, default, rng, o, kit_floor or {}),
         "heat": predict_heat(obs, start, days, weather, samples, default, rng),
-        "posterior": {"glazing": {k: v.tolist() for k, v in post.glazing.items()},
-                      "frame": {k: v.tolist() for k, v in post.frame.items()}, "wall": post.wall.tolist()},
+        "posterior": {
+            "glazing": {k: v.tolist() for k, v in post.glazing.items()},
+            "frame": {k: v.tolist() for k, v in post.frame.items()},
+            "wall": post.wall.tolist(),
+        },
     }

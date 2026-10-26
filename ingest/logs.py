@@ -52,8 +52,9 @@ def parse_lines(lines: list[str]) -> KitLog:
     def frame(rows: list[str], cols: list[str]) -> pd.DataFrame:
         if not rows:
             return pd.DataFrame(columns=cols[2:])
-        df = pd.read_csv(io.StringIO("\n".join(rows)), names=cols, header=None, dtype={"kit_id": str},
-                         on_bad_lines="skip")
+        df = pd.read_csv(
+            io.StringIO("\n".join(rows)), names=cols, header=None, dtype={"kit_id": str}, on_bad_lines="skip"
+        )
         df = df[pd.to_numeric(df["ts"], errors="coerce").notna()]
         df.index = pd.to_datetime(df["ts"].astype(np.int64), unit="s", utc=True)
         df = df[~df.index.duplicated(keep="last")].sort_index()
@@ -62,8 +63,14 @@ def parse_lines(lines: list[str]) -> KitLog:
     minute = frame(m, M_COLS)
     if "flags" in minute:
         minute["flags"] = minute["flags"].apply(lambda x: int(str(x), 16) if pd.notna(x) and str(x) != "" else 0)
-    events = pd.DataFrame([r.split(",", 3) for r in e], columns=["ts", "kit_id", "code", "text"][: max(
-        (len(r.split(",", 3)) for r in e), default=4)]) if e else pd.DataFrame()
+    events = (
+        pd.DataFrame(
+            [r.split(",", 3) for r in e],
+            columns=["ts", "kit_id", "code", "text"][: max((len(r.split(",", 3)) for r in e), default=4)],
+        )
+        if e
+        else pd.DataFrame()
+    )
     kit = header.get("kit", str(minute["kit_id"].iloc[0]) if len(minute) else "unknown")
     return KitLog(kit, header, minute, frame(s, S_COLS), frame(o, O_COLS), events)
 
@@ -82,8 +89,14 @@ def clean_minute(df: pd.DataFrame) -> pd.DataFrame:
     d.loc[(flags & FLAG_NO_NTP) > 0, :] = np.nan  # untrustworthy timestamps
     d.loc[(flags & FLAG_TH_ERR) > 0, ["temp_c", "rh_pct"]] = np.nan
     d.loc[(flags & FLAG_CLIP) > 0, ["laeq", "lamax", "la90"]] = np.nan
-    for c, lo, hi in [("lux", 0, 200000), ("temp_c", -10, 50), ("rh_pct", 0, 100), ("laeq", 0, 130),
-                      ("lamax", 0, 140), ("la90", 0, 130)]:
+    for c, lo, hi in [
+        ("lux", 0, 200000),
+        ("temp_c", -10, 50),
+        ("rh_pct", 0, 100),
+        ("laeq", 0, 130),
+        ("lamax", 0, 140),
+        ("la90", 0, 130),
+    ]:
         if c in d:
             v = pd.to_numeric(d[c], errors="coerce")
             d[c] = v.where((v >= lo) & (v <= hi))
@@ -102,6 +115,7 @@ def clean_minute(df: pd.DataFrame) -> pd.DataFrame:
 @dataclass
 class Calibration:
     """Per-kit offsets from the 24-h co-location test (subtract)."""
+
     temp_offset: dict[str, float] = field(default_factory=dict)
     db_offset: dict[str, float] = field(default_factory=dict)
     lux_scale: dict[str, float] = field(default_factory=dict)
@@ -128,8 +142,11 @@ def colocation_calibration(kits: dict[str, pd.DataFrame], ref: str | None = None
     idx = None
     for d in kits.values():
         idx = d.index if idx is None else idx.intersection(d.index)
-    for col, store, kind in [("temp_c", cal.temp_offset, "add"), ("laeq", cal.db_offset, "add"),
-                             ("lux", cal.lux_scale, "mul")]:
+    for col, store, kind in [
+        ("temp_c", cal.temp_offset, "add"),
+        ("laeq", cal.db_offset, "add"),
+        ("lux", cal.lux_scale, "mul"),
+    ]:
         mat = pd.DataFrame({k: d.loc[idx, col] for k, d in kits.items() if col in d})
         if mat.empty:
             continue
@@ -147,6 +164,9 @@ def colocation_calibration(kits: dict[str, pd.DataFrame], ref: str | None = None
         adj = mat.copy()
         for k in mat:
             adj[k] = mat[k] - store[k] if kind == "add" else mat[k] * store[k]
-        report[col] = {"inter_kit_sd_before": before, "inter_kit_sd_after": float(adj.std(axis=1).median()),
-                       "n_minutes": int(mat.notna().all(axis=1).sum())}
+        report[col] = {
+            "inter_kit_sd_before": before,
+            "inter_kit_sd_after": float(adj.std(axis=1).median()),
+            "n_minutes": int(mat.notna().all(axis=1).sum()),
+        }
     return cal, report

@@ -1,11 +1,18 @@
 import numpy as np
 import pytest
 
-from core.scene import Building, Road
+from core.scene import Building
 from physics.acoustics.insulation import composite_r, facade_r, mass_law, tau
 from physics.acoustics.levels import TRAFFIC_SPECTRUM_A, db_mean, db_sum, exceedance_level
 from physics.acoustics.model import (
-    Obstacles, SourceLine, a_level, discretise, incident_levels, line_lw_per_m, maekawa, path_difference,
+    Obstacles,
+    SourceLine,
+    a_level,
+    discretise,
+    incident_levels,
+    line_lw_per_m,
+    maekawa,
+    path_difference,
 )
 
 

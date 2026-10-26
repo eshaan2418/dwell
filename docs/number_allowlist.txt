@@ -1,0 +1,38 @@
+# Regexes (searched within ±25 chars of each numeric token) for numbers that are NOT results:
+# spec targets, standards, model names, dates, IDs, units of definitions. Each line = one pattern.
+\bM\d{1,2}\b  # milestone IDs (M0-M12)
+\bD-\d{3}\b  # decision IDs
+\bB-\d{3}\b  # blocker IDs
+\bH\d\b  # hypotheses
+\b(19|20)\d\d\b  # years / dates
+\b(19|20)\d\d-\d\d(-\d\d)?\b  # ISO dates
+\bISO \d+  # ISO standards
+\bISO 9613-[12]\b
+\bISO 717-1\b
+\bIEC 61672\b
+\bEN 12354-3\b
+\b5R1C\b  # ISO 13790 network name
+\b(ESP32|BH1750|SHT31|BME280|INMP441|ICS-43434|ESP32-DevKitC|WROOM-32)\b  # part numbers
+\bL_?A?90\b|LA90|L_A90|L90  # exceedance level names
+\b23:00|07:00|23–07|23-07|2 am|0200|02:00\b  # night window definition
+\bMAE ≤ 1 h|≤ 3 dB|≤ 1\.5 °C|85–95 ?%|90 ?% (prediction )?interval|90 %|90%\b  # spec targets
+\b2[- ]minute\b|\b2–4 weeks\b|\b8–20\b|\b15–30\b|\b24 ?h\b|\$30–40\b  # protocol parameters from the brief
+\b1 kHz\b|\b48 kHz\b|\b94 dB\b|\b-26 dBFS\b|\b61 dB(A)?\b|\b33 dBA\b|SNR  # mic datasheet values
+\b26 ?°C\b|\b28 ?°C\b|above 2[68]  # heat thresholds (definitions)
+\bWHO\b|\b2018\b  # WHO guideline year
+\bTable \d+\b|\bFigure \d+\b|\bFig\. \d+\b|\bSection \d+\b|§\d+  # cross references
+^\s*\d+\.\s  # numbered list markers
+^\s*[-*]\s+\*\*\d  # bold list numbering
+\bv\d+\b|dwell-report/1|schema|/1\b  # versions
+\b(world_v1|Python 3\.12|3\.12|OGL|ODbL 1\.0|ODbL)\b
+\b\d+-fold\b|\bK=16\b|\b16 building-grouped\b|\b10-fold\b  # CV design
+\bMakefile\b|make [a-z-]+  # commands
+https?://\S+  # URLs
+\[\d+\]  # citation markers
+\bα *= *0\.1\b|alpha = 0\.1  # nominal miscoverage
+\b2D\b|\b3D\b|\b2\.5D\b  # dimensionality
+\bU\d\d\b|\bK\d\d\b|B\d{4}  # pseudonymous unit / kit / synthetic building IDs
+\b(sha256|SHA-256)\b
+ENU|x = east
+\b16\.7\b|\b17°|Toronto grid  # Toronto street grid rotation (generator assumption)
+\b0x[0-9A-Fa-f]+\b  # hex flags
