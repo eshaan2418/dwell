@@ -365,12 +365,9 @@ def generate(
     # ---------------- what we couldn't see ----------------
     unc = {}
     if sobol:
-        wk = weather.loc[
-            ref["heatwave_start"].tz_localize(TZ).tz_convert("UTC") - pd.Timedelta(days=3) : ref["heatwave_start"]
-            .tz_localize(TZ)
-            .tz_convert("UTC")
-            + pd.Timedelta(days=5)
-        ]
+        hw0 = ref["heatwave_start"]
+        hw0 = (hw0.tz_localize(TZ) if hw0.tzinfo is None else hw0).tz_convert("UTC")
+        wk = weather.loc[hw0 - pd.Timedelta(days=3) : hw0 + pd.Timedelta(days=5)]
         for room in unit.rooms:
             if not unit.walls_of(room.id):
                 continue

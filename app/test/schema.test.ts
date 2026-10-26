@@ -40,6 +40,13 @@ describe('validateReport', () => {
     expect(errs.join('\n')).toContain(needle);
   });
 
+  it('accepts an empty posterior for the aggregate "other_inputs" item', () => {
+    const r = loadFixture();
+    const k = Object.keys(r.uncertainty)[0];
+    r.uncertainty[k].what_we_couldnt_see.push({ property: 'other_inputs', posterior: {}, variance_share: { noise: 0.5 }, explanation: 'x' });
+    expect(validateReport(r)).toEqual([]);
+  });
+
   it('rejects non-objects', () => {
     expect(validateReport(null)).toHaveLength(1);
     expect(validateReport([1, 2])).toHaveLength(1);

@@ -1,0 +1,27 @@
+{
+  "provenance": {
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
+    "dirty": true,
+    "data_hash": "n/a",
+    "data_kind": "synthetic",
+    "seed": 0,
+    "config": {
+      "units": [
+        "B0077_u2",
+        "B0029_u0",
+        "DEMO_QUEEN_SPADINA"
+      ]
+    },
+    "timestamp_utc": "2026-10-26T22:14:51+00:00",
+    "script": "demo.py",
+    "python": "3.12.14"
+  },
+  "report_seconds": {
+    "B0077_u2": 1.6767587661743164,
+    "B0029_u0": 1.2486181259155273,
+    "DEMO_QUEEN_SPADINA": 301.9836769104004
+  },
+  "max_seconds": 301.9836769104004,
+  "machine": "Apple M5 Pro CPU (shared, loaded)",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+}

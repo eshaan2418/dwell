@@ -28,7 +28,8 @@ def _job(args: tuple) -> dict:
     u = Unit.from_dict(obs_d)
     post = models.hidden.posterior(u)
     ref = reference_periods(weather())
-    t0 = ref["heatwave_start"].tz_localize("America/Toronto").tz_convert("UTC")
+    t0 = ref["heatwave_start"]
+    t0 = (t0.tz_localize("America/Toronto") if t0.tzinfo is None else t0).tz_convert("UTC")
     wk = weather().loc[t0 - pd.Timedelta(days=3) : t0 + pd.Timedelta(days=5)]
     return {"room": room_id, **room_sobol(u, room_id, post, wk, n_noise=128, n_heat=24, seed=seed)}
 

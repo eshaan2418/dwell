@@ -1,0 +1,290 @@
+[
+ {
+  "start": 333,
+  "end": 347,
+  "text": "awaiting-human",
+  "source": "real/validation.json",
+  "key": "status",
+  "data_kind": "none",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 855,
+  "end": 859,
+  "text": "0.79",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 871,
+  "end": 880,
+  "text": "0.66\u20130.92",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.mae_ci95",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 905,
+  "end": 908,
+  "text": "86%",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 972,
+  "end": 976,
+  "text": "0.82",
+  "source": "m5/sun.json",
+  "key": "methods.physics_default.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1232,
+  "end": 1236,
+  "text": "0.92",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1250,
+  "end": 1253,
+  "text": "96%",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1353,
+  "end": 1356,
+  "text": "89%",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid_normalised.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1363,
+  "end": 1365,
+  "text": "15",
+  "source": "m6/noise.json",
+  "key": "censoring.test_rooms_above_floor",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1369,
+  "end": 1372,
+  "text": "110",
+  "source": "m6/noise.json",
+  "key": "censoring.test_rooms",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1437,
+  "end": 1441,
+  "text": "2.52",
+  "source": "m6/noise.json",
+  "key": "above_floor.hybrid.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 1572,
+  "end": 1576,
+  "text": "1.00",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1584,
+  "end": 1593,
+  "text": "0.78\u20131.26",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.mae_ci95",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1605,
+  "end": 1608,
+  "text": "92%",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1652,
+  "end": 1656,
+  "text": "2.41",
+  "source": "m7/heat.json",
+  "key": "methods.physics_inferred.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1692,
+  "end": 1696,
+  "text": "1.25",
+  "source": "m7/heat.json",
+  "key": "methods.pure_ml.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1901,
+  "end": 1903,
+  "text": "30",
+  "source": "m11/study_dryrun.json",
+  "key": "power.table.5.N",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1919,
+  "end": 1920,
+  "text": "8",
+  "source": "m11/study_dryrun.json",
+  "key": "power.table.5.K",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1951,
+  "end": 1955,
+  "text": "0.73",
+  "source": "m11/study_dryrun.json",
+  "key": "power.table.5.power_glmm_perm",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2264,
+  "end": 2268,
+  "text": "0.65",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.lobo_train.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2278,
+  "end": 2282,
+  "text": "1.19",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.lobo_train.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2295,
+  "end": 2299,
+  "text": "1.10",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.lobo_train.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2397,
+  "end": 2401,
+  "text": "1.57",
+  "source": "m7/heat.json",
+  "key": "ablations.hybrid_minus_inference.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2430,
+  "end": 2433,
+  "text": "43%",
+  "source": "m8/sobol.json",
+  "key": "heat.hidden_property_share_mean",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2567,
+  "end": 2571,
+  "text": "1.03",
+  "source": "m8/comparison.json",
+  "key": "variant_ablations.sun_no_obstruction.hybrid.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2755,
+  "end": 2759,
+  "text": "True",
+  "source": "privacy/scan.json",
+  "key": "ok",
+  "data_kind": "none",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 3227,
+  "end": 3231,
+  "text": "0.00",
+  "source": "m6/noise.json",
+  "key": "attribution.share_rooms_transit_dominant",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 3340,
+  "end": 3343,
+  "text": "74%",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.group_coverage.g_orient.S.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 3383,
+  "end": 3386,
+  "text": "85%",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.mondrian.g_orient.S.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 3452,
+  "end": 3455,
+  "text": "82%",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.group_coverage.g_orient.W.coverage90",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 3596,
+  "end": 3599,
+  "text": "44%",
+  "source": "m3/recon_synthetic.json",
+  "key": "table.nominal_120s__good__door_scale.window_recall",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 5138,
+  "end": 5142,
+  "text": "0.40",
+  "source": "m1/target_derivation.json",
+  "key": "open_window_heuristic_validation.f1",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ }
+]

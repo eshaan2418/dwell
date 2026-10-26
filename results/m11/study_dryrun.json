@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
     "data_hash": "74e6f1edf127cd609c5d756e19d522914b094dcde10a85cf80092e60c084f2f8",
     "data_kind": "synthetic",
@@ -57,7 +57,7 @@
         "seed": 20261024
       }
     },
-    "timestamp_utc": "2026-10-24T19:02:09+00:00",
+    "timestamp_utc": "2026-10-26T22:17:23+00:00",
     "script": "analysis.py",
     "python": "3.12.14"
   },
@@ -113,26 +113,26 @@
       },
       "glmm": {
         "method": "BinomialBayesMixedGLM.fit_vb, consistent ~ report + (1|participant) + (1|pair), fixed-effect prior N(0, 1.0^2)",
-        "log_or": 0.8749446158766155,
-        "post_sd": 0.33059112818734454,
+        "log_or": 0.8749445585494626,
+        "post_sd": 0.33059040460659894,
         "ci95": [
-          0.226997911020956,
-          1.522891320732275
+          0.22699927188600433,
+          1.522889845212921
         ],
-        "odds_ratio": 2.3987424380409212,
-        "p_positive": 0.9959348045613852,
-        "intercept": 0.040642806604314526,
+        "odds_ratio": 2.398742300527851,
+        "p_positive": 0.9959348721043637,
+        "intercept": 0.04064282986351489,
         "vc_sd_posterior_mean": {
-          "participant": 0.4151729729248742,
-          "pair": 0.6179935669086732
+          "participant": 0.41517325844321284,
+          "pair": 0.6179933295944148
         }
       },
       "glmm_permutation_test": {
         "method": "within-participant permutation test of GLMM z (two-sided)",
-        "z_obs": 2.646604128018612,
+        "z_obs": 2.6466061057199375,
         "n_perm": 1000,
         "p_two_sided": 0.025974025974025976,
-        "perm_abs_z_95": 2.390462731620556
+        "perm_abs_z_95": 2.390461225516553
       },
       "gee": {
         "method": "GEE logit, exchangeable, groups=participant: consistent ~ report",
@@ -285,10 +285,10 @@
     "single_dataset": {
       "glmm_conditional_log_or": {
         "true": 0.6931471805599456,
-        "estimate": 0.8749446158766155,
+        "estimate": 0.8749445585494626,
         "ci95": [
-          0.226997911020956,
-          1.522891320732275
+          0.22699927188600433,
+          1.522889845212921
         ],
         "ci_covers_true": true
       },
@@ -354,10 +354,10 @@
         "n_datasets": 200,
         "n_failed_fits": 0,
         "true": 0.6931471805599456,
-        "mean_estimate": 0.7102569731929165,
-        "median_estimate": 0.6835049373797566,
-        "bias": 0.017109792632970855,
-        "empirical_sd": 0.40839444170755723,
+        "mean_estimate": 0.7102570302117092,
+        "median_estimate": 0.6835058108939873,
+        "bias": 0.017109849651763542,
+        "empirical_sd": 0.40839453264510983,
         "ci95_coverage": 0.94,
         "coverage_mc_se": 0.01679285562374667,
         "rejection_rate_ci_excludes_0": 0.48
@@ -392,7 +392,7 @@
         "type1_gee": 0.048,
         "type1_paired_t": 0.058,
         "type1_glmm_vb_nominal": 0.11,
-        "glmm_null_critical_abs_z": 2.297519179138547,
+        "glmm_null_critical_abs_z": 2.297523747226259,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -412,7 +412,7 @@
         "type1_gee": 0.05,
         "type1_paired_t": 0.046,
         "type1_glmm_vb_nominal": 0.135,
-        "glmm_null_critical_abs_z": 2.541066146452656,
+        "glmm_null_critical_abs_z": 2.541064879296679,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -432,7 +432,7 @@
         "type1_gee": 0.028,
         "type1_paired_t": 0.026,
         "type1_glmm_vb_nominal": 0.095,
-        "glmm_null_critical_abs_z": 2.223694783147812,
+        "glmm_null_critical_abs_z": 2.2236944022994387,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -452,7 +452,7 @@
         "type1_gee": 0.052,
         "type1_paired_t": 0.046,
         "type1_glmm_vb_nominal": 0.115,
-        "glmm_null_critical_abs_z": 2.3796148549105802,
+        "glmm_null_critical_abs_z": 2.379612754728462,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -472,7 +472,7 @@
         "type1_gee": 0.036,
         "type1_paired_t": 0.038,
         "type1_glmm_vb_nominal": 0.165,
-        "glmm_null_critical_abs_z": 2.5476031835427686,
+        "glmm_null_critical_abs_z": 2.5475990915286966,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -492,7 +492,7 @@
         "type1_gee": 0.058,
         "type1_paired_t": 0.048,
         "type1_glmm_vb_nominal": 0.125,
-        "glmm_null_critical_abs_z": 2.298839797869108,
+        "glmm_null_critical_abs_z": 2.2988421165162034,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -512,7 +512,7 @@
         "type1_gee": 0.04,
         "type1_paired_t": 0.034,
         "type1_glmm_vb_nominal": 0.13,
-        "glmm_null_critical_abs_z": 2.3821456302366277,
+        "glmm_null_critical_abs_z": 2.3821460645952777,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -532,7 +532,7 @@
         "type1_gee": 0.058,
         "type1_paired_t": 0.05,
         "type1_glmm_vb_nominal": 0.115,
-        "glmm_null_critical_abs_z": 2.4510184747822956,
+        "glmm_null_critical_abs_z": 2.451017300937813,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       },
@@ -552,7 +552,7 @@
         "type1_gee": 0.04,
         "type1_paired_t": 0.05,
         "type1_glmm_vb_nominal": 0.11,
-        "glmm_null_critical_abs_z": 2.309973578718885,
+        "glmm_null_critical_abs_z": 2.3099717684072423,
         "mc_se_max": 0.022360679774997897,
         "mc_se_max_glmm": 0.035355339059327376
       }
@@ -562,5 +562,5 @@
     "results/m11/figs/dryrun_consistency_by_condition.png",
     "results/m11/figs/power_curve.png"
   ],
-  "runtime_s": 540.1
+  "runtime_s": 37.4
 }

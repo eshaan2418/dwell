@@ -60,7 +60,9 @@ from north. `{pred, lo, hi}` = point estimate and 90 % prediction interval.
   "uncertainty": {"<room_id>": {"what_we_couldnt_see": [
       {"property": "glazing", "posterior": {"single": 0.1, "double": 0.6, "double_lowe": 0.3, "triple": 0.0},
        "variance_share": {"noise": 0.55, "heat": 0.20},
-       "explanation": "We could not confirm the glazing type from the video ..."}]}},
+       "explanation": "We could not confirm the glazing type from the video ..."},
+      {"property": "other_inputs", "posterior": {},   // empty = aggregate of non-hidden uncertain inputs
+       "variance_share": {"noise": 0.45, "heat": 0.80}, "explanation": "..."}]}},
   "provenance": {"commit": "...", "model": "...", "calibration": "synthetic world_v1"}
 }
 ```

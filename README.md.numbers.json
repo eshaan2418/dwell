@@ -1,0 +1,155 @@
+[
+ {
+  "start": 2123,
+  "end": 2127,
+  "text": "0.79",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2129,
+  "end": 2138,
+  "text": "0.66\u20130.92",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.mae_ci95",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2142,
+  "end": 2146,
+  "text": "0.82",
+  "source": "m5/sun.json",
+  "key": "methods.physics_inferred.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2149,
+  "end": 2153,
+  "text": "1.48",
+  "source": "m5/sun.json",
+  "key": "methods.single_purpose_baseline.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2156,
+  "end": 2159,
+  "text": "86%",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2217,
+  "end": 2221,
+  "text": "0.92",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2223,
+  "end": 2232,
+  "text": "0.77\u20131.09",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.mae_ci95",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2236,
+  "end": 2240,
+  "text": "1.18",
+  "source": "m6/noise.json",
+  "key": "methods.physics_inferred.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2243,
+  "end": 2247,
+  "text": "1.39",
+  "source": "m6/noise.json",
+  "key": "methods.single_purpose_baseline.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2250,
+  "end": 2253,
+  "text": "96%",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2304,
+  "end": 2308,
+  "text": "1.00",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2310,
+  "end": 2319,
+  "text": "0.78\u20131.26",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.mae_ci95",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2323,
+  "end": 2327,
+  "text": "2.41",
+  "source": "m7/heat.json",
+  "key": "methods.physics_inferred.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2330,
+  "end": 2334,
+  "text": "5.08",
+  "source": "m7/heat.json",
+  "key": "methods.single_purpose_baseline.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2337,
+  "end": 2340,
+  "text": "92%",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 2505,
+  "end": 2507,
+  "text": "15",
+  "source": "m6/noise.json",
+  "key": "censoring.test_rooms_above_floor",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 2511,
+  "end": 2514,
+  "text": "110",
+  "source": "m6/noise.json",
+  "key": "censoring.test_rooms",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ }
+]

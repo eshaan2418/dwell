@@ -17,6 +17,7 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 from dataclasses import dataclass, field
+from functools import partial
 from typing import Any
 
 import numpy as np
@@ -60,13 +61,13 @@ class HiddenPosterior:
 @dataclass
 class HiddenPropertyModel:
     alpha: float = 1.0
-    c_g: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(GLAZING_TYPES))))
-    c_g_cue: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(GLAZING_TYPES))))
-    c_f: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(FRAME_TYPES))))
-    c_f_cue: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(FRAME_TYPES))))
-    c_w: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(WALL_TYPES))))
-    c_w_cue: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(WALL_TYPES))))
-    c_era: dict = field(default_factory=lambda: defaultdict(lambda: np.zeros(len(ERAS))))
+    c_g: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(GLAZING_TYPES))))
+    c_g_cue: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(GLAZING_TYPES))))
+    c_f: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(FRAME_TYPES))))
+    c_f_cue: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(FRAME_TYPES))))
+    c_w: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(WALL_TYPES))))
+    c_w_cue: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(WALL_TYPES))))
+    c_era: dict = field(default_factory=lambda: defaultdict(partial(np.zeros, len(ERAS))))
     thick: dict = field(default_factory=lambda: defaultdict(list))
     n_units: int = 0
 

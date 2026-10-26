@@ -1,14 +1,14 @@
 {
   "provenance": {
-    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
-    "data_hash": "66b1044454a80d67e8354fc42fa5e10c28a0679b2b79a6bf5545118471accebb",
+    "data_hash": "d578c3d0bd7388e6e7790666a0f6553b6b1a55eb6e3940ab7309f3a44b88ac72",
     "data_kind": "synthetic",
     "seed": 4,
     "config": {
       "n_units": 55
     },
-    "timestamp_utc": "2026-10-24T18:26:24+00:00",
+    "timestamp_utc": "2026-10-26T22:16:22+00:00",
     "script": "m4_locate.py",
     "python": "3.12.14"
   },

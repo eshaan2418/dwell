@@ -1,8 +1,8 @@
 {
   "provenance": {
-    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
-    "data_hash": "b11ce8c40f527814e2f36f32b64902f19ae6e1f67559ffffe88fd72e5f95c827",
+    "data_hash": "8fac51fff9f274f1ae630b9286f50bdd8117a58aedb03bc2e3e3d7934621a390",
     "data_kind": "synthetic",
     "seed": 0,
     "config": {
@@ -26,12 +26,12 @@
         "dim": 0.035
       }
     },
-    "timestamp_utc": "2026-10-24T18:19:46+00:00",
+    "timestamp_utc": "2026-10-26T22:16:20+00:00",
     "script": "m3_recon.py",
     "python": "3.12.14"
   },
   "table": {
-    "short_60s|good|door-scale": {
+    "short_60s__good__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.028910176056150427,
       "ceiling_abs_err_m_median": 0.0360101600038949,
@@ -42,7 +42,7 @@
       "window_area_abs_rel_err_median": 0.9579051931905074,
       "scale_abs_rel_err_median": 0.01459100073902142
     },
-    "short_60s|good|AR": {
+    "short_60s__good__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.019197172108490645,
       "ceiling_abs_err_m_median": 0.018105245288894567,
@@ -53,7 +53,7 @@
       "window_area_abs_rel_err_median": 0.7531377837118061,
       "scale_abs_rel_err_median": 0.0
     },
-    "short_60s|dim|door-scale": {
+    "short_60s__dim__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.0768495357334682,
       "ceiling_abs_err_m_median": 0.07189475471110884,
@@ -64,7 +64,7 @@
       "window_area_abs_rel_err_median": 0.25809856953631605,
       "scale_abs_rel_err_median": 0.02591600924960863
     },
-    "short_60s|dim|AR": {
+    "short_60s__dim__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.05651533203152259,
       "ceiling_abs_err_m_median": 0.014564100321833529,
@@ -75,7 +75,7 @@
       "window_area_abs_rel_err_median": null,
       "scale_abs_rel_err_median": 0.0
     },
-    "nominal_120s|good|door-scale": {
+    "nominal_120s__good__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.035706217691517605,
       "ceiling_abs_err_m_median": 0.04176936598545522,
@@ -86,7 +86,7 @@
       "window_area_abs_rel_err_median": 0.29015096692453746,
       "scale_abs_rel_err_median": 0.016336973528718934
     },
-    "nominal_120s|good|AR": {
+    "nominal_120s__good__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.023519826618376816,
       "ceiling_abs_err_m_median": 0.022313420934592543,
@@ -97,7 +97,7 @@
       "window_area_abs_rel_err_median": 0.2922330678402856,
       "scale_abs_rel_err_median": 0.0
     },
-    "nominal_120s|dim|door-scale": {
+    "nominal_120s__dim__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.09927989713630014,
       "ceiling_abs_err_m_median": 0.07873214826858232,
@@ -108,7 +108,7 @@
       "window_area_abs_rel_err_median": 0.432301662626978,
       "scale_abs_rel_err_median": 0.029276240573014922
     },
-    "nominal_120s|dim|AR": {
+    "nominal_120s__dim__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.07247763559857212,
       "ceiling_abs_err_m_median": 0.021096132869652617,
@@ -119,7 +119,7 @@
       "window_area_abs_rel_err_median": 0.4218741283010936,
       "scale_abs_rel_err_median": 0.0
     },
-    "long_240s|good|door-scale": {
+    "long_240s__good__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.04143620328102382,
       "ceiling_abs_err_m_median": 0.049647344152573325,
@@ -130,7 +130,7 @@
       "window_area_abs_rel_err_median": 0.1292865694799047,
       "scale_abs_rel_err_median": 0.015637097662587918
     },
-    "long_240s|good|AR": {
+    "long_240s__good__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.020816339997045907,
       "ceiling_abs_err_m_median": 0.022183604074091257,
@@ -141,7 +141,7 @@
       "window_area_abs_rel_err_median": 0.11062212058949317,
       "scale_abs_rel_err_median": 0.0
     },
-    "long_240s|dim|door-scale": {
+    "long_240s__dim__door_scale": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.1773001675425533,
       "ceiling_abs_err_m_median": 0.06962826148888923,
@@ -152,7 +152,7 @@
       "window_area_abs_rel_err_median": 0.13085878025624387,
       "scale_abs_rel_err_median": 0.025222593810086957
     },
-    "long_240s|dim|AR": {
+    "long_240s__dim__AR": {
       "n_rooms": 60,
       "room_area_abs_rel_err_median": 0.10735264828662483,
       "ceiling_abs_err_m_median": 0.03212151196550872,

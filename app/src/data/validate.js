@@ -264,7 +264,8 @@ export function validateReport(r) {
             errs.push(`${q}.${k}: expected an object of numbers in [0, 1]`);
           }
         }
-        if (isObj(item.posterior)) {
+        // an empty posterior marks an aggregate of non-hidden inputs (e.g. "other_inputs"): no distribution to check
+        if (isObj(item.posterior) && Object.keys(item.posterior).length > 0) {
           const sum = Object.values(item.posterior).reduce((a, b) => a + (isNum(b) ? b : 0), 0);
           if (Math.abs(sum - 1) > 0.02) errs.push(`${q}.posterior: probabilities must sum to 1 (got ${sum.toFixed(3)})`);
         }

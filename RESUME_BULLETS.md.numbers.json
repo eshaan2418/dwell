@@ -1,0 +1,83 @@
+[
+ {
+  "start": 346,
+  "end": 350,
+  "text": "0.79",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 360,
+  "end": 364,
+  "text": "1.48",
+  "source": "m5/sun.json",
+  "key": "methods.single_purpose_baseline.marginal.mae",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 533,
+  "end": 536,
+  "text": "86%",
+  "source": "m5/sun.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 544,
+  "end": 547,
+  "text": "96%",
+  "source": "m6/noise.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2"
+ },
+ {
+  "start": 557,
+  "end": 560,
+  "text": "92%",
+  "source": "m7/heat.json",
+  "key": "methods.hybrid.marginal.coverage90",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 772,
+  "end": 775,
+  "text": "66%",
+  "source": "m8/hidden_properties.json",
+  "key": "full.glazing_acc",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 779,
+  "end": 782,
+  "text": "47%",
+  "source": "m8/hidden_properties.json",
+  "key": "default_materials.glazing_acc",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 851,
+  "end": 854,
+  "text": "20%",
+  "source": "m8/sobol.json",
+  "key": "noise.hidden_property_share_mean",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ },
+ {
+  "start": 1461,
+  "end": 1464,
+  "text": "302",
+  "source": "m10/demo_timing.json",
+  "key": "max_seconds",
+  "data_kind": "synthetic",
+  "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247"
+ }
+]

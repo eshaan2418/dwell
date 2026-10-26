@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
     "data_hash": "d180e46e3d9e3f58bf7d95aac29f0a7d3fe1d0960edbb95f1236e69d1376e90a",
     "data_kind": "synthetic",
@@ -8,7 +8,7 @@
     "config": {
       "alpha": 1.0
     },
-    "timestamp_utc": "2026-10-24T19:09:13+00:00",
+    "timestamp_utc": "2026-10-26T22:09:34+00:00",
     "script": "m8_priors.py",
     "python": "3.12.14"
   },

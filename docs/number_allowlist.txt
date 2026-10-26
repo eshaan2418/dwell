@@ -36,3 +36,12 @@ https?://\S+  # URLs
 ENU|x = east
 \b16\.7\b|\b17°|Toronto grid  # Toronto street grid rotation (generator assumption)
 \b0x[0-9A-Fa-f]+\b  # hex flags
+^#+ \d+ [A-Z]  # section headings
+\b95 % CI\b|\(95 % CI\)  # confidence level (definition)
+\b21-day simulated\b  # synthetic deployment length (config, data/synthetic/world_v1_split.json)
+\b15-point (improvement|effect)\b  # assumed decision-study effect size (p_report - p_video, study/simulate.py)
+\bconventional\s+0\.8\b|^0\.8 — the study  # conventional power threshold
+\bclass-1/2\b  # IEC 61672 meter classes
+results/m\d+  # result file paths
+CV\+ with 16$|CV\+ with 16 building  # CV fold count (hybrid/evaluate.py CV_FOLDS)
+< 15 min\b  # report-time spec from the brief

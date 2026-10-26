@@ -7,7 +7,7 @@ WORLD ?= world_v1
 UNIT ?=
 
 .PHONY: help setup models geo test lint typecheck ci firmware firmware-build privacy-scan check-numbers synth predict-synth \
-        train m1 m3 m4 m5-m8 sobol bench figures predict demo app ingest ingest-colocation validate freeze-test-units \
+        train m1 m3 m4 m5-m8 priors sobol bench figures predict demo app ingest ingest-colocation validate freeze-test-units \
         study-analysis reproduce-quick reproduce-full paper recon clean-cache docker
 
 help:
@@ -67,13 +67,16 @@ m4: ## M4 orientation/horizon experiments
 m5-m8: predict-synth ## M5-M8 method comparison on synthetic data
 	$(PY) -m bench.m8_hybrid
 
+priors: predict-synth ## M8 hidden-property inference accuracy + input ablations
+	$(PY) -m bench.m8_priors
+
 sobol: train ## M8 Sobol sensitivity over test units
 	$(PY) -m bench.m8_sobol
 
 figures: ## regenerate all figures from results/
 	$(PY) -m bench.figures
 
-bench: m1 m3 m4 m5-m8 sobol figures ## all experiments
+bench: m1 m3 m4 m5-m8 priors sobol figures ## all experiments
 
 predict: train ## report bundle for one unit: make predict UNIT=<synthetic unit id | real pseudonym>
 	$(PY) -m bench.make_report --unit $(UNIT)
@@ -104,15 +107,17 @@ study-analysis: ## M11 analysis (real data if present; else exits)
 recon: ## walkthrough video -> 2.5D unit geometry: make recon UNIT=U03
 	$(PY) -m recon.cli --unit $(UNIT)
 
-reproduce-quick: ## < 1 h: synthetic world (reduced) + all experiments + figures + checks
-	DWELL_QUICK=1 $(MAKE) synth predict-synth m1 m5-m8 train sobol m3 m4 figures check-numbers WORLD=$(WORLD)
+reproduce-quick: ## < 1 h: frozen synthetic world + all experiments + figures; checks numbers match committed docs
+	$(MAKE) synth predict-synth m1 m5-m8 priors train sobol m3 m4 figures check-numbers WORLD=$(WORLD)
 
 reproduce-full: ## full pipeline incl. demo and study dry-run
 	$(MAKE) bench demo
 	$(PY) -m study.analysis --dry-run
 
-paper: figures check-numbers ## render paper/paper.md from template + results
+paper: figures ## render README/paper/bullets/final review from templates + results, then check numbers
 	$(PY) -m bench.render_docs
+	$(PY) -m bench.index > /dev/null
+	$(PY) -m bench.check_numbers
 
 docker: ## build the reproducibility image
 	docker build -t dwell:latest .

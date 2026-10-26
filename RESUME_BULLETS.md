@@ -1,0 +1,7 @@
+# Resume bullets (auto-rendered from results/ by `make paper`; source of every number in RESUME_BULLETS.md.numbers.json)
+
+- Built Dwell, a hybrid physics + gradient-boosting system that predicts per-room direct sun, night noise and summer heat from a phone walkthrough and public geodata; on held-out synthetic buildings, sill-point sun-hour MAE 0.79 h/day vs 1.48 h/day for a sun-path-only tool (`synthetic`; results/m5/sun.json).
+- Calibrated every prediction with building-grouped CV+ conformal intervals: empirical 90 % coverage 86% (sun), 96% (noise), 92% (heat) on held-out buildings (`synthetic`; results/m5–m7).
+- Designed a Bayesian prior over hidden envelope properties (glazing, frame seal, wall) from interior-scan cues and building metadata: glazing accuracy 66% vs 47% for a default-materials assumption, with Sobol analysis attributing 20% of night-noise prediction variance to those properties (`synthetic`; results/m8/).
+- Wrote privacy-preserving ESP32 sensor firmware (light, temperature/RH, on-device A-weighted dB levels only) with a CI-enforced static check that raw audio never leaves the level DSP, plus a host-tested DSP suite and an ingestion pipeline deriving sensor targets (firmware/, ingest/).
+- Shipped a local-first web app (capture guide, 3D sun-patch time slider, per-room report cards with intervals, "what we couldn't see", side-by-side comparison, illustrative night-listen audio); end-to-end report generation took at most 302 s per unit on a laptop CPU (spec: < 15 min) (`synthetic`; results/m10/demo_timing.json).

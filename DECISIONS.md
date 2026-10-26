@@ -56,3 +56,11 @@ Dated decisions with rationale. IDs are referenced from code/docs.
 - **D-017 (2026-10-24) Type checking as a ratchet.** With pandas-stubs, mypy reports ~860 mostly stub-driven
   errors; without them 71 (annotation gaps, Optional narrowing). CI runs `bench/mypy_ratchet.py`: it fails if
   the count exceeds `docs/mypy_baseline.txt`, so new code cannot add type errors; the backlog is tech debt.
+- **D-018 (2026-10-26) `reproduce-quick` runs the full frozen `world_v1`** rather than a reduced world, so its
+  regenerated results can be checked against the committed docs (`check-numbers` fails on any drift). The
+  unused `DWELL_QUICK` switch was removed. Its measured clean-clone runtime is recorded in `ENVIRONMENT.md`.
+- **D-019 (2026-10-26) CI.** The repository has no git remote, so the GitHub Actions workflow has never run.
+  "CI green" means `make ci` (the same command the workflow runs) plus `make firmware-build` passing locally.
+- **D-020 (2026-10-26) M9 Wi-Fi skipped.** Optional milestone; the time went into M5–M8 and real-data readiness.
+- **D-021 (2026-10-26) Report "other_inputs" item.** The "what we couldn't see" list ends with an aggregate of
+  non-hidden uncertain inputs that has no posterior. The report validator accepts an empty posterior for it.

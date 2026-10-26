@@ -1,0 +1,16 @@
+{
+  "provenance": {
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
+    "dirty": true,
+    "data_hash": "9d464be333a29815b908ded2a3eda57fb83f12a70b551ab3660e2ffc0ba634df",
+    "data_kind": "synthetic",
+    "seed": 7,
+    "config": {},
+    "timestamp_utc": "2026-10-26T22:15:51+00:00",
+    "script": "release_dataset.py",
+    "python": "3.12.14"
+  },
+  "n_synthetic_rooms": 578,
+  "n_real_rooms": 0,
+  "real_status": "awaiting-human (no consented units)"
+}

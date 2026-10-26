@@ -84,11 +84,13 @@ function unseenItem(item: UnseenItem): HTMLElement {
   const share = Object.entries(item.variance_share ?? {}).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
   return h('li', { class: 'unseen' },
     h('div', { class: 'unseen-prop' }, item.property.replace(/_/g, ' ')),
-    h('ul', { class: 'post', 'aria-label': `Our belief about ${item.property}` },
-      ...post.map(([k, v]) => h('li', {},
-        h('span', { class: 'post-k' }, k.replace(/_/g, ' ')),
-        h('span', { class: 'post-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${scalePct(v, 0, 1)}%` })),
-        h('span', { class: 'post-v' }, pct(v))))),
+    post.length
+      ? h('ul', { class: 'post', 'aria-label': `Our belief about ${item.property}` },
+        ...post.map(([k, v]) => h('li', {},
+          h('span', { class: 'post-k' }, k.replace(/_/g, ' ')),
+          h('span', { class: 'post-bar', 'aria-hidden': 'true' }, h('span', { style: `width:${scalePct(v, 0, 1)}%` })),
+          h('span', { class: 'post-v' }, pct(v)))))
+      : null,
     share.length
       ? h('p', { class: 'muted' }, 'Share of the uncertainty it causes: ' + share.map(([k, v]) => `${k} ${pct(v)}`).join(', '))
       : null,

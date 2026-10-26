@@ -18,7 +18,7 @@ COMMANDS = {
     "m7/heat.json": "make m5-m8",
     "m8/comparison.json": "make m5-m8",
     "m8/sobol.json": "make sobol",
-    "m8/hidden_properties.json": "python -m bench.m8_priors",
+    "m8/hidden_properties.json": "make priors",
     "m10/demo_timing.json": "make demo",
     "m11/study_dryrun.json": "python -m study.analysis --dry-run",
     "m12/release.json": "python -m bench.release_dataset",
@@ -55,7 +55,10 @@ def finding(rel: str, d: dict) -> str:
             )
         if rel == "m3/recon_synthetic.json":
             t = d["table"]["nominal_120s__good__door_scale"]
-            return f"nominal scan: room area err {t['room_area_abs_rel_err_median']:.3f}, window recall {t['window_recall']:.2f}"
+            return (
+                f"nominal scan: room area err {t['room_area_abs_rel_err_median']:.3f}, "
+                f"window recall {t['window_recall']:.2f}"
+            )
         if rel == "m8/sobol.json":
             return (
                 f"hidden-property share of variance: noise {d['noise']['hidden_property_share_mean']:.2f}, "

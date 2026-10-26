@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "commit": "f4b215270f5057c5edecca90b58fc50c0ca49ac2",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
     "data_hash": "n/a",
     "data_kind": "none",
@@ -8,12 +8,12 @@
     "config": {
       "max_bytes": 5242880
     },
-    "timestamp_utc": "2026-10-24T18:49:36+00:00",
+    "timestamp_utc": "2026-10-26T22:18:59+00:00",
     "script": "privacy_scan.py",
     "python": "3.12.14"
   },
   "ok": true,
-  "n_history_blobs": 109,
-  "n_tree_files": 198,
+  "n_history_blobs": 253,
+  "n_tree_files": 240,
   "issues": []
 }

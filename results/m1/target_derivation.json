@@ -1,8 +1,8 @@
 {
   "provenance": {
-    "commit": "1942a940f7f360ebcffda1250bc992a7f2aaf5cb",
+    "commit": "7fba73a29344b4e23db3f41ced75ed720d59b247",
     "dirty": true,
-    "data_hash": "214f96e744af429e0d2d0301c7bde90c0636d138651ba64edaa08a3a445afb6c",
+    "data_hash": "302a04f30bc84507b798f330fde9309c7e1493f01b8d12665babcc99be1b39a7",
     "data_kind": "synthetic",
     "seed": 101,
     "config": {
@@ -23,7 +23,7 @@
       "n_val": 30,
       "days": 10
     },
-    "timestamp_utc": "2026-10-24T17:35:10+00:00",
+    "timestamp_utc": "2026-10-26T22:16:45+00:00",
     "script": "m1_target_derivation.py",
     "python": "3.12.14"
   },
