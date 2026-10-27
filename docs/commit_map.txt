@@ -1,0 +1,10 @@
+# Commit-hash map for the 2026-10-27 history rewrite (D-023). results/ provenance written before
+# that date cites the old hash (left column).
+65a1b86b640e -> 1d4d51bcbe29
+30fef9071d5c -> 9d0edfd80c24
+3825b8056c5f -> f6aac5fa1409
+7c2bcaf50735 -> ea016734656d
+40f04a2301bc -> 6b6a0f6e14ae
+7fba73a29344 -> 2fe2e684dc36
+f4b215270f50 -> 09eafb9b117e
+1942a940f7f3 -> 9d73fbc23fb0

@@ -68,3 +68,7 @@ Dated decisions with rationale. IDs are referenced from code/docs.
   annotation gaps, Optional narrowing on true-unit hidden properties, and loop variables reused across types;
   all fixed without behavioural change (RNG call order preserved; `make reproduce-quick` re-checked numbers).
   `make typecheck` now runs plain `mypy` and fails on any error; the ratchet script and baseline are removed.
+- **D-023 (2026-10-27) History rewritten before publishing.** Author/committer email set to the owner's
+  personal address and co-author trailers removed for the public GitHub release; file contents unchanged.
+  Provenance `commit` fields in `results/` written before this date cite pre-rewrite hashes; the
+  old → new mapping is in `docs/commit_map.txt`.
