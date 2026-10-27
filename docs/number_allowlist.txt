@@ -47,3 +47,6 @@ CV\+ with 16$|CV\+ with 16 building  # CV fold count (hybrid/evaluate.py CV_FOLD
 < 15 min\b  # report-time spec from the brief
 \b1-s L_Aeq\b  # firmware logging interval (definition)
 class-2 meter\b  # IEC 61672 meter class
+eshaan2418  # GitHub account name in repo URLs
+%20|-[0-9a-f]{6}\)  # shields.io badge URL escapes and colour hex codes
+width="\d+%"  # HTML image widths
