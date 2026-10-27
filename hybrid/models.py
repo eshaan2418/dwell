@@ -10,6 +10,7 @@ from __future__ import annotations
 import pickle
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -27,7 +28,7 @@ BASE_COL = {"sun": "phys_mc_mean", "noise": "phys_mc_mean", "heat": "phys_mc_mea
 class TargetModel:
     target: str
     columns: list[str]
-    model: object
+    model: Any  # fitted sklearn regressor
     base_col: str
     scores_row: np.ndarray
     groups_row: np.ndarray

@@ -267,10 +267,14 @@ def annotate(d: StudyData) -> pd.DataFrame:
         )
     r["overlap_top"] = np.array(ov, dtype=int)
     # probability probe truth: is unit A better (quieter / sunnier / cooler) on probe_dim, measured?
-    pa_true, ptie, p_dwell = [], [], []
+    pa_true: list[float] = []
+    ptie: list[bool] = []
+    p_dwell: list[float] = []
     for ua, ub, dim in zip(r["unit_a"], r["unit_b"], r["probe_dim"], strict=True):
         if dim not in DIMS:
-            pa_true.append(np.nan), ptie.append(False), p_dwell.append(np.nan)
+            pa_true.append(np.nan)
+            ptie.append(False)
+            p_dwell.append(np.nan)
             continue
         col, sign = TARGET[dim]
         diff = sign * (t.at[ua, col] - t.at[ub, col])

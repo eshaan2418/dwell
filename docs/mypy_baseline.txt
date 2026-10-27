@@ -1,1 +1,0 @@
-71  # mypy error-count baseline; lower it as annotations are fixed

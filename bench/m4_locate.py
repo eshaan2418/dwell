@@ -38,12 +38,13 @@ def main() -> None:
     rng = np.random.default_rng(4)
     test_b = set(load_split()["test_buildings"])
     recs = [r for r in load() if r["true"]["building_id"] in test_b]
-    errs = {"compass_single": [], "compass_averaged": [], "footprint_snap": []}
+    errs: dict[str, list[float]] = {"compass_single": [], "compass_averaged": [], "footprint_snap": []}
     snap_fail = 0
     sky_vs_true, geo_vs_true = [], []
     for r in recs:
         t, o = Unit.from_dict(r["true"]), Unit.from_dict(r["obs"])
         own = t.own_building()
+        assert own is not None
         fp = own.footprint
         c = np.mean(np.asarray(fp), axis=0)
         fp_obs = _rot_fp(fp, rng.normal(0, FOOTPRINT_ROT_SD), c)
@@ -84,11 +85,11 @@ def main() -> None:
         from locate.osm import fetch, to_scene
 
         lat, lon = 43.6525, -79.3832
-        b, roads, transit, stats = to_scene(fetch(lat, lon, 300), lat, lon)
-        h = horizon_profile(0.0, 0.0, 1.5, b)
+        blds, roads, transit, stats = to_scene(fetch(lat, lon, 300), lat, lon)
+        h = horizon_profile(0.0, 0.0, 1.5, blds)
         demo = {
             "location": "Nathan Phillips Square (public)",
-            "n_buildings": len(b),
+            "n_buildings": len(blds),
             "height_sources": stats,
             "n_roads": len(roads),
             "n_rail_tram": len(transit),

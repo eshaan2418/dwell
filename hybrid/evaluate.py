@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -178,7 +179,7 @@ def run_methods(
         else:
             lo, hi = cv_plus_intervals(r["at_test"][:, ok], scores[ok], s_te, cal_b, ALPHA)
         out = test.assign(pred=r["full"], lo=lo, hi=hi)
-        res = {"marginal": metrics(out), "group_coverage": {}}
+        res: dict[str, Any] = {"marginal": metrics(out), "group_coverage": {}}
         for g in GROUPINGS:
             res["group_coverage"][g] = {
                 str(k): {

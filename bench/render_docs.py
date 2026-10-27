@@ -16,6 +16,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 from core.provenance import REPO, get_path, load_result
 
@@ -29,7 +30,7 @@ TARGETS = {
 PH = re.compile(r"\{\{\s*([^#}\s]+)#([^|}\s]+)\s*(?:\|\s*([^}\s]+))?\s*\}\}")
 
 
-def fmt(v: object, spec: str | None) -> str:
+def fmt(v: Any, spec: str | None) -> str:
     if spec is None:
         return str(v)
     if spec == "pct":
@@ -37,7 +38,7 @@ def fmt(v: object, spec: str | None) -> str:
     if spec.startswith("pct"):
         return f"{100 * float(v):.{int(spec[3:])}f}%"
     if spec.startswith("ci"):
-        a, b = v  # type: ignore[misc]
+        a, b = v
         s = spec[2:]
         return f"{format(float(a), s)}–{format(float(b), s)}"
     if spec == "int":

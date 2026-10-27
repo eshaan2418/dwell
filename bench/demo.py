@@ -21,6 +21,7 @@ HYPOTHETICAL = REPO / "docs" / "templates" / "public_demo_floorplan.yaml"
 def pick_units() -> list[str]:
     test_b = set(load_split()["test_buildings"])
     recs = [r for r in load() if r["true"]["building_id"] in test_b]
+
     # contrast: busiest-street unit vs quietest; prefer different orientations
     def street(r: dict) -> float:
         return max((x.get("aadt") or 0) for x in r["true"]["roads"]) if r["true"]["roads"] else 0.0
@@ -41,16 +42,31 @@ def main() -> None:
         t = time.time()
         try:
             u = unit_from_yaml(HYPOTHETICAL)
-            rep = generate(u, DwellModels.load(MODELS), weather(), PUBLIC / u.id, "synthetic",
-                           label="Hypothetical unit on real Toronto geodata (no sensors)")
+            rep = generate(
+                u,
+                DwellModels.load(MODELS),
+                weather(),
+                PUBLIC / u.id,
+                "synthetic",
+                label="Hypothetical unit on real Toronto geodata (no sensors)",
+            )
             update_index({"id": u.id, "label": rep["unit"]["label"], "data_kind": "synthetic"})
             timings[u.id] = time.time() - t
         except Exception as e:  # network-dependent geodata
             print("hypothetical unit skipped:", e)
-    write_result("m10/demo_timing.json",
-                 {"report_seconds": timings, "max_seconds": float(np.max(list(timings.values()))),
-                  "machine": "Apple M5 Pro CPU (shared, loaded)", "commit": git_commit()["commit"]},
-                 seed=0, config={"units": list(timings)}, data_hash="n/a", data_kind="synthetic")
+    write_result(
+        "m10/demo_timing.json",
+        {
+            "report_seconds": timings,
+            "max_seconds": float(np.max(list(timings.values()))),
+            "machine": "Apple M5 Pro CPU (shared, loaded)",
+            "commit": git_commit()["commit"],
+        },
+        seed=0,
+        config={"units": list(timings)},
+        data_hash="n/a",
+        data_kind="synthetic",
+    )
     print(timings)
 
 

@@ -126,7 +126,7 @@ def predict_noise(
     rng: np.random.Generator,
     o: PredictOptions,
     kit_floor: dict[str, float],
-) -> dict[str, dict[str, float]]:
+) -> dict[str, dict[str, Any]]:
     """Night L_Aeq (closed windows) per room: physics ensembles with/without the kit floor."""
     u = copy.deepcopy(obs)
     if not o.use_transit:

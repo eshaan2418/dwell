@@ -64,3 +64,7 @@ Dated decisions with rationale. IDs are referenced from code/docs.
 - **D-020 (2026-10-26) M9 Wi-Fi skipped.** Optional milestone; the time went into M5–M8 and real-data readiness.
 - **D-021 (2026-10-26) Report "other_inputs" item.** The "what we couldn't see" list ends with an aggregate of
   non-hidden uncertain inputs that has no posterior. The report validator accepts an empty posterior for it.
+- **D-022 (2026-10-27) Type checking is strict (supersedes the D-017 ratchet).** The 71-error backlog was
+  annotation gaps, Optional narrowing on true-unit hidden properties, and loop variables reused across types;
+  all fixed without behavioural change (RNG call order preserved; `make reproduce-quick` re-checked numbers).
+  `make typecheck` now runs plain `mypy` and fails on any error; the ratchet script and baseline are removed.

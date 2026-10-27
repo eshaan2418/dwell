@@ -159,7 +159,8 @@ def _geometry(unit: Unit, radius: float = 150.0) -> dict[str, Any]:
 def _sun_viewer(unit: Unit, year: int) -> dict[str, Any]:
     dates = [f"{year}-12-21", f"{year}-03-20", f"{year}-06-21", f"{year}-09-22"]
     hours = [h / 2 for h in range(12, 41)]
-    pos, patches = [], {r.id: [] for r in unit.rooms}
+    pos: list[list[list[float]]] = []
+    patches: dict[str, list[list[Any]]] = {r.id: [] for r in unit.rooms}
     for d in dates:
         times = pd.DatetimeIndex([pd.Timestamp(d, tz=TZ) + pd.Timedelta(hours=h) for h in hours])
         sp = solar_position(times, unit.lat, unit.lon)
@@ -168,7 +169,7 @@ def _sun_viewer(unit: Unit, year: int) -> dict[str, Any]:
         )
         ctxs = {c.window.id: c for c in window_contexts(unit)}
         for r in unit.rooms:
-            row = []
+            row: list[Any] = []
             for a, e in zip(sp["azimuth"], sp["elevation"], strict=True):
                 if e <= 0:
                     row.append(None)
@@ -217,7 +218,7 @@ def generate(
     start = pd.Timestamp(f"{year}-01-01", tz=TZ)
     days = 366 if pd.Timestamp(f"{year}-12-31").dayofyear == 366 else 365
     ps = predict_sun(unit, start, days, weather, rng, o)
-    sun_rooms = {}
+    sun_rooms: dict[str, dict[str, Any]] = {}
     tm_sun = models.targets["sun"]
     hw_sun = tm_sun.halfwidth("room")
     ctxs = window_contexts(unit)
@@ -266,13 +267,13 @@ def generate(
     openw = predict_room_noise(unit, NoiseParams(mapa["glazing"], mapa["frame"], mapa["wall"], open_fraction=0.08))
     noise_rooms, audio = {}, {}
     near_flow = 0.0
-    for r in unit.roads:
-        if any(Point(w.cx, w.cy).distance(Point(*r.coords[0])) < 1e9 for w in unit.windows):
+    for rd in unit.roads:
+        if any(Point(w.cx, w.cy).distance(Point(*rd.coords[0])) < 1e9 for w in unit.windows):
             from shapely.geometry import LineString
 
-            d = min(LineString(r.coords).distance(Point(w.cx, w.cy)) for w in unit.windows)
+            d = min(LineString(rd.coords).distance(Point(w.cx, w.cy)) for w in unit.windows)
             if d < 120:
-                near_flow += (r.aadt or AADT_BY_CLASS.get(r.road_class, 1000)) * HOURLY_TRAFFIC_PROFILE[2] / 60.0
+                near_flow += (rd.aadt or AADT_BY_CLASS.get(rd.road_class, 1000)) * HOURLY_TRAFFIC_PROFILE[2] / 60.0
     transit_2am = sum(t.night_trips_per_hour[2] for t in unit.transit)
     bg = 22.0
     for rid, v in pn.items():
@@ -330,15 +331,15 @@ def generate(
     heat_rooms = {}
     for rid in [k for k in ph if not k.startswith("_")]:
         out = {}
-        for tag, res in (("typical", ph), ("heatwave", hw)):
-            df = res[rid]
+        for tag, hres in (("typical", ph), ("heatwave", hw)):
+            df = hres[rid]
             ds, dc = _doy(df.index)
             extra = pd.DataFrame(
                 {
                     "phys_default": df["physics_default"],
                     "phys_mc_mean": df["mc_mean"],
                     "phys_mc_std": df["mc_std"],
-                    "base_outdoor_max": res["_outdoor_max"].reindex(df.index).to_numpy(),
+                    "base_outdoor_max": hres["_outdoor_max"].reindex(df.index).to_numpy(),
                     "wx_tmax": wd["wx_tmax"].reindex(df.index).to_numpy(),
                     "wx_tmean": wd["wx_tmean"].reindex(df.index).to_numpy(),
                     "wx_ghi": wd["wx_ghi"].reindex(df.index).to_numpy(),

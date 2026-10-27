@@ -9,6 +9,7 @@ ground truth, HUMAN_TODO §7) is `awaiting-human`.
 from __future__ import annotations
 
 import itertools
+from typing import Any
 
 import numpy as np
 from shapely.geometry import Polygon
@@ -84,7 +85,7 @@ def _job(args: tuple) -> list[dict]:
 def main() -> None:
     test_b = set(load_split()["test_buildings"])
     recs = [r for r in load() if r["true"]["building_id"] in test_b]
-    jobs = []
+    jobs: list[Any] = []
     for r in recs:
         u = Unit.from_dict(r["true"])
         for room in u.rooms:

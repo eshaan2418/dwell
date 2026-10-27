@@ -19,12 +19,21 @@ def main() -> None:
     te = [(Unit.from_dict(r["true"]), Unit.from_dict(r["obs"])) for r in recs if r["true"]["building_id"] in test_b]
     m = HiddenPropertyModel().fit(tr)
     out = {
-        "n_train_units": len(tr), "n_test_units": len(te),
-        "full": evaluate(m, te), "no_cues": evaluate(m, te, use_cues=False),
-        "no_metadata": evaluate(m, te, use_metadata=False), "default_materials": evaluate_default(te),
+        "n_train_units": len(tr),
+        "n_test_units": len(te),
+        "full": evaluate(m, te),
+        "no_cues": evaluate(m, te, use_cues=False),
+        "no_metadata": evaluate(m, te, use_metadata=False),
+        "default_materials": evaluate_default(te),
     }
-    write_result("m8/hidden_properties.json", out, seed=7, config={"alpha": m.alpha},
-                 data_hash=hash_paths(["data/synthetic/world_v1_split.json", "synth"]), data_kind="synthetic")
+    write_result(
+        "m8/hidden_properties.json",
+        out,
+        seed=7,
+        config={"alpha": m.alpha},
+        data_hash=hash_paths(["data/synthetic/world_v1_split.json", "synth"]),
+        data_kind="synthetic",
+    )
     print(out)
 
 

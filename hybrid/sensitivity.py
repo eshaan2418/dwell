@@ -8,13 +8,14 @@ parameter values (so categorical hidden properties are handled by inverse-CDF on
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 
 
 def sobol_indices(
     f: Callable[[np.ndarray], np.ndarray], d: int, n: int, seed: int = 0, n_boot: int = 200
-) -> dict[str, np.ndarray]:
+) -> dict[str, Any]:
     """f maps an (m, d) array of U(0,1) inputs to (m,) outputs. Returns S1, ST and bootstrap SDs."""
     rng = np.random.default_rng(seed)
     a = rng.random((n, d))

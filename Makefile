@@ -29,8 +29,8 @@ lint: ## ruff + clang-format (firmware)
 	$(PY) -m ruff check .
 	$(MAKE) -C firmware lint
 
-typecheck: ## mypy
-	$(PY) -m bench.mypy_ratchet
+typecheck: ## mypy (must be clean; D-022)
+	$(PY) -m mypy
 
 firmware: ## host DSP tests + no-raw-audio checker + lint
 	$(MAKE) -C firmware host-test check-privacy lint

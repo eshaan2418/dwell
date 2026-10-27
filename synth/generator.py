@@ -73,9 +73,9 @@ def sample_building(rng: np.random.Generator, bid: str) -> BuildingSpec:
     year = P.sample_year(rng, kind)
     wall = str(rng.choice(WALL_TYPES, p=P.wall_type_probs(kind, year)))
     if rng.random() < 0.75:
-        front_az = (TORONTO_GRID_DEG + 90 * rng.integers(0, 4) + rng.normal(0, 2)) % 360
+        front_az = float((TORONTO_GRID_DEG + 90 * rng.integers(0, 4) + rng.normal(0, 2)) % 360)
     else:
-        front_az = rng.uniform(0, 360)
+        front_az = float(rng.uniform(0, 360))
     sc_p = {
         "house": [0.0, 0.05, 0.1, 0.25, 0.6],
         "lowrise": [0.05, 0.2, 0.25, 0.25, 0.25],
@@ -226,8 +226,8 @@ def _context(
         )
     if rng.random() < 0.12:
         dist = float(rng.uniform(40, 300))
-        side = float(rng.choice([-1, 1]))
-        y_r = (b.depth + dist) if side > 0 else (-b.street_width - dist)
+        rail_side = float(rng.choice([-1, 1]))
+        y_r = (b.depth + dist) if rail_side > 0 else (-b.street_width - dist)
         trips = [float(t) for t in [1, 0, 0, 0, 1, 3] + [6] * 16 + [4, 2]]
         transit.append(
             TransitLine(
@@ -377,28 +377,30 @@ def _visual_cues(rng: np.random.Generator, b: BuildingSpec, unit: Unit) -> None:
     """What a walkthrough could plausibly observe (noisy proxies of hidden properties)."""
     panes_true = {"single": 1, "double": 2, "double_lowe": 2, "triple": 3}
     for w in unit.windows:
-        pt = panes_true[w.glazing]
+        glz, frm = w.glazing, w.frame
+        assert glz is not None and frm is not None  # true unit: hidden properties assigned
+        pt = panes_true[glz]
         r = rng.random()
-        obs = pt if r < 0.7 else int(np.clip(pt + rng.choice([-1, 1]), 1, 3))
+        obs: int | None = pt if r < 0.7 else int(np.clip(pt + rng.choice([-1, 1]), 1, 3))
         if rng.random() < 0.15:
             obs = None  # reflections not visible in the video
-        tint = bool(rng.random() < (0.6 if w.glazing in ("double_lowe", "triple") else 0.12))
+        tint = bool(rng.random() < (0.6 if glz in ("double_lowe", "triple") else 0.12))
         if b.year < 1960:
             mat_p = {
                 "single": [0.75, 0.15, 0.1],
                 "double": [0.3, 0.55, 0.15],
                 "double_lowe": [0.15, 0.65, 0.2],
                 "triple": [0.1, 0.7, 0.2],
-            }[w.glazing]
+            }[glz]
         else:
             mat_p = {
                 "single": [0.3, 0.1, 0.6],
                 "double": [0.1, 0.5, 0.4],
                 "double_lowe": [0.05, 0.6, 0.35],
                 "triple": [0.05, 0.75, 0.2],
-            }[w.glazing]
+            }[glz]
         frame_mat = str(rng.choice(["wood", "vinyl", "aluminum"], p=mat_p))
-        draft = bool(rng.random() < {"tight": 0.03, "average": 0.12, "leaky": 0.45}[w.frame])
+        draft = bool(rng.random() < {"tight": 0.03, "average": 0.12, "leaky": 0.45}[frm])
         w.cues = {"pane_count_obs": obs, "lowe_tint_obs": tint, "frame_material_obs": frame_mat, "draft_cue_obs": draft}
     rad = bool(rng.random() < (0.7 if b.year < 1970 and b.wall_type == "masonry" else 0.12))
     unit.meta["cues"] = {
@@ -528,11 +530,11 @@ def observe(rng: np.random.Generator, true_unit: Unit, scan_quality: float = 1.0
         t.porosity_leaf_on, t.porosity_leaf_off = 0.25, 0.65
     for rd in u.roads:
         counted = rd.road_class in ("trunk", "primary", "secondary") and rng.random() < 0.6
-        rd.aadt = rd.aadt * float(rng.lognormal(0, 0.15)) if counted else None
+        rd.aadt = rd.aadt * float(rng.lognormal(0, 0.15)) if counted and rd.aadt is not None else None
         rd.speed_kmh = float(SPEED_BY_CLASS.get(rd.road_class, 40))
         rd.heavy_share = 0.05
-    for t in u.transit:
-        t.night_trips_per_hour = [float(x) for x in np.asarray(t.night_trips_per_hour) * rng.lognormal(0, 0.1)]
+    for tl in u.transit:
+        tl.night_trips_per_hour = [float(x) for x in np.asarray(tl.night_trips_per_hour) * rng.lognormal(0, 0.1)]
     if rng.random() < 0.2:
         u.year_built = None
     elif u.year_built is not None:

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import pickle
 import sys
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -66,7 +67,7 @@ def main() -> int:
             v["sun"]["sun_h_true"] = np.nan
         recs.append({"obs": unit.to_dict(), "targets": rooms})
     tabs = build_tables(recs, preds, weather(), set())
-    out = {"n_units": len(units)}
+    out: dict[str, Any] = {"n_units": len(units)}
     for target, tm in models.targets.items():
         df = tabs[target].dropna(subset=["y"]).copy()
         if target == "noise":
@@ -75,7 +76,7 @@ def main() -> int:
         if df.empty:
             continue
         df["hybrid_synth"] = tm.predict(df)
-        res = {}
+        res: dict[str, Any] = {}
         for name, col in [
             ("physics_default", "phys_nominal" if target == "sun" else "phys_default"),
             ("physics_inferred", "phys_mc_mean"),

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import pickle
 from dataclasses import replace
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -99,7 +100,7 @@ def main() -> None:
         tr, te = df[df.split == "train"].reset_index(drop=True), df[df.split == "test"].reset_index(drop=True)
         res, frames = run_methods(tr, te, methods_for(target), lobo_for=("hybrid", "pure_ml"))
         abl, _ = run_methods(tr, te, ablations(target), mondrian=False)
-        payload = {
+        payload: dict[str, Any] = {
             "target": target,
             "n_train_rows": len(tr),
             "n_test_rows": len(te),

@@ -192,8 +192,8 @@ def default_assignment(obs: Unit) -> dict[str, Any]:
 
 def evaluate(model: HiddenPropertyModel, pairs: list[tuple[Unit, Unit]], **kw) -> dict[str, float]:
     """Accuracy and log-loss of the posterior vs true properties."""
-    acc = {"glazing": [], "frame": [], "wall": []}
-    ll = {"glazing": [], "frame": [], "wall": []}
+    acc: dict[str, list[float]] = {"glazing": [], "frame": [], "wall": []}
+    ll: dict[str, list[float]] = {"glazing": [], "frame": [], "wall": []}
     for t, o in pairs:
         post = model.posterior(o, **kw)
         for tw in t.windows:
@@ -212,7 +212,7 @@ def evaluate(model: HiddenPropertyModel, pairs: list[tuple[Unit, Unit]], **kw) -
 
 
 def evaluate_default(pairs: list[tuple[Unit, Unit]]) -> dict[str, float]:
-    acc = {"glazing": [], "frame": [], "wall": []}
+    acc: dict[str, list[float]] = {"glazing": [], "frame": [], "wall": []}
     for t, o in pairs:
         d = default_assignment(o)
         for tw in t.windows:

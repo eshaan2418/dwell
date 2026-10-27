@@ -92,7 +92,11 @@ def attach_counts(roads: list[Road], lat0: float, lon0: float, counts: pd.DataFr
     for rd in roads:
         ls = LineString(rd.coords)
         best = min(((ls.distance(p), v) for p, v in pts), default=(np.inf, None))
-        if best[0] < max_dist and rd.road_class in ("motorway", "trunk", "primary", "secondary", "tertiary"):
+        if (
+            best[1] is not None
+            and best[0] < max_dist
+            and rd.road_class in ("motorway", "trunk", "primary", "secondary", "tertiary")
+        ):
             rd.aadt = float(best[1])
             n += 1
     return n

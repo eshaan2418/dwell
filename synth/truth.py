@@ -66,6 +66,17 @@ def _markov_sun(rng: np.random.Generator, frac: np.ndarray, mean_run_min: float 
     return out
 
 
+def _true_hidden(unit: Unit) -> tuple[dict[str, str], dict[str, str], str]:
+    """Hidden properties of a TRUE unit (all known by construction): glazing, frame, wall type."""
+    glz, frm = {}, {}
+    for w in unit.windows:
+        assert w.glazing is not None and w.frame is not None
+        glz[w.id], frm[w.id] = w.glazing, w.frame
+    wall = unit.walls[0].wall_type
+    assert wall is not None
+    return glz, frm, wall
+
+
 def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, dep: Deployment) -> dict:
     """Returns {"rooms": {room_id: minute DataFrame}, "truth": {...}, "kit": {...}}."""
     t0 = dep.start.tz_convert("UTC")
@@ -104,22 +115,23 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
     kit_cal = {}
 
     # ---------------- noise (hourly physics with TRUE params + extras) ----------------
+    glz, frm, wall = _true_hidden(unit)
     c_inc = float(rng.uniform(1.0, 5.0))
     noise_true = predict_room_noise(
         unit,
         NoiseParams(
-            {w.id: w.glazing for w in unit.windows},
-            {w.id: w.frame for w in unit.windows},
-            unit.walls[0].wall_type,
+            glz,
+            frm,
+            wall,
             c_inc=c_inc,
         ),
     )
     noise_open = predict_room_noise(
         unit,
         NoiseParams(
-            {w.id: w.glazing for w in unit.windows},
-            {w.id: w.frame for w in unit.windows},
-            unit.walls[0].wall_type,
+            glz,
+            frm,
+            wall,
             c_inc=c_inc,
             open_fraction=0.08,
         ),
@@ -144,9 +156,9 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
     vent_ach = float(rng.uniform(1.5, 5.0)) if opens_windows else 0.0
     party_h = float(rng.uniform(0.5, 1.5))  # W/K per m2 floor to neighbours
     tp = ThermalParams(
-        {w.id: w.glazing for w in unit.windows},
-        {w.id: w.frame for w in unit.windows},
-        unit.walls[0].wall_type,
+        glz,
+        frm,
+        wall,
         u_wall=unit.walls[0].u_value,
         internal_gain_scale=float(rng.lognormal(0, 0.35)),
         night_vent_ach=vent_ach,
@@ -170,7 +182,7 @@ def simulate_unit(rng: np.random.Generator, unit: Unit, weather: pd.DataFrame, d
         blinds = np.array([blinds_days[d] for d in local_days])
         ctx = next(c for c in ctxs if c.window.id == sw.id)
         svf = vertical_sky_view_factor(ctx.horizon, sw.azimuth)
-        tau = TAU_VIS[sw.glazing]
+        tau = TAU_VIS[glz[sw.id]]
         e_beam = beam * dni_clear * 0.95 * sin_el * K_BEAM * tau
         e_diff = dhi * (0.6 * svf) * K_DIFF * tau * (1 + 0.6 * (1 - sun_vis) * (dhi > 0))
         lux = (e_beam + e_diff) * np.where(blinds, 0.08, 1.0) * rng.lognormal(0, 0.03, len(mins))

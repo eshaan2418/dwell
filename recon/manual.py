@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from core.scene import Building, ExteriorWall, Room, Unit, Window
+from core.scene import Building, ExteriorWall, Road, Room, TransitLine, Unit, Window
 from locate.orientation import TORONTO_DECLINATION_DEG, fuse
 
 
@@ -27,7 +27,8 @@ def unit_from_yaml(path: Path, with_geodata: bool = True, radius_m: float = 300.
     lat, lon = float(c["lat"]), float(c["lon"])
     fz = float(c["floor"]) * float(c.get("floor_height_m", 3.0))
     blds: list[Building] = []
-    roads, transit = [], []
+    roads: list[Road] = []
+    transit: list[TransitLine] = []
     if with_geodata:
         from locate.osm import fetch, to_scene
 

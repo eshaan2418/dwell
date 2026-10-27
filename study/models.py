@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import warnings
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -210,7 +211,7 @@ def overtrust(df_all: pd.DataFrame) -> dict:
         sub = df_all[df_all["condition"] == cond]
         c1 = sub.loc[sub["overlap_top"] == 1, "confidence"]
         c0 = sub.loc[sub["overlap_top"] == 0, "confidence"]
-        res = {
+        res: dict[str, Any] = {
             "mean_conf_overlap": float(c1.mean()) if len(c1) else None,
             "mean_conf_no_overlap": float(c0.mean()) if len(c0) else None,
             "n_overlap": int(len(c1)),

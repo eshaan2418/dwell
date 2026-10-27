@@ -6,6 +6,8 @@ the error of sensor-derived targets vs the simulator's true sensor-point sun, i.
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
@@ -25,7 +27,7 @@ def _one(args: tuple[int, int, str]) -> dict:
     u = units[idx]
     rng = np.random.default_rng(seed * 1000 + idx)
     out = simulate_unit(rng, u, weather(), Deployment(pd.Timestamp(start, tz=TZ), 10))
-    res = {"unit": u.id, "start": start, "rooms": {}}
+    res: dict[str, Any] = {"unit": u.id, "start": start, "rooms": {}}
     for rid, d in out["rooms"].items():
         tr = out["truth"][rid]["true_sensor_sun_min"]
         tl = tr.copy()

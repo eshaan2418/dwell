@@ -7,6 +7,8 @@ reference heat-wave week. Synthetic data (D-012).
 
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
@@ -37,7 +39,7 @@ def _job(args: tuple) -> dict:
 def main() -> None:
     test_b = set(load_split()["test_buildings"])
     recs = [r for r in load() if r["true"]["building_id"] in test_b]
-    jobs = []
+    jobs: list[Any] = []
     for r in recs:
         u = Unit.from_dict(r["obs"])
         for room in u.rooms:
